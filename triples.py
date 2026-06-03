@@ -12,15 +12,18 @@ def _valid(val):
     if val is None:
         return False
 
+    if not isinstance(val, str):
+        val = str(val)
+
     v = normalize_text(val)
 
-    if not v:
-        return False
-
-    if not isinstance(v, str):
+    if v is None:
         return False
 
     v = v.strip()
+
+    if not v:
+        return False
 
     if v.lower() in {"nan", "none", "null"}:
         return False
@@ -62,23 +65,40 @@ def _get_system_id(config, cache):
 # LABEL
 # -----------------------------
 
-def _build_label(row, config):
-    cfg = config.get("entity_label", {})
-    fields = cfg.get("fields", [])
-    sep = cfg.get("separator", " | ")
+def _build_row_label(row, config):
+    cfg = config.get("row_label") or config.get("expression_label", {})
+    field = cfg.get("field")
 
-    parts = []
-
-    for f in fields:
-        v = normalize_text(row.get(f))
-
-        if _valid(v):
-            parts.append(v)
-
-    if not parts:
+    if not field:
         return None
 
-    return sep.join(parts)
+    v = row.get(field)
+
+    if v is None:
+        return None
+
+    v = normalize_text(v)
+
+    if not v:
+        return None
+
+    return v
+
+
+def _build_work_key(row, config):
+    cfg = config.get("work_key", {})
+    fields = cfg.get("fields") or []
+
+    if not fields:
+        return None
+
+    separator = cfg.get("separator", "|")
+    values = [normalize_text(row.get(field), allow_empty=True) or "" for field in fields]
+
+    if not any(values):
+        return None
+
+    return normalize_key(separator.join(values))
 
 
 # -----------------------------
@@ -178,7 +198,7 @@ def generate_plan(row, config, cache):
     # LABEL
     # -------------------------
 
-    label = _build_label(row, config)
+    label = _build_row_label(row, config)
 
     if label:
         emit(
@@ -217,7 +237,8 @@ def generate_plan(row, config, cache):
         cache
     )
 
-    expr_label = label or system_id
+    expr_label = _build_row_label(row, config)
+    expr_work_key = _build_work_key(row, config) or work_label
 
     emit(
         Statement(
@@ -236,8 +257,8 @@ def generate_plan(row, config, cache):
 
     cache["expressions_meta"][expr_qid] = {
         "system_id": system_id,
-        "label": expr_label,
-        "work_key": work_label
+        "label": expr_label or system_id,
+        "work_key": expr_work_key
     }
 
     # -------------------------
