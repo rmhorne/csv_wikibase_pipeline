@@ -1,0 +1,15 @@
+{
+  "api_url": "https://your-wikibase-instance/api.php",
+
+  "apache_auth": {
+    "enabled": false,
+    "username": "",
+    "password": ""
+  },
+
+  "wikibase_auth": {
+    "enabled": false,
+    "username": "",
+    "password": ""
+  }
+}
