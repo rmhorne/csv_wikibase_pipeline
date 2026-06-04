@@ -2,8 +2,6 @@ import json
 import re
 from pathlib import Path
 
-CACHE_FILE = Path("cache.json")
-
 
 def load_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))

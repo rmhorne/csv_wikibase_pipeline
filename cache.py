@@ -12,9 +12,8 @@ def load_cache(path: Path):
 
     cache.setdefault("_counter", 1000)
 
-    cache.setdefault("rows", {})
-    cache.setdefault("work", {})
-    cache.setdefault("entities", {})
+    # SINGLE UNIFIED ID SPACE
+    cache.setdefault("levels", {})
 
     return cache
 

@@ -1,5 +1,5 @@
 from plan import Statement
-from resolver import resolve_entity, resolve_work, resolve_row
+from resolver import resolve, resolve_row
 from utils import normalize, key
 
 
@@ -7,10 +7,24 @@ def build_plan(row, config, cache):
     statements = []
     source = config["source"]
 
+    row_level = config["input"]["root"]
+
     # -------------------------
-    # ROW ENTITY
+    # ROW KEY (CONFIG DRIVEN)
     # -------------------------
-    row_id = resolve_row(cache)
+    if "row_key" in config:
+        parts = []
+        for f in config["row_key"]["fields"]:
+            v = normalize(row.get(f))
+            if v:
+                parts.append(v)
+        row_key = config["row_key"]["separator"].join(parts)
+    else:
+        row_key = normalize(row.get(config["row_label"]["field"]))
+
+    row_id, _ = resolve_row(row_level, row_key, cache)
+
+    # LABEL
     label_field = config["row_label"]["field"]
     row_label = normalize(row.get(label_field))
 
@@ -27,11 +41,10 @@ def build_plan(row, config, cache):
         ))
 
     # -------------------------
-    # FRBR CHAIN (WORK)
+    # FRBR CHAIN (GENERIC LEVEL LINKING)
     # -------------------------
     for node in config.get("frbr_chain", []):
-        if node["to"]["level"] != "work":
-            continue
+        target_level = node["to"]["level"]
 
         parts = []
         for f in node["match_fields"]:
@@ -42,15 +55,15 @@ def build_plan(row, config, cache):
         if not parts:
             continue
 
-        work_key = key(" | ".join(parts))
-        work_id, created = resolve_work(work_key, cache)
+        target_key = key(" | ".join(parts))
+        target_id, _ = resolve(target_level, target_key, cache)
 
         statements.append(Statement(
             subject=row_id,
             subject_label=row_label,
             predicate=node["predicate"],
-            predicate_label="FRBR:work",
-            object=work_id,
+            predicate_label=f"{row_level}:{target_level}",
+            object=target_id,
             object_label=None,
             object_type="entity",
             source=source
@@ -60,21 +73,21 @@ def build_plan(row, config, cache):
     # FIELD MAPPING
     # -------------------------
     for field, spec in config["fields"].items():
-        val = row.get(field)
-        val = normalize(val)
-
+        val = normalize(row.get(field))
         if not val:
             continue
 
+        field_level = spec["frbr"]["level"]
+
         # -------------------------
-        # FLAG FIELDS ("x")
+        # FLAG FIELDS
         # -------------------------
         if spec.get("match") == "x":
-            if val.lower() != "x":
+            if str(val).lower() != "x":
                 continue
 
             entity_label = spec.get("value", field)
-            qid, created = resolve_entity(entity_label, cache)
+            qid, _ = resolve(field_level, entity_label, cache)
 
             statements.append(Statement(
                 subject=row_id,
@@ -99,7 +112,7 @@ def build_plan(row, config, cache):
                 if not p:
                     continue
 
-                qid, created = resolve_entity(p, cache)
+                qid, _ = resolve(field_level, p, cache)
 
                 statements.append(Statement(
                     subject=row_id,
