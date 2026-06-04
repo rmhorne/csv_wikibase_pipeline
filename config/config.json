@@ -10,18 +10,12 @@
   },
 
   "row_label": {
-    "field": "Title",
-    "frbr": {
-      "level": "expression"
-    }
+    "field": "Title"
   },
 
   "row_key": {
     "fields": ["Title", "Composer"],
-    "separator": " | ",
-    "frbr": {
-      "level": "expression"
-    }
+    "separator": " | "
   },
 
   "frbr_chain": [
@@ -32,7 +26,7 @@
       },
       "mode": "create_or_match",
       "match_fields": ["Title"],
-      "predicate": "P_WORK_LINK",
+      "predicate": "P74",
       "strategy": "exact_then_fuzzy"
     }
   ],
@@ -44,369 +38,365 @@
       "predicate": "P9",
       "split": true,
       "delimiter": ";",
-      "frbr": {
-        "level": "work"
-      }
+
+      "graph": [
+        {
+          "from": {
+            "level": "row"
+          },
+          "to": {
+            "level": "work",
+            "key_from_value": true
+          },
+          "mode": "create_or_match",
+          "predicate": "P9",
+          "strategy": "exact_then_fuzzy"
+        }
+      ]
     },
 
     "Spotify Album": {
       "type": "entity",
-      "predicate": "P10",
+
+      "graph": [
+        {
+          "from": {
+            "level": "row"
+          },
+
+          "to": {
+            "level": "manifestation",
+            "key_from_value": true,
+            "entity_type": "album"
+          },
+
+          "mode": "may_create_or_match",
+
+          "predicate": "P10",
+
+          "strategy": "exact_then_fuzzy"
+        }
+      ],
+
       "split": true,
-      "delimiter": ";",
-      "frbr": {
-        "level": "manifestation"
-      }
+      "delimiter": ";"
     },
 
     "Duration (minutes)": {
       "type": "literal",
-      "predicate": "P4",
-      "frbr": {
-        "level": "expression"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "expression" },
+          "mode": "attach_literal",
+          "predicate": "P4"
+        }
+      ]
     },
 
     "Year (Known)": {
       "type": "literal",
-      "predicate": "P_YEAR",
-      "certainty": "certain",
-      "frbr": {
-        "level": "expression"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "expression" },
+          "mode": "attach_literal",
+          "predicate": "P5",
+          "certainty": "certain"
+        }
+      ]
     },
 
     "Year (Estimated)": {
       "type": "literal",
-      "predicate": "P_YEAR",
-      "certainty": "uncertain",
-      "frbr": {
-        "level": "expression"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "expression" },
+          "mode": "attach_literal",
+          "predicate": "P5",
+          "certainty": "uncertain"
+        }
+      ]
     },
 
     "Commissioning Institution (Name)": {
       "type": "entity",
-      "predicate": "P12",
-      "frbr": {
-        "level": "work"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": {
+            "level": "work",
+            "key_from_value": true
+          },
+          "mode": "create_or_match",
+          "predicate": "P12"
+        }
+      ]
     },
 
     "Primary Genre": {
       "type": "entity",
-      "predicate": "P13",
-      "frbr": {
-        "level": "work"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": {
+            "level": "work",
+            "key_from_value": true
+          },
+          "mode": "create_or_match",
+          "predicate": "P13"
+        }
+      ]
     },
 
     "Instrumentation": {
       "type": "entity",
-      "predicate": "P14",
       "split": true,
       "delimiter": ";",
-      "frbr": {
-        "level": "expression"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": {
+            "level": "expression",
+            "key_from_value": true
+          },
+          "mode": "create_or_match",
+          "predicate": "P14"
+        }
+      ]
     },
 
     "Form-General": {
       "type": "entity",
-      "predicate": "P15",
       "split": true,
       "delimiter": "/",
-      "frbr": {
-        "level": "work"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": {
+            "level": "work",
+            "key_from_value": true
+          },
+          "mode": "create_or_match",
+          "predicate": "P15"
+        }
+      ]
     },
 
     "Form-Specific (was Tertiary Genre)": {
       "type": "entity",
-      "predicate": "P15",
       "split": true,
       "delimiter": "/",
-      "frbr": {
-        "level": "work"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": {
+            "level": "work",
+            "key_from_value": true
+          },
+          "mode": "create_or_match",
+          "predicate": "P15"
+        }
+      ]
     },
 
     "Other": {
       "type": "entity",
-      "predicate": "P15",
       "split": true,
       "delimiter": "/",
-      "frbr": {
-        "level": "work"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": {
+            "level": "work",
+            "key_from_value": true
+          },
+          "mode": "create_or_match",
+          "predicate": "P15"
+        }
+      ]
     },
 
     "Sacred": {
       "type": "entity",
-      "predicate": "P13",
-      "match": "x",
-      "value": "Sacred",
-      "certainty": "certain",
-      "frbr": {
-        "level": "work"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "work", "value": "Sacred" },
+          "mode": "create_or_match",
+          "predicate": "P13"
+        }
+      ]
     },
 
     "Secular": {
       "type": "entity",
-      "predicate": "P13",
-      "match": "x",
-      "value": "Secular",
-      "certainty": "certain",
-      "frbr": {
-        "level": "work"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "work", "value": "Secular" },
+          "mode": "create_or_match",
+          "predicate": "P13"
+        }
+      ]
     },
 
     "Ashkenazi": {
       "type": "entity",
-      "predicate": "P16",
-      "match": "x",
-      "value": "Ashkenazi",
-      "frbr": {
-        "level": "work"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "work", "value": "Ashkenazi" },
+          "mode": "create_or_match",
+          "predicate": "P16"
+        }
+      ]
     },
 
     "Sephardi": {
       "type": "entity",
-      "predicate": "P16",
-      "match": "x",
-      "value": "Sephardi",
-      "frbr": {
-        "level": "work"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "work", "value": "Sephardi" },
+          "mode": "create_or_match",
+          "predicate": "P16"
+        }
+      ]
     },
 
     "Israeli": {
       "type": "entity",
-      "predicate": "P16",
-      "match": "x",
-      "value": "Israeli",
-      "frbr": {
-        "level": "work"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "work", "value": "Israeli" },
+          "mode": "create_or_match",
+          "predicate": "P16"
+        }
+      ]
     },
 
     "Mizrahi": {
       "type": "entity",
-      "predicate": "P16",
-      "match": "x",
-      "value": "Mizrahi",
-      "frbr": {
-        "level": "work"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "work", "value": "Mizrahi" },
+          "mode": "create_or_match",
+          "predicate": "P16"
+        }
+      ]
     },
 
     "Musical": {
       "type": "entity",
-      "predicate": "P17",
-      "match": "x",
-      "value": "Musical",
-      "frbr": {
-        "level": "work"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "work", "value": "Musical" },
+          "mode": "create_or_match",
+          "predicate": "P17"
+        }
+      ]
     },
 
     "Conceptual": {
       "type": "entity",
-      "predicate": "P17",
-      "match": "x",
-      "value": "Conceptual",
-      "frbr": {
-        "level": "work"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "work", "value": "Conceptual" },
+          "mode": "create_or_match",
+          "predicate": "P17"
+        }
+      ]
     },
 
     "Textual": {
       "type": "entity",
-      "predicate": "P17",
-      "match": "x",
-      "value": "Textual",
-      "frbr": {
-        "level": "expression"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "expression", "value": "Textual" },
+          "mode": "create_or_match",
+          "predicate": "P17"
+        }
+      ]
     },
 
     "Functional": {
       "type": "entity",
-      "predicate": "P17",
-      "match": "x",
-      "value": "Functional",
-      "frbr": {
-        "level": "work"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "work", "value": "Functional" },
+          "mode": "create_or_match",
+          "predicate": "P17"
+        }
+      ]
     },
 
     "Sonic": {
       "type": "entity",
-      "predicate": "P17",
-      "match": "x",
-      "value": "Sonic",
-      "frbr": {
-        "level": "expression"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "expression", "value": "Sonic" },
+          "mode": "create_or_match",
+          "predicate": "P17"
+        }
+      ]
     },
 
     "Social": {
       "type": "entity",
-      "predicate": "P17",
-      "match": "x",
-      "value": "Social",
-      "frbr": {
-        "level": "work"
-      }
-    },
-
-    "Classical": {
-      "type": "entity",
-      "predicate": "P18",
-      "match": "x",
-      "value": "Classical",
-      "frbr": {
-        "level": "work"
-      }
-    },
-
-    "Klezmer": {
-      "type": "entity",
-      "predicate": "P18",
-      "match": "x",
-      "value": "Klezmer",
-      "frbr": {
-        "level": "work"
-      }
-    },
-
-    "Cantorial": {
-      "type": "entity",
-      "predicate": "P18",
-      "match": "x",
-      "value": "Cantorial",
-      "frbr": {
-        "level": "work"
-      }
-    },
-
-    "Folk": {
-      "type": "entity",
-      "predicate": "P18",
-      "match": "x",
-      "value": "Folk",
-      "frbr": {
-        "level": "work"
-      }
-    },
-
-    "Jazz": {
-      "type": "entity",
-      "predicate": "P18",
-      "match": "x",
-      "value": "Jazz",
-      "frbr": {
-        "level": "work"
-      }
-    },
-
-    "Devotional-Solemn": {
-      "type": "entity",
-      "predicate": "P18",
-      "match": "x",
-      "value": "Devotional-Solemn",
-      "frbr": {
-        "level": "work"
-      }
-    },
-
-    "Popular": {
-      "type": "entity",
-      "predicate": "P18",
-      "match": "x",
-      "value": "Popular",
-      "frbr": {
-        "level": "work"
-      }
-    },
-
-    "Theatrical": {
-      "type": "entity",
-      "predicate": "P18",
-      "match": "x",
-      "value": "Theatrical",
-      "frbr": {
-        "level": "work"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "work", "value": "Social" },
+          "mode": "create_or_match",
+          "predicate": "P17"
+        }
+      ]
     },
 
     "Text Type": {
       "type": "literal",
-      "predicate": "P19",
-      "frbr": {
-        "level": "expression"
-      }
+
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "expression" },
+          "mode": "attach_literal",
+          "predicate": "P19"
+        }
+      ]
     },
 
     "Text Source": {
       "type": "literal",
-      "predicate": "P20",
-      "frbr": {
-        "level": "expression"
-      }
-    },
 
-    "Hebrew": {
-      "type": "entity",
-      "predicate": "P21",
-      "match": "x",
-      "value": "Hebrew",
-      "frbr": {
-        "level": "expression"
-      }
-    },
-
-    "Yiddish": {
-      "type": "entity",
-      "predicate": "P21",
-      "match": "x",
-      "value": "Yiddish",
-      "frbr": {
-        "level": "expression"
-      }
-    },
-
-    "English": {
-      "type": "entity",
-      "predicate": "P21",
-      "match": "x",
-      "value": "English",
-      "frbr": {
-        "level": "expression"
-      }
-    },
-
-    "Ladino": {
-      "type": "entity",
-      "predicate": "P21",
-      "match": "x",
-      "value": "Ladino",
-      "frbr": {
-        "level": "expression"
-      }
-    },
-
-    "German": {
-      "type": "entity",
-      "predicate": "P21",
-      "match": "x",
-      "value": "German",
-      "frbr": {
-        "level": "expression"
-      }
+      "graph": [
+        {
+          "from": { "level": "row" },
+          "to": { "level": "expression" },
+          "mode": "attach_literal",
+          "predicate": "P20"
+        }
+      ]
     }
   }
 }

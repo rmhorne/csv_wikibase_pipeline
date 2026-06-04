@@ -1,0 +1,564 @@
+# PYTHON PROJECT DUMP
+# ROOT: /Users/rayanhorne/Dropbox/work/ucla/oarc/spin-off-projects/2026/csv_wikibase_pipeline
+# FILE COUNT: 2338
+
+
+========================================================================================================================
+# FILE: __init__.py
+========================================================================================================================
+
+
+
+========================================================================================================================
+# FILE: cache.py
+========================================================================================================================
+
+from pathlib import Path
+from utils import load_json, write_json
+
+
+def load_cache(path: Path):
+    path = Path(path)
+
+    if path.exists():
+        cache = load_json(path)
+    else:
+        cache = {}
+
+    cache.setdefault("_counter", 1000)
+
+    # SINGLE UNIFIED ID SPACE
+    cache.setdefault("levels", {})
+
+    return cache
+
+
+def save_cache(cache, path: Path):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    write_json(cache, path)
+
+========================================================================================================================
+# FILE: cli.py
+========================================================================================================================
+
+import argparse
+from pathlib import Path
+from ingest import run
+from utils import write_json
+
+
+def main():
+    p = argparse.ArgumentParser()
+
+    p.add_argument("--csv", required=True)
+    p.add_argument("--config", required=True)
+    p.add_argument("--out", required=True)
+    p.add_argument("--cache", required=True)
+    p.add_argument("--mode", default="dry")
+
+    args = p.parse_args()
+
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.cache).parent.mkdir(parents=True, exist_ok=True)
+
+    plan = run(args.csv, args.config, args.cache)
+
+    if args.mode == "dry":
+        write_json([s.__dict__ for s in plan], args.out)
+
+    print(f"OK: {len(plan)} statements")
+
+
+if __name__ == "__main__":
+    main()
+
+========================================================================================================================
+# FILE: dump_python_project.py
+========================================================================================================================
+
+from pathlib import Path
+import argparse
+
+
+def dump_project(root_dir: str, output_file: str):
+    root = Path(root_dir).resolve()
+    out_path = Path(output_file).resolve()
+
+    py_files = sorted(root.rglob("*.py"))
+
+    with out_path.open("w", encoding="utf-8") as out:
+
+        out.write(f"# PYTHON PROJECT DUMP\n")
+        out.write(f"# ROOT: {root}\n")
+        out.write(f"# FILE COUNT: {len(py_files)}\n\n")
+
+        for file_path in py_files:
+            # skip venv and cache dirs
+            if any(part in {"venv", ".venv", "__pycache__"} for part in file_path.parts):
+                continue
+
+            rel_path = file_path.relative_to(root)
+
+            out.write("\n" + "=" * 120 + "\n")
+            out.write(f"# FILE: {rel_path}\n")
+            out.write("=" * 120 + "\n\n")
+
+            try:
+                content = file_path.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                content = file_path.read_text(encoding="latin-1")
+
+            out.write(content)
+            out.write("\n")
+
+    print(f"\n✔ Dump complete → {out_path}")
+    print(f"✔ Files included: {len(py_files)}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", default=".", help="Project root directory")
+    parser.add_argument("--out", default="project_dump.txt", help="Output file")
+
+    args = parser.parse_args()
+
+    dump_project(args.root, args.out)
+
+========================================================================================================================
+# FILE: ingest.py
+========================================================================================================================
+
+import pandas as pd
+from utils import load_json
+from cache import load_cache, save_cache
+from triples import build_plan
+
+
+def run(csv_path, config_path, cache_path):
+    df = pd.read_csv(csv_path)
+    config = load_json(config_path)
+
+    cache = load_cache(cache_path)
+
+    plan = []
+
+    for _, row in df.iterrows():
+        statements, cache = build_plan(row, config, cache)
+        plan.extend(statements)
+
+    save_cache(cache, cache_path)
+
+    return plan
+
+========================================================================================================================
+# FILE: output.py
+========================================================================================================================
+
+from utils import write_json
+
+
+def write_plan(plan, path):
+
+    def ser(s):
+        return {
+            "subject": s.subject,
+            "subject_label": s.subject_label,
+            "predicate": s.predicate,
+            "predicate_label": s.predicate_label,
+            "object": s.object,
+            "object_label": s.object_label,
+            "object_type": s.object_type,
+            "source": s.source,
+            "references": s.references,
+            "qualifiers": s.qualifiers
+        }
+
+    write_json([ser(x) for x in plan], path)
+
+========================================================================================================================
+# FILE: plan.py
+========================================================================================================================
+
+from dataclasses import dataclass
+from typing import Optional, Dict, Any, List
+
+
+@dataclass
+class Statement:
+    subject: str
+    subject_label: Optional[str]
+
+    predicate: str
+    predicate_label: Optional[str]
+
+    object: Optional[str]
+    object_label: Optional[str]
+
+    object_type: str  # entity | literal
+
+    source: Dict[str, Any]
+
+    references: List = None
+    qualifiers: List = None
+
+    def __post_init__(self):
+        self.references = self.references or []
+        self.qualifiers = self.qualifiers or []
+
+========================================================================================================================
+# FILE: resolver.py
+========================================================================================================================
+
+from utils import key
+
+
+def resolve(level: str, label: str, cache: dict):
+    """
+    Universal resolver:
+    - level comes from config
+    - label defines identity
+    """
+
+    k = key(label)
+    if not k:
+        return None, False
+
+    cache["levels"].setdefault(level, {})
+
+    bucket = cache["levels"][level]
+
+    if k in bucket:
+        return bucket[k], False
+
+    cache["_counter"] += 1
+    qid = f"QW{cache['_counter']}"
+
+    bucket[k] = qid
+    return qid, True
+
+
+def resolve_row(level: str, row_key: str, cache: dict):
+    """
+    Row is just another level in the same system.
+    """
+    k = key(row_key)
+    if not k:
+        cache["_counter"] += 1
+        return f"QW{cache['_counter']}", True
+
+    cache["levels"].setdefault(level, {})
+    bucket = cache["levels"][level]
+
+    if k in bucket:
+        return bucket[k], False
+
+    cache["_counter"] += 1
+    qid = f"QW{cache['_counter']}"
+    bucket[k] = qid
+    return qid, True
+
+========================================================================================================================
+# FILE: triples.py
+========================================================================================================================
+
+from plan import Statement
+from resolver import resolve, resolve_row
+from utils import normalize, key
+
+
+# -----------------------------
+# SAFE CONFIG HELPERS
+# -----------------------------
+
+def get_field_level(spec, default_level):
+    """
+    Supports BOTH:
+    - old: spec["frbr"]["level"]
+    - new: graph-based (no frbr at all)
+    """
+    if isinstance(spec.get("frbr"), dict):
+        return spec["frbr"].get("level", default_level)
+
+    return default_level
+
+
+def get_predicate(spec, graph_node=None):
+    """
+    Predicate priority:
+    1. graph.node["predicate"]
+    2. spec["predicate"]
+    3. None (skip safely)
+    """
+    if graph_node and "predicate" in graph_node:
+        return graph_node["predicate"]
+
+    return spec.get("predicate")
+
+
+def get_level_from_node(node, default):
+    if isinstance(node, dict) and "level" in node:
+        return node["level"]
+    return default
+
+
+# -----------------------------
+# MAIN BUILDER
+# -----------------------------
+
+def build_plan(row, config, cache):
+    statements = []
+    source = config["source"]
+
+    row_level = config["input"]["root"]
+
+    # -------------------------
+    # ROW KEY
+    # -------------------------
+    if "row_key" in config:
+        parts = []
+        for f in config["row_key"]["fields"]:
+            v = normalize(row.get(f))
+            if v:
+                parts.append(v)
+        row_key = config["row_key"]["separator"].join(parts)
+    else:
+        row_key = normalize(row.get(config["row_label"]["field"]))
+
+    row_id, _ = resolve_row(row_level, row_key, cache)
+
+    # -------------------------
+    # LABEL
+    # -------------------------
+    label_field = config["row_label"]["field"]
+    row_label = normalize(row.get(label_field))
+
+    if row_label:
+        statements.append(Statement(
+            subject=row_id,
+            subject_label=row_label,
+            predicate="LABEL",
+            predicate_label="LABEL",
+            object=None,
+            object_label=None,
+            object_type="literal",
+            source=source
+        ))
+
+    # =====================================================
+    # FRBR CHAIN (SAFE LEGACY SUPPORT)
+    # =====================================================
+    for node in config.get("frbr_chain", []):
+        target_level = node["to"]["level"]
+
+        parts = []
+        for f in node.get("match_fields", []):
+            v = normalize(row.get(f))
+            if v:
+                parts.append(v)
+
+        if not parts:
+            continue
+
+        target_key = key(" | ".join(parts))
+        target_id, _ = resolve(target_level, target_key, cache)
+
+        statements.append(Statement(
+            subject=row_id,
+            subject_label=row_label,
+            predicate=node.get("predicate", "UNKNOWN"),
+            predicate_label=f"{row_level}:{target_level}",
+            object=target_id,
+            object_label=None,
+            object_type="entity",
+            source=source
+        ))
+
+    # =====================================================
+    # FIELD MAPPING (GRAPH-FIRST SYSTEM)
+    # =====================================================
+    for field, spec in config["fields"].items():
+
+        val = normalize(row.get(field))
+        if not val:
+            continue
+
+        field_level = get_field_level(spec, row_level)
+
+        # -------------------------
+        # FLAG FIELDS (x match)
+        # -------------------------
+        if spec.get("match") == "x":
+            if str(val).lower() != "x":
+                continue
+
+            entity_label = spec.get("value", field)
+            qid, _ = resolve(field_level, entity_label, cache)
+
+            statements.append(Statement(
+                subject=row_id,
+                subject_label=row_label,
+                predicate=spec.get("predicate", field),
+                predicate_label=field,
+                object=qid,
+                object_label=entity_label,
+                object_type="entity",
+                source=source
+            ))
+            continue
+
+        # -------------------------
+        # GRAPH-BASED MODEL (PRIMARY PATH)
+        # -------------------------
+        graph = spec.get("graph", [])
+
+        if graph:
+            # entity fields with graph logic
+            if spec.get("type") == "entity":
+
+                parts = (
+                    val.split(spec.get("delimiter", ";"))
+                    if spec.get("split")
+                    else [val]
+                )
+
+                for p in parts:
+                    p = normalize(p)
+                    if not p:
+                        continue
+
+                    entity_id, _ = resolve(field_level, p, cache)
+
+                    # base row → entity
+                    statements.append(Statement(
+                        subject=row_id,
+                        subject_label=row_label,
+                        predicate=spec.get("predicate", field),
+                        predicate_label=field,
+                        object=entity_id,
+                        object_label=p,
+                        object_type="entity",
+                        source=source
+                    ))
+
+                    # -------------------------
+                    # GRAPH EDGES
+                    # -------------------------
+                    for g in graph:
+
+                        from_level = get_level_from_node(g.get("from"), row_level)
+                        if from_level != "row":
+                            continue
+
+                        to_node = g.get("to", {})
+
+                        # key derivation logic
+                        if to_node.get("key_from_value"):
+                            target_label = p
+                        elif "value" in to_node:
+                            target_label = to_node["value"]
+                        elif to_node.get("entity_type"):
+                            target_label = to_node["entity_type"]
+                        else:
+                            target_label = field
+
+                        target_level = get_level_from_node(to_node, field_level)
+
+                        target_id, _ = resolve(target_level, target_label, cache)
+
+                        statements.append(Statement(
+                            subject=entity_id,
+                            subject_label=p,
+                            predicate=get_predicate(spec, g),
+                            predicate_label=field,
+                            object=target_id,
+                            object_label=target_label,
+                            object_type="entity",
+                            source=source
+                        ))
+
+            # literal fields with graph support
+            else:
+                for g in graph:
+                    from_level = get_level_from_node(g.get("from"), row_level)
+                    if from_level != "row":
+                        continue
+
+                    to_level = get_level_from_node(g.get("to"), field_level)
+                    predicate = get_predicate(spec, g)
+
+                    if not predicate:
+                        continue
+
+                    statements.append(Statement(
+                        subject=row_id,
+                        subject_label=row_label,
+                        predicate=predicate,
+                        predicate_label=field,
+                        object=val,
+                        object_label=None,
+                        object_type="literal",
+                        source=source
+                    ))
+
+        # -------------------------
+        # LEGACY MODE (NO GRAPH)
+        # -------------------------
+        else:
+            if "predicate" not in spec:
+                continue  # safe skip instead of crash
+
+            statements.append(Statement(
+                subject=row_id,
+                subject_label=row_label,
+                predicate=spec["predicate"],
+                predicate_label=field,
+                object=val,
+                object_label=None,
+                object_type="literal",
+                source=source
+            ))
+
+    return statements, cache
+
+========================================================================================================================
+# FILE: utils.py
+========================================================================================================================
+
+import json
+import re
+from pathlib import Path
+
+
+def load_json(path):
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def write_json(data, path):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    path.write_text(
+        json.dumps(data, indent=2, ensure_ascii=False),
+        encoding="utf-8"
+    )
+
+
+def normalize(x):
+    if x is None:
+        return None
+
+    x = str(x).strip()
+    x = re.sub(r"\s+", " ", x)
+
+    if x.lower() in {"nan", "none", "null", ""}:
+        return None
+
+    return x
+
+
+def key(x):
+    x = normalize(x)
+    if x is None:
+        return None
+    return x.lower()
