@@ -1,25 +1,25 @@
-from dataclasses import dataclass, field
-from typing import Literal, Optional, List, Tuple, Dict, Any
-
-ObjectType = Literal["entity", "literal"]
-ActionType = Literal["create", "reuse"]
+from dataclasses import dataclass
+from typing import Optional, Dict, Any, List
 
 
 @dataclass
 class Statement:
     subject: str
+    subject_label: Optional[str]
+
     predicate: str
-    object: str
-    object_type: ObjectType
-    action: ActionType = "reuse"
-    qid: Optional[str] = None
-    field_type: Optional[str] = None
+    predicate_label: Optional[str]
 
-    source: Optional[Dict[str, Any]] = None
+    object: Optional[str]
+    object_label: Optional[str]
 
-    references: List[str] = field(default_factory=list)
+    object_type: str  # entity | literal
 
-    qualifiers: List[Tuple[str, str]] = field(default_factory=list)
+    source: Dict[str, Any]
 
-    qualifier_role: Optional[str] = None
-    confidence: Optional[float] = None
+    references: List = None
+    qualifiers: List = None
+
+    def __post_init__(self):
+        self.references = self.references or []
+        self.qualifiers = self.qualifiers or []
