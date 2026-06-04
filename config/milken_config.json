@@ -16,7 +16,7 @@
     }
   },
 
-  "work_key": {
+  "row_key": {
     "fields": ["Title", "Composer"],
     "separator": " | ",
     "frbr": {

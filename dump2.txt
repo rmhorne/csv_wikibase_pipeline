@@ -1,0 +1,1368 @@
+# PYTHON PROJECT DUMP
+# ROOT: /Users/rayanhorne/Dropbox/work/ucla/oarc/spin-off-projects/2026/csv_wikibase_pipeline
+# FILE COUNT: 2350
+
+
+========================================================================================================================
+# FILE: __init__.py
+========================================================================================================================
+
+
+
+========================================================================================================================
+# FILE: cache.py
+========================================================================================================================
+
+from utils import load_json_file, write_json_file, CACHE_FILE
+
+
+def load_cache():
+    """
+    Loads persistent pipeline state.
+
+    Core design:
+    - expressions: QW-level row entities (primary graph nodes)
+    - entities_by_type: resolved Wikibase/QID cache
+    - works: legacy compatibility layer (may be phased out later)
+    - _qw_counter: global expression ID generator
+    """
+
+    if CACHE_FILE.exists():
+        cache = load_json_file(CACHE_FILE)
+    else:
+        cache = {}
+
+    if not isinstance(cache, dict):
+        raise TypeError(f"Cache file corrupted: expected dict, got {type(cache)}")
+
+    cache.setdefault("works", {})
+    cache.setdefault("entities_by_type", {})
+    cache.setdefault("expressions", {})
+    cache.setdefault("_qw_counter", 1000)
+    cache.setdefault("_schema_version", 1)
+
+    return cache
+
+
+def save_cache(cache):
+    """
+    Persists full pipeline state.
+
+    CRITICAL FIX:
+    - NEVER return anything
+    - NEVER mutate caller's reference
+    - NEVER allow accidental reassignment chains
+    """
+
+    if not isinstance(cache, dict):
+        raise TypeError(f"Refusing to save invalid cache type: {type(cache)}")
+
+    write_json_file(cache, CACHE_FILE)
+
+    # hard safety: explicit return None
+    return None
+
+========================================================================================================================
+# FILE: dump_python_project.py
+========================================================================================================================
+
+from pathlib import Path
+import argparse
+
+
+def dump_project(root_dir: str, output_file: str):
+    root = Path(root_dir).resolve()
+    out_path = Path(output_file).resolve()
+
+    py_files = sorted(root.rglob("*.py"))
+
+    with out_path.open("w", encoding="utf-8") as out:
+
+        out.write(f"# PYTHON PROJECT DUMP\n")
+        out.write(f"# ROOT: {root}\n")
+        out.write(f"# FILE COUNT: {len(py_files)}\n\n")
+
+        for file_path in py_files:
+            # skip venv and cache dirs
+            if any(part in {"venv", ".venv", "__pycache__"} for part in file_path.parts):
+                continue
+
+            rel_path = file_path.relative_to(root)
+
+            out.write("\n" + "=" * 120 + "\n")
+            out.write(f"# FILE: {rel_path}\n")
+            out.write("=" * 120 + "\n\n")
+
+            try:
+                content = file_path.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                content = file_path.read_text(encoding="latin-1")
+
+            out.write(content)
+            out.write("\n")
+
+    print(f"\n✔ Dump complete → {out_path}")
+    print(f"✔ Files included: {len(py_files)}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", default=".", help="Project root directory")
+    parser.add_argument("--out", default="project_dump.txt", help="Output file")
+
+    args = parser.parse_args()
+
+    dump_project(args.root, args.out)
+
+========================================================================================================================
+# FILE: executor_factory.py
+========================================================================================================================
+
+from executors.dry import DryExecutor
+from executors.simulate import SimulateExecutor
+from executors.commit import CommitExecutor
+
+EXECUTORS = {
+    "dry": DryExecutor,
+    "simulate": SimulateExecutor,
+    "commit": CommitExecutor,
+}
+
+
+def get_executor(mode):
+    try:
+        return EXECUTORS[mode]()
+    except KeyError:
+        raise ValueError(f"Unknown mode: {mode}")
+
+
+========================================================================================================================
+# FILE: executors/__init__.py
+========================================================================================================================
+
+
+
+========================================================================================================================
+# FILE: executors/base.py
+========================================================================================================================
+
+class BaseExecutor:
+    def setup(self):
+        pass
+
+    def process(self, plan):
+        raise NotImplementedError
+
+
+========================================================================================================================
+# FILE: executors/commit.py
+========================================================================================================================
+
+from .base import BaseExecutor
+
+
+class CommitExecutor(BaseExecutor):
+    def setup(self):
+        raise NotImplementedError("Commit mode is not implemented yet.")
+
+    def process(self, plan):
+        raise NotImplementedError("Commit mode is not implemented yet.")
+
+
+========================================================================================================================
+# FILE: executors/dry.py
+========================================================================================================================
+
+from .base import BaseExecutor
+
+from output import write_plan_json
+
+
+class DryExecutor(BaseExecutor):
+    def process(self, plan):
+        write_plan_json(plan)
+        print("✔ plan_output.json written")
+
+
+========================================================================================================================
+# FILE: executors/simulate.py
+========================================================================================================================
+
+from .base import BaseExecutor
+from wikibase_search import get_session, search_entity
+from utils import normalize_text
+from output import (
+    write_resolution_json,
+    write_missing_entities_json,
+    write_seed_plan_json
+)
+
+
+class SimulateExecutor(BaseExecutor):
+    def setup(self):
+        self.session = get_session()
+
+    def process(self, plan):
+        seen = set()
+        out = []
+        missing = {}
+        seed_plan = []
+
+        total = len(plan)
+        print(f"[SIMULATE] total statements: {total}", flush=True)
+
+        for i, s in enumerate(plan):
+            if i % 10 == 0:
+                print(f"[SIMULATE] {i}/{total}", flush=True)
+
+            if s.object_type != "entity":
+                continue
+
+            label = normalize_text(s.object)
+            if not label:
+                continue
+
+            field_type = normalize_text(getattr(s, "field_type", "entity"), lower=True) or "entity"
+
+            key = (label, field_type)
+            if key in seen:
+                continue
+
+            seen.add(key)
+
+            try:
+                result = search_entity(self.session, label, field_type=field_type)
+                matches = result["raw"]
+                filtered = result["filtered"]
+            except Exception as e:
+                print(f"❌ search failed for {label}: {e}", flush=True)
+                matches, filtered = [], []
+
+            out.append({
+                "label": label,
+                "field_type": field_type,
+                "source": getattr(s, "references", []),
+                "matches": matches,
+                "filtered_matches": filtered
+            })
+
+            if not filtered:
+                missing.setdefault(label, {
+                    "label": label,
+                    "field_type": field_type,
+                    "count": 0
+                })["count"] += 1
+
+                seed_plan.append({
+                    "label": label,
+                    "type_guess": field_type,
+                    "status": "to_create"
+                })
+
+        write_resolution_json(out)
+        write_missing_entities_json(missing)
+        write_seed_plan_json(seed_plan)
+
+        print(f"✔ resolution_output.json written ({len(out)})", flush=True)
+
+========================================================================================================================
+# FILE: fileContentCopy.py
+========================================================================================================================
+
+from pathlib import Path
+
+def dump_python_project(root_dir: str, output_file: str = "output.txt"):
+    root = Path(root_dir)
+
+    with open(output_file, "w", encoding="utf-8") as out:
+
+        out.write(f"PYTHON PROJECT DUMP\nROOT: {root.resolve()}\n\n")
+
+        for path in sorted(root.rglob("*")):
+            if path.is_dir():
+                continue
+
+            rel_path = path.relative_to(root)
+
+            # Print directory structure line
+            out.write(f"\nFILE: {rel_path}\n")
+            out.write("-" * 80 + "\n")
+
+            # Only dump python files fully
+            if path.suffix == ".py":
+                try:
+                    content = path.read_text(encoding="utf-8")
+                except Exception as e:
+                    content = f"[ERROR READING FILE: {e}]"
+
+                out.write(content)
+                out.write("\n")
+            else:
+                out.write("[non-python file skipped]\n")
+
+        out.write("\nDONE\n")
+
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) < 2:
+        print("Usage: python dump.py /path/to/project")
+    else:
+        dump_python_project(sys.argv[1])
+
+========================================================================================================================
+# FILE: frbr.py
+========================================================================================================================
+
+from dataclasses import dataclass
+from typing import Dict, Any, List, Tuple
+
+
+@dataclass
+class FRBRNode:
+    level: str
+    qid: str
+    source_qid: str
+    predicate: str
+
+
+def build_frbr_chain(config: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """
+    Returns FRBR chain as-is from config, validated.
+
+    No logic here — only normalization layer.
+    """
+    chain = config.get("frbr_chain", [])
+
+    if not isinstance(chain, list):
+        raise ValueError("frbr_chain must be a list")
+
+    return chain
+
+
+def get_frbr_level(node: Dict[str, Any]) -> str:
+    return node.get("to", {}).get("level")
+
+
+def get_frbr_predicate(node: Dict[str, Any]) -> str:
+    return node.get("predicate")
+
+
+def get_match_fields(node: Dict[str, Any]) -> List[str]:
+    return node.get("match_fields", [])
+
+
+def get_mode(node: Dict[str, Any]) -> str:
+    return node.get("mode", "create_or_match")
+
+
+def get_strategy(node: Dict[str, Any]) -> str:
+    return node.get("strategy", "exact")
+
+========================================================================================================================
+# FILE: iid_registry.py
+========================================================================================================================
+
+
+
+========================================================================================================================
+# FILE: ingest.py
+========================================================================================================================
+
+import pandas as pd
+
+from cache import load_cache, save_cache
+from triples import generate_plan
+from executors.commit import CommitExecutor
+from executors.dry import DryExecutor
+from executors.simulate import SimulateExecutor
+from utils import load_json_file
+
+
+EXECUTORS = {
+    "dry": DryExecutor,
+    "simulate": SimulateExecutor,
+    "commit": CommitExecutor,
+}
+
+
+def validate_config(config):
+    predicate_types = {}
+
+    for field_name, spec in config["fields"].items():
+
+        predicate = spec["predicate"]
+        field_type = spec["type"]
+
+        if predicate not in predicate_types:
+            predicate_types[predicate] = field_type
+            continue
+
+        if predicate_types[predicate] != field_type:
+            raise ValueError(
+                f"CONFIG ERROR: {predicate} conflict at {field_name}"
+            )
+
+
+def _dedupe_key(stmt):
+    return (
+        stmt.subject,
+        stmt.predicate,
+        stmt.object,
+        stmt.object_type
+    )
+
+
+def run(file_path, config_path, mode="dry"):
+    df = pd.read_csv(file_path)
+    config = load_json_file(config_path)
+
+    validate_config(config)
+
+    cache = load_cache()
+
+    # HARD GUARD (CRITICAL FIX)
+    if not isinstance(cache, dict):
+        raise TypeError(f"[FATAL] cache must be dict at start, got {type(cache)}")
+
+    # -----------------------------
+    # FRBR MEMORY LAYERS
+    # -----------------------------
+    cache.setdefault("entities_by_type", {})
+    cache.setdefault("expressions", {})
+    cache.setdefault("frbr_nodes", {})
+
+    plan_all = []
+    seen = set()
+
+    total = len(df)
+
+    for i, row in df.iterrows():
+
+        # HARD GUARD PER ITERATION (THIS IS THE FIX THAT STOPS SILENT DRIFT)
+        if not isinstance(cache, dict):
+            raise TypeError(f"[CACHE CORRUPTION DETECTED at row {i}] got {type(cache)}")
+
+        result = generate_plan(row, config, cache)
+
+        # strict unpack validation
+        if not isinstance(result, tuple) or len(result) != 2:
+            raise TypeError(
+                f"[generate_plan contract violation] expected (plan, cache), got {type(result)}"
+            )
+
+        plan, cache = result
+
+        # SECOND GUARD (this catches boolean overwrite immediately)
+        if isinstance(cache, bool):
+            raise TypeError(
+                f"[CACHE OVERWRITE BUG] cache became bool at row {i}"
+            )
+
+        if not isinstance(cache, dict):
+            raise TypeError(
+                f"[CACHE TYPE BREAK] expected dict, got {type(cache)} at row {i}"
+            )
+
+        for stmt in plan:
+            key = _dedupe_key(stmt)
+
+            if key in seen:
+                continue
+
+            seen.add(key)
+            plan_all.append(stmt)
+
+        if i % 50 == 0:
+            print(f"{i}/{total}")
+
+    # FINAL GUARD BEFORE PERSIST
+    if not isinstance(cache, dict):
+        raise TypeError(f"[FATAL] cache invalid before save: {type(cache)}")
+
+    save_cache(cache)
+
+    executor = EXECUTORS[mode]()
+    executor.setup()
+    executor.process(plan_all)
+
+========================================================================================================================
+# FILE: mapping.py
+========================================================================================================================
+
+from utils import normalize_text
+
+
+def make_work_key(row, key_columns):
+    if not key_columns:
+        return None
+
+    values = []
+    for col in key_columns:
+        values.append(normalize_text(row.get(col), allow_empty=True) or "")
+
+    return "|".join(values)
+
+
+========================================================================================================================
+# FILE: output.py
+========================================================================================================================
+
+from utils import write_json_file
+
+
+def write_plan_json(plan, filename="plan_output.json"):
+    """
+    Full deterministic serialization of statement plan.
+    """
+
+    def serialize_qualifiers(qs):
+        """
+        Convert internal tuple format into clean JSON objects.
+        """
+        if not qs:
+            return []
+
+        return [
+            {
+                "property": k,
+                "value": v
+            }
+            for (k, v) in qs
+        ]
+
+    out = [
+        {
+            "subject": s.subject,
+            "predicate": s.predicate,
+            "object": s.object,
+            "object_type": s.object_type,
+            "action": s.action,
+            "qid": s.qid,
+            "field_type": s.field_type,
+
+            # provenance
+            "source": s.source,
+
+            # FIXED SERIALIZATION (NO RAW TUPLES)
+            "references": s.references,
+
+            "qualifiers": serialize_qualifiers(s.qualifiers)
+        }
+        for s in plan
+    ]
+
+    write_json_file(out, filename)
+
+
+def write_resolution_json(data, filename="resolution_output.json"):
+    write_json_file(data, filename)
+
+
+def write_missing_entities_json(data, filename="missing_entities.json"):
+    write_json_file(data, filename)
+
+
+def write_seed_plan_json(data, filename="entity_seed_plan.json"):
+    write_json_file(data, filename)
+
+========================================================================================================================
+# FILE: plan.py
+========================================================================================================================
+
+from dataclasses import dataclass, field
+from typing import Literal, Optional, List, Tuple, Dict, Any
+
+ObjectType = Literal["entity", "literal"]
+ActionType = Literal["create", "reuse"]
+
+
+@dataclass
+class Statement:
+    subject: str
+    predicate: str
+    object: str
+    object_type: ObjectType
+    action: ActionType = "reuse"
+    qid: Optional[str] = None
+    field_type: Optional[str] = None
+
+    source: Optional[Dict[str, Any]] = None
+
+    references: List[str] = field(default_factory=list)
+
+    qualifiers: List[Tuple[str, str]] = field(default_factory=list)
+
+    qualifier_role: Optional[str] = None
+    confidence: Optional[float] = None
+
+========================================================================================================================
+# FILE: resolution_output.py
+========================================================================================================================
+
+from utils import write_json_file
+
+
+def write_resolution_json(data, filename="resolution_output.json"):
+    write_json_file(data, filename)
+
+
+def write_missing_entities_json(data, filename="missing_entities.json"):
+    write_json_file(data, filename)
+
+
+def write_seed_plan_json(data, filename="entity_seed_plan.json"):
+    write_json_file(data, filename)
+
+
+========================================================================================================================
+# FILE: resolver.py
+========================================================================================================================
+
+from utils import normalize_text, normalize_key
+
+
+def _bucket(cache, field_type):
+    """
+    HARD GUARD:
+    cache MUST be dict
+    """
+    if not isinstance(cache, dict):
+        raise TypeError(f"Cache corrupted: expected dict, got {type(cache)}")
+
+    cache.setdefault("entities_by_type", {})
+    cache["entities_by_type"].setdefault(field_type, {})
+    return cache["entities_by_type"][field_type]
+
+
+def resolve_or_create(label, cache, field_type="entity"):
+    """
+    Deterministic entity resolver.
+
+    RULES:
+    - NO row dependency
+    - NO FRBR dependency
+    - ONLY normalized label + type
+    """
+
+    label_clean = normalize_text(label)
+    if not label_clean:
+        return None, False
+
+    key = normalize_key(f"{label_clean}|{field_type}")
+    bucket = _bucket(cache, field_type)
+
+    if key in bucket:
+        return bucket[key], False
+
+    # deterministic ID generation (stable across runs per cache state)
+    cache.setdefault("_entity_counter", 1000)
+    cache["_entity_counter"] += 1
+
+    qid = f"Q{cache['_entity_counter']}"
+
+    bucket[key] = qid
+    return qid, True
+
+
+def resolve_expression(system_id, cache, prefix="QW"):
+    """
+    CRITICAL FIX:
+
+    Expression identity is now ONLY system_id-based.
+
+    NO row hashing. NO dict serialization. NO leakage.
+    """
+
+    cache.setdefault("expressions", {})
+
+    # already resolved
+    if system_id in cache["expressions"]:
+        return cache["expressions"][system_id], False
+
+    cache.setdefault("_expr_counter", 1000)
+    cache["_expr_counter"] += 1
+
+    qid = f"{prefix}{cache['_expr_counter']}"
+
+    cache["expressions"][system_id] = qid
+
+    return qid, True
+
+
+def get_expression(cache, system_id):
+    return cache.get("expressions", {}).get(system_id)
+
+========================================================================================================================
+# FILE: run.py
+========================================================================================================================
+
+import argparse
+from ingest import run
+
+
+def main():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--file", required=True)
+    parser.add_argument("--config", required=True)
+    parser.add_argument("--mode", choices=["dry", "simulate", "commit"], default="dry")
+
+    args = parser.parse_args()
+
+    run(
+        file_path=args.file,
+        config_path=args.config,
+        mode=args.mode
+    )
+
+
+if __name__ == "__main__":
+    main()
+
+========================================================================================================================
+# FILE: triples.py
+========================================================================================================================
+
+from resolver import resolve_or_create, resolve_expression
+from plan import Statement
+from utils import normalize_text, normalize_key
+from frbr import build_frbr_chain, get_frbr_level, get_frbr_predicate
+
+
+# -----------------------------
+# validation
+# -----------------------------
+
+def _valid(val):
+    if val is None:
+        return False
+
+    if not isinstance(val, str):
+        val = str(val)
+
+    v = normalize_text(val)
+
+    if v is None:
+        return False
+
+    v = v.strip()
+
+    if not v:
+        return False
+
+    if v.lower() in {"nan", "none", "null"}:
+        return False
+
+    return True
+
+
+# -----------------------------
+# split helper
+# -----------------------------
+
+def _split(val, spec):
+    if not spec.get("split"):
+        return [val]
+
+    if not _valid(val):
+        return []
+
+    delimiter = spec.get("delimiter", ";")
+    parts = val.split(delimiter)
+
+    return [normalize_text(p) for p in parts if _valid(p)]
+
+
+# -----------------------------
+# SYSTEM ID
+# -----------------------------
+
+def _get_system_id(config, cache):
+    cache.setdefault("_system_counter", 1000)
+    cache["_system_counter"] += 1
+
+    prefix = config["input"]["id_prefix"]
+
+    return f"{prefix}{cache['_system_counter']}"
+
+
+# -----------------------------
+# LABEL
+# -----------------------------
+
+def _build_row_label(row, config):
+    cfg = config.get("row_label") or config.get("expression_label", {})
+    field = cfg.get("field")
+
+    if not field:
+        return None
+
+    v = row.get(field)
+
+    if v is None:
+        return None
+
+    v = normalize_text(v)
+
+    if not v:
+        return None
+
+    return v
+
+
+def _build_work_key(row, config):
+    cfg = config.get("work_key", {})
+    fields = cfg.get("fields") or []
+
+    if not fields:
+        return None
+
+    separator = cfg.get("separator", "|")
+    values = [normalize_text(row.get(field), allow_empty=True) or "" for field in fields]
+
+    if not any(values):
+        return None
+
+    return normalize_key(separator.join(values))
+
+
+# -----------------------------
+# WORK RESOLUTION
+# -----------------------------
+
+def _resolve_work(row, config, cache):
+    """
+    Uses frbr_chain.match_fields
+    instead of obsolete work_key_columns.
+    """
+
+    frbr_chain = config.get("frbr_chain", [])
+
+    for node in frbr_chain:
+
+        if node.get("to", {}).get("level") != "work":
+            continue
+
+        match_fields = node.get("match_fields", ["Title"])
+
+        values = []
+
+        for field in match_fields:
+            v = normalize_text(row.get(field))
+
+            if _valid(v):
+                values.append(v)
+
+        if not values:
+            continue
+
+        work_label = normalize_key("|".join(values))
+
+        work_qid, created = resolve_or_create(
+            work_label,
+            cache,
+            field_type="work"
+        )
+
+        cache.setdefault("works", {})
+        cache["works"][work_label] = work_qid
+
+        return (
+            work_label,
+            work_qid,
+            created,
+            node
+        )
+
+    return (
+        None,
+        None,
+        False,
+        None
+    )
+
+
+# -----------------------------
+# MAIN ENGINE
+# -----------------------------
+
+def generate_plan(row, config, cache):
+    plan = []
+
+    source = config.get("source", {})
+
+    system_id = _get_system_id(config, cache)
+
+    fields = config["fields"]
+
+    seen = set()
+
+    def emit(stmt):
+
+        if stmt.object is None:
+            return
+
+        if isinstance(stmt.object, str) and not _valid(stmt.object):
+            return
+
+        key = (
+            stmt.subject,
+            stmt.predicate,
+            stmt.object,
+            stmt.object_type
+        )
+
+        if key in seen:
+            return
+
+        seen.add(key)
+
+        plan.append(stmt)
+
+    # -------------------------
+    # LABEL
+    # -------------------------
+
+    label = _build_row_label(row, config)
+
+    if label:
+        emit(
+            Statement(
+                subject=system_id,
+                predicate="LABEL",
+                object=label,
+                object_type="literal",
+                action="reuse",
+                source=source,
+                field_type="label"
+            )
+        )
+
+    # -------------------------
+    # WORK RESOLUTION
+    # -------------------------
+
+    (
+        work_label,
+        work_qid,
+        work_created,
+        work_node
+    ) = _resolve_work(
+        row,
+        config,
+        cache
+    )
+
+    # -------------------------
+    # EXPRESSION
+    # -------------------------
+
+    expr_qid, expr_created = resolve_expression(
+        system_id,
+        cache
+    )
+
+    expr_label = _build_row_label(row, config)
+    expr_work_key = _build_work_key(row, config) or work_label
+
+    emit(
+        Statement(
+            subject=system_id,
+            predicate="HAS_EXPRESSION",
+            object=expr_qid,
+            object_type="entity",
+            action="create" if expr_created else "reuse",
+            qid=expr_qid,
+            field_type="expression",
+            source=source
+        )
+    )
+
+    cache.setdefault("expressions_meta", {})
+
+    cache["expressions_meta"][expr_qid] = {
+        "system_id": system_id,
+        "label": expr_label or system_id,
+        "work_key": expr_work_key
+    }
+
+    # -------------------------
+    # EXPRESSION -> WORK
+    # -------------------------
+
+    if work_qid:
+
+        predicate = "P_WORK_LINK"
+
+        if work_node:
+            predicate = (
+                get_frbr_predicate(work_node)
+                or "P_WORK_LINK"
+            )
+
+        emit(
+            Statement(
+                subject=expr_qid,
+                predicate=predicate,
+                object=work_qid,
+                object_type="entity",
+                action="create" if work_created else "reuse",
+                qid=work_qid,
+                field_type="work",
+                source=source
+            )
+        )
+
+    # -------------------------
+    # FIELD PROCESSING
+    # -------------------------
+
+    for col, spec in fields.items():
+
+        val = row.get(col)
+
+        if not _valid(val):
+            continue
+
+        val = normalize_text(val)
+
+        ftype = spec["type"]
+
+        # ---------------------
+        # entity trigger
+        # ---------------------
+
+        if (
+            ftype == "entity"
+            and spec.get("match") is not None
+        ):
+
+            if val == spec.get("match"):
+
+                v = spec.get("value", val)
+
+                if not _valid(v):
+                    continue
+
+                qid, created = resolve_or_create(v, cache)
+
+                emit(
+                    Statement(
+                        subject=system_id,
+                        predicate=spec["predicate"],
+                        object=v,
+                        object_type="entity",
+                        action="create" if created else "reuse",
+                        qid=qid,
+                        field_type="entity",
+                        source=source,
+                        qualifiers=[
+                            (
+                                "certainty",
+                                spec.get("certainty")
+                            )
+                        ] if spec.get("certainty") else []
+                    )
+                )
+
+            continue
+
+        # ---------------------
+        # entity
+        # ---------------------
+
+        if ftype == "entity":
+
+            for v in _split(val, spec):
+
+                if not _valid(v):
+                    continue
+
+                qid, created = resolve_or_create(
+                    v,
+                    cache
+                )
+
+                emit(
+                    Statement(
+                        subject=system_id,
+                        predicate=spec["predicate"],
+                        object=v,
+                        object_type="entity",
+                        action="create" if created else "reuse",
+                        qid=qid,
+                        field_type=spec.get(
+                            "frbr",
+                            {}
+                        ).get(
+                            "level",
+                            "entity"
+                        ),
+                        source=source
+                    )
+                )
+
+        # ---------------------
+        # literal
+        # ---------------------
+
+        elif ftype == "literal":
+
+            for v in _split(val, spec):
+
+                if not _valid(v):
+                    continue
+
+                emit(
+                    Statement(
+                        subject=system_id,
+                        predicate=spec["predicate"],
+                        object=v,
+                        object_type="literal",
+                        action="reuse",
+                        qid=None,
+                        field_type=spec.get(
+                            "frbr",
+                            {}
+                        ).get(
+                            "level",
+                            "literal"
+                        ),
+                        source=source
+                    )
+                )
+
+    return plan, cache
+
+========================================================================================================================
+# FILE: utils.py
+========================================================================================================================
+
+import json
+import re
+from pathlib import Path
+
+CACHE_FILE = Path("cache.json")
+CONFIG_FILE = Path("config.json")
+CONNECTION_FILE = Path("connection.json")
+
+
+def load_json_file(path):
+    path = Path(path)
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def normalize_text(text, lower=False, allow_empty=False):
+    """
+    STRICT normalization layer:
+    - handles pandas NaN
+    - removes whitespace noise
+    - prevents "nan" string pollution
+    """
+
+    if text is None:
+        return "" if allow_empty else None
+
+    # --- pandas NaN safety ---
+    if isinstance(text, float):
+        # NaN floats stringify to "nan"
+        if str(text).lower() == "nan":
+            return None
+
+    text = str(text).strip()
+
+    # collapse whitespace
+    text = re.sub(r"\s+", " ", text)
+
+    # IMPORTANT: kill NaN-like strings
+    if text.lower() in {"nan", "none", "null", ""}:
+        return None
+
+    if lower:
+        text = text.lower()
+
+    if not text and not allow_empty:
+        return None
+
+    return text
+
+
+def normalize_entity_label(text):
+    """
+    Entity normalization only.
+
+    Examples:
+        gustave cohen -> Gustave Cohen
+    """
+
+    text = normalize_text(text)
+
+    if not text:
+        return text
+
+    return text.title()
+
+
+def normalize_key(text):
+    normalized = normalize_text(text, lower=True)
+    return normalized
+
+
+def parse_year_uncertainty(val):
+    """
+    Handles:
+    - 1942
+    - 1890s?
+    - 1700s?
+    """
+
+    if not val:
+        return None, False
+
+    val = str(val).strip()
+
+    uncertain = "?" in val
+
+    match = re.search(r"\d{3,4}", val)
+    if not match:
+        return None, False
+
+    return int(match.group()), uncertain
+
+
+def write_json_file(data, filename):
+    path = Path(filename)
+    path.write_text(
+        json.dumps(data, indent=2),
+        encoding="utf-8"
+    )
+
+========================================================================================================================
+# FILE: wikibase_search.py
+========================================================================================================================
+
+import requests
+from requests.auth import HTTPBasicAuth
+import time
+
+from utils import CONNECTION_FILE, load_json_file, normalize_text
+
+
+def load_connection_config():
+    return load_json_file(CONNECTION_FILE)
+
+
+def normalize(text):
+    return normalize_text(text, lower=True, allow_empty=True)
+
+
+def get_session():
+    config = load_connection_config()
+
+    session = requests.Session()
+    api_url = config["api_url"]
+
+    apache = config.get("apache_auth", {})
+    if apache.get("enabled"):
+        session.auth = HTTPBasicAuth(apache["username"], apache["password"])
+
+    wikibase = config.get("wikibase_auth", {})
+    if wikibase.get("enabled"):
+        r = session.get(
+            api_url,
+            params={
+                "action": "query",
+                "meta": "tokens",
+                "type": "login",
+                "format": "json"
+            },
+            timeout=15
+        )
+
+        try:
+            token = r.json()["query"]["tokens"]["logintoken"]
+        except Exception:
+            print("❌ Failed to get login token")
+            print(r.text[:300])
+            raise
+
+        r2 = session.post(
+            api_url,
+            data={
+                "action": "login",
+                "lgname": wikibase["username"],
+                "lgpassword": wikibase["password"],
+                "lgtoken": token,
+                "format": "json"
+            },
+            timeout=15
+        )
+
+        try:
+            if r2.json().get("login", {}).get("result") != "Success":
+                print("❌ Wikibase login failed:")
+                print(r2.json())
+        except Exception:
+            print("❌ Wikibase login response not JSON")
+            print(r2.text[:300])
+            raise
+
+    return session
+
+
+def search_entity(session, label, field_type="entity"):
+    if not label:
+        return []
+
+    config = load_connection_config()
+    api_url = config["api_url"]
+
+    print(f"[SEARCH:{field_type}] {label}", flush=True)
+    start = time.time()
+
+    try:
+        r = session.get(
+            api_url,
+            params={
+                "action": "wbsearchentities",
+                "search": label,
+                "language": "en",
+                "format": "json"
+            },
+            timeout=10
+        )
+
+        dt = round(time.time() - start, 2)
+        print(f"[DONE:{field_type}] {label} ({dt}s status={r.status_code})", flush=True)
+
+        try:
+            data = r.json()
+        except Exception:
+            print(f"❌ Non-JSON response for: {label}")
+            print(r.text[:300])
+            return []
+
+        matches = data.get("search", [])
+
+        norm_label = normalize(label)
+        filtered = []
+        for m in matches:
+            candidate = normalize(m.get("label", ""))
+            if candidate == norm_label:
+                filtered.append(m)
+
+        return {
+            "raw": matches,
+            "filtered": filtered
+        }
+    except Exception as e:
+        dt = round(time.time() - start, 2)
+        print(f"❌ ERROR [{label}] after {dt}s: {e}", flush=True)
+        return {
+            "raw": [],
+            "filtered": []
+        }
+
