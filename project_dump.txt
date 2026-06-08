@@ -1,0 +1,567 @@
+# PYTHON PROJECT DUMP
+# ROOT: /Users/rayanhorne/Dropbox/work/ucla/oarc/spin-off-projects/2026/csv_wikibase_pipeline
+# FILE COUNT: 2338
+
+
+========================================================================================================================
+# FILE: __init__.py
+========================================================================================================================
+
+
+
+========================================================================================================================
+# FILE: cache.py
+========================================================================================================================
+
+from pathlib import Path
+from utils import load_json, write_json
+
+
+def load_cache(path: Path):
+    path = Path(path)
+
+    if path.exists():
+        cache = load_json(path)
+    else:
+        cache = {}
+
+    cache.setdefault("_counter", 1000)
+    cache.setdefault("levels", {})
+
+    return cache
+
+
+def save_cache(cache, path: Path):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    write_json(cache, path)
+
+========================================================================================================================
+# FILE: cli.py
+========================================================================================================================
+
+import argparse
+from pathlib import Path
+from ingest import run
+from utils import write_json
+
+
+def main():
+    p = argparse.ArgumentParser()
+
+    p.add_argument("--csv", required=True)
+    p.add_argument("--config", required=True)
+    p.add_argument("--out", required=True)
+    p.add_argument("--cache", required=True)
+    p.add_argument("--mode", default="dry")
+
+    args = p.parse_args()
+
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.cache).parent.mkdir(parents=True, exist_ok=True)
+
+    plan = run(args.csv, args.config, args.cache)
+
+    if args.mode == "dry":
+        write_json([s.__dict__ for s in plan], args.out)
+
+    print(f"OK: {len(plan)} statements")
+
+
+if __name__ == "__main__":
+    main()
+
+========================================================================================================================
+# FILE: dump_python_project.py
+========================================================================================================================
+
+from pathlib import Path
+import argparse
+
+
+def dump_project(root_dir: str, output_file: str):
+    root = Path(root_dir).resolve()
+    out_path = Path(output_file).resolve()
+
+    py_files = sorted(root.rglob("*.py"))
+
+    with out_path.open("w", encoding="utf-8") as out:
+
+        out.write(f"# PYTHON PROJECT DUMP\n")
+        out.write(f"# ROOT: {root}\n")
+        out.write(f"# FILE COUNT: {len(py_files)}\n\n")
+
+        for file_path in py_files:
+            # skip venv and cache dirs
+            if any(part in {"venv", ".venv", "__pycache__"} for part in file_path.parts):
+                continue
+
+            rel_path = file_path.relative_to(root)
+
+            out.write("\n" + "=" * 120 + "\n")
+            out.write(f"# FILE: {rel_path}\n")
+            out.write("=" * 120 + "\n\n")
+
+            try:
+                content = file_path.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                content = file_path.read_text(encoding="latin-1")
+
+            out.write(content)
+            out.write("\n")
+
+    print(f"\n✔ Dump complete → {out_path}")
+    print(f"✔ Files included: {len(py_files)}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", default=".", help="Project root directory")
+    parser.add_argument("--out", default="project_dump.txt", help="Output file")
+
+    args = parser.parse_args()
+
+    dump_project(args.root, args.out)
+
+========================================================================================================================
+# FILE: ingest.py
+========================================================================================================================
+
+import pandas as pd
+from utils import load_json
+from cache import load_cache, save_cache
+from triples import build_plan
+
+
+def run(csv_path, config_path, cache_path):
+    df = pd.read_csv(csv_path)
+    config = load_json(config_path)
+
+    cache = load_cache(cache_path)
+
+    plan = []
+
+    for _, row in df.iterrows():
+        statements, cache = build_plan(row, config, cache)
+        plan.extend(statements)
+
+    save_cache(cache, cache_path)
+
+    return plan
+
+========================================================================================================================
+# FILE: output.py
+========================================================================================================================
+
+from utils import write_json
+
+
+def write_plan(plan, path):
+
+    def ser(s):
+        return {
+            "subject": s.subject,
+            "subject_label": s.subject_label,
+            "predicate": s.predicate,
+            "predicate_label": s.predicate_label,
+            "object": s.object,
+            "object_label": s.object_label,
+            "object_type": s.object_type,
+            "source": s.source,
+            "references": s.references,
+            "qualifiers": s.qualifiers
+        }
+
+    write_json([ser(x) for x in plan], path)
+
+========================================================================================================================
+# FILE: plan.py
+========================================================================================================================
+
+from dataclasses import dataclass
+from typing import Optional, Dict, Any, List
+
+
+@dataclass
+class Statement:
+    subject: str
+    subject_label: Optional[str]
+
+    predicate: str
+    predicate_label: Optional[str]
+
+    object: Optional[str]
+    object_label: Optional[str]
+
+    object_type: str  # entity | literal
+
+    source: Dict[str, Any]
+
+    references: List = None
+    qualifiers: List = None
+
+    def __post_init__(self):
+        self.references = self.references or []
+        self.qualifiers = self.qualifiers or []
+
+========================================================================================================================
+# FILE: resolver.py
+========================================================================================================================
+
+from utils import normalize
+
+
+def apply_strategy(values, strategy, separator=" | "):
+    """
+    Convert raw field values into a deterministic identity key.
+    """
+
+    values = [normalize(v) for v in values if normalize(v) is not None]
+
+    if not values:
+        return None
+
+    if strategy == "exact":
+        return separator.join(values)
+
+    if strategy == "canonicalize":
+        cleaned = [v.lower().strip() for v in values]
+        cleaned = [v for v in cleaned if v]
+        return separator.join(cleaned)
+
+    if strategy == "structured":
+        return tuple(values)
+
+    if strategy == "always_new":
+        return separator.join(values) + f"::{id(values)}"
+
+    return separator.join(values)
+
+
+def resolve(level: str, identity_key: str, cache: dict):
+    """
+    Identity-based resolver using scoped cache buckets.
+    """
+
+    if identity_key is None:
+        cache["_counter"] += 1
+        return f"QW{cache['_counter']}", True
+
+    cache["levels"].setdefault(level, {})
+    bucket = cache["levels"][level]
+
+    if identity_key in bucket:
+        return bucket[identity_key], False
+
+    cache["_counter"] += 1
+    qid = f"QW{cache['_counter']}"
+    bucket[identity_key] = qid
+
+    return qid, True
+
+========================================================================================================================
+# FILE: triples.py
+========================================================================================================================
+
+from plan import Statement
+from resolver import resolve
+from utils import normalize
+
+
+# =====================================================
+# IDENTITY BUILDER
+# =====================================================
+
+def build_identity(row, identity_spec):
+    fields = identity_spec.get("fields", [])
+    separator = identity_spec.get("separator", " | ")
+    strategy = identity_spec.get("strategy", "exact")
+
+    values = [row.get(f) for f in fields]
+
+    from resolver import apply_strategy
+    return apply_strategy(values, strategy, separator)
+
+
+# =====================================================
+# CONTEXT RESOLUTION
+# =====================================================
+
+def resolve_contexts(row, config, cache):
+    context_map = {}
+
+    row_level = config["row"]["context"]
+
+    row_id = build_identity(row, config["row"]["identity"])
+    row_label = normalize(row.get(config["row"]["label"]["field"]))
+
+    row_qid, _ = resolve(row_level, row_id, cache)
+    context_map[row_level] = (row_qid, row_label)
+
+    for ctx in config.get("contexts", []):
+        name = ctx["name"]
+
+        identity_key = build_identity(row, ctx["identity"])
+        if not identity_key:
+            continue
+
+        label_field = ctx.get("label", {}).get("field")
+        label = normalize(row.get(label_field)) if label_field else None
+
+        ctx_qid, _ = resolve(name, identity_key, cache)
+        context_map[name] = (ctx_qid, label)
+
+    return context_map
+
+
+# =====================================================
+# GRAPH NODE RESOLVER (CORRECT SEMANTICS)
+# =====================================================
+
+def resolve_node(node_spec, row, context_map, row_id, cache, field_scope):
+    source = node_spec.get("source")
+
+    # -------------------------
+    # COLUMN → MUST BECOME ENTITY
+    # -------------------------
+    if source == "column":
+        col = node_spec.get("column")
+        raw = normalize(row.get(col)) if col else None
+        if not raw:
+            return None
+
+        obj_id, _ = resolve(field_scope, raw, cache)
+        return obj_id
+
+    # -------------------------
+    # CONTEXT → QID
+    # -------------------------
+    if source == "context":
+        ctx = node_spec.get("context")
+        return context_map.get(ctx, (None, None))[0]
+
+    # -------------------------
+    # ROW → DEFAULT ENTITY
+    # -------------------------
+    if source == "row":
+        return row_id
+
+    # -------------------------
+    # CONSTANT
+    # -------------------------
+    if source == "constant":
+        return node_spec.get("value")
+
+    return None
+
+
+# =====================================================
+# SUBJECT RESOLUTION (STRICT)
+# =====================================================
+
+def resolve_subject(node_spec, default_subject, row, context_map, row_id, cache, field_scope):
+    if not node_spec:
+        return default_subject
+
+    return resolve_node(
+        node_spec,
+        row,
+        context_map,
+        row_id,
+        cache,
+        field_scope
+    ) or default_subject
+
+
+# =====================================================
+# FIELD PROCESSING
+# =====================================================
+
+def build_plan(row, config, cache):
+    statements = []
+
+    context_map = resolve_contexts(row, config, cache)
+
+    row_level = config["row"]["context"]
+    row_id, row_label = context_map[row_level]
+
+    # -------------------------
+    # ROW LABEL
+    # -------------------------
+    if row_label:
+        statements.append(Statement(
+            subject=row_id,
+            subject_label=row_label,
+            predicate="LABEL",
+            predicate_label="LABEL",
+            object=None,
+            object_label=None,
+            object_type="literal",
+            source=config["source"]
+        ))
+
+    # =================================================
+    # FIELD EXECUTION
+    # =================================================
+    for field, spec in config["fields"].items():
+
+        raw = normalize(row.get(field))
+        if not raw:
+            continue
+
+        # -------------------------
+        # MATCH FIELDS
+        # -------------------------
+        if spec.get("match") == "x":
+            if str(raw).lower() != "x":
+                continue
+            values = [field]
+        else:
+            values = (
+                raw.split(spec.get("delimiter", ";"))
+                if spec.get("split")
+                else [raw]
+            )
+
+        # =================================================
+        # SCOPE = CACHE ONLY
+        # =================================================
+        field_scope = spec.get("scope", row_level)
+
+        graph = spec.get("graph")
+
+        for v in values:
+            v = normalize(v)
+            if not v:
+                continue
+
+            # =================================================
+            # ENTITY FIELDS
+            # =================================================
+            if spec["type"] == "entity":
+
+                obj_id, _ = resolve(field_scope, v, cache)
+
+                subject = row_id
+                subject_label = row_label
+
+                object = obj_id
+                object_label = v
+
+                predicate = spec.get("predicate", field)
+
+                # -------------------------
+                # GRAPH OVERRIDE (FIXED SEMANTICS)
+                # -------------------------
+                if graph:
+                    g = graph[0]
+
+                    new_subject = resolve_subject(
+                        g.get("subject"),
+                        row_id,
+                        row,
+                        context_map,
+                        row_id,
+                        cache,
+                        field_scope
+                    )
+
+                    new_object = resolve_node(
+                        g.get("object"),
+                        row,
+                        context_map,
+                        row_id,
+                        cache,
+                        field_scope
+                    )
+
+                    if new_subject is not None:
+                        subject = new_subject
+
+                    if new_object is not None:
+                        object = new_object
+
+                statements.append(Statement(
+                    subject=subject,
+                    subject_label=subject_label,
+                    predicate=predicate,
+                    predicate_label=field,
+                    object=object,
+                    object_label=object_label,
+                    object_type="entity",
+                    source=config["source"]
+                ))
+
+            # =================================================
+            # LITERAL FIELDS
+            # =================================================
+            else:
+
+                subject = row_id
+
+                if graph:
+                    g = graph[0]
+                    subject = resolve_subject(
+                        g.get("subject"),
+                        row_id,
+                        row,
+                        context_map,
+                        row_id,
+                        cache,
+                        field_scope
+                    )
+
+                statements.append(Statement(
+                    subject=subject,
+                    subject_label=row_label,
+                    predicate=spec.get("predicate", field),
+                    predicate_label=field,
+                    object=v,
+                    object_label=None,
+                    object_type="literal",
+                    source=config["source"]
+                ))
+
+    return statements, cache
+
+========================================================================================================================
+# FILE: utils.py
+========================================================================================================================
+
+import json
+import re
+from pathlib import Path
+
+
+def load_json(path):
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def write_json(data, path):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    path.write_text(
+        json.dumps(data, indent=2, ensure_ascii=False),
+        encoding="utf-8"
+    )
+
+
+def normalize(x):
+    if x is None:
+        return None
+
+    x = str(x).strip()
+    x = re.sub(r"\s+", " ", x)
+
+    if x.lower() in {"nan", "none", "null", ""}:
+        return None
+
+    return x
+
+
+def key(x):
+    x = normalize(x)
+    if x is None:
+        return None
+    return x.lower()

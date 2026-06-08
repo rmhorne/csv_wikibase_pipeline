@@ -1,47 +1,50 @@
-from utils import key
+from utils import normalize
 
 
-def resolve(level: str, label: str, cache: dict):
+def apply_strategy(values, strategy, separator=" | "):
     """
-    Universal resolver:
-    - level comes from config
-    - label defines identity
+    Convert raw field values into a deterministic identity key.
     """
 
-    k = key(label)
-    if not k:
-        return None, False
+    values = [normalize(v) for v in values if normalize(v) is not None]
 
-    cache["levels"].setdefault(level, {})
+    if not values:
+        return None
 
-    bucket = cache["levels"][level]
+    if strategy == "exact":
+        return separator.join(values)
 
-    if k in bucket:
-        return bucket[k], False
+    if strategy == "canonicalize":
+        cleaned = [v.lower().strip() for v in values]
+        cleaned = [v for v in cleaned if v]
+        return separator.join(cleaned)
 
-    cache["_counter"] += 1
-    qid = f"QW{cache['_counter']}"
+    if strategy == "structured":
+        return tuple(values)
 
-    bucket[k] = qid
-    return qid, True
+    if strategy == "always_new":
+        return separator.join(values) + f"::{id(values)}"
+
+    return separator.join(values)
 
 
-def resolve_row(level: str, row_key: str, cache: dict):
+def resolve(level: str, identity_key: str, cache: dict):
     """
-    Row is just another level in the same system.
+    Identity-based resolver using scoped cache buckets.
     """
-    k = key(row_key)
-    if not k:
+
+    if identity_key is None:
         cache["_counter"] += 1
         return f"QW{cache['_counter']}", True
 
     cache["levels"].setdefault(level, {})
     bucket = cache["levels"][level]
 
-    if k in bucket:
-        return bucket[k], False
+    if identity_key in bucket:
+        return bucket[identity_key], False
 
     cache["_counter"] += 1
     qid = f"QW{cache['_counter']}"
-    bucket[k] = qid
+    bucket[identity_key] = qid
+
     return qid, True

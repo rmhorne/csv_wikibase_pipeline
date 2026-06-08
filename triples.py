@@ -1,74 +1,176 @@
 from plan import Statement
-from resolver import resolve, resolve_row
-from utils import normalize, key
+from resolver import resolve
+from utils import normalize
 
 
-# -----------------------------
-# SAFE CONFIG HELPERS
-# -----------------------------
+# =====================================================
+# IDENTITY BUILDER
+# =====================================================
 
-def get_field_level(spec, default_level):
+def build_identity(row, identity_spec):
+    fields = identity_spec.get("fields", [])
+    separator = identity_spec.get("separator", " | ")
+    strategy = identity_spec.get("strategy", "exact")
+
+    values = [row.get(f) for f in fields]
+
+    from resolver import apply_strategy
+    return apply_strategy(values, strategy, separator)
+
+
+# =====================================================
+# CONTEXT NODE BUILD (FRBR LAYER)
+# =====================================================
+
+def resolve_contexts(row, config, cache):
+    context_map = {}
+
+    row_level = config["row"]["context"]
+
+    row_id = build_identity(row, config["row"]["identity"])
+    row_label = normalize(row.get(config["row"]["label"]["field"]))
+
+    row_qid, _ = resolve(row_level, row_id, cache)
+    context_map[row_level] = {
+        "id": row_qid,
+        "label": row_label
+    }
+
+    for ctx in config.get("contexts", []):
+        name = ctx["name"]
+
+        identity_key = build_identity(row, ctx["identity"])
+        if not identity_key:
+            continue
+
+        label_field = ctx.get("label", {}).get("field")
+        label = normalize(row.get(label_field)) if label_field else None
+
+        ctx_qid, _ = resolve(name, identity_key, cache)
+
+        context_map[name] = {
+            "id": ctx_qid,
+            "label": label
+        }
+
+    return context_map, row_id, row_label
+
+
+# =====================================================
+# PHASE 1: BUILD ENTITY REGISTRY (ALL COLUMN ENTITIES)
+# =====================================================
+
+def build_entity_registry(row, config, cache):
+    registry = {}
+
+    for field, spec in config["fields"].items():
+
+        raw = normalize(row.get(field))
+        if not raw:
+            continue
+
+        if spec.get("split"):
+            values = [
+                normalize(v)
+                for v in raw.split(spec.get("delimiter", ";"))
+                if normalize(v)
+            ]
+        else:
+            values = [raw]
+
+        scope = spec.get("scope", "entity")
+
+        for v in values:
+            obj_id, _ = resolve(scope, v, cache)
+
+            # STORE LABEL + ID TOGETHER
+            registry[(field, v)] = {
+                "id": obj_id,
+                "label": v
+            }
+
+    return registry
+
+
+# =====================================================
+# NODE RESOLUTION (PURE LOOKUP ONLY)
+# =====================================================
+
+def resolve_node(node_spec, row_id, context_map, entity_registry, field, value):
+    if not node_spec:
+        return None
+
+    source = node_spec.get("source")
+
+    # COLUMN → ENTITY
+    if source == "column":
+        node = entity_registry.get((field, value))
+        return node["id"] if node else None
+
+    # CONTEXT → FRBR NODE
+    if source == "context":
+        ctx = node_spec.get("context")
+        return context_map.get(ctx, {}).get("id")
+
+    # ROW → FRBR ROW NODE
+    if source == "row":
+        return row_id
+
+    # CONSTANT
+    if source == "constant":
+        return node_spec.get("value")
+
+    return None
+
+
+# =====================================================
+# LABEL RESOLUTION (CRITICAL FIX)
+# =====================================================
+
+def resolve_label(node_spec, row_id, context_map, entity_registry, field, value, row_label):
     """
-    Supports BOTH:
-    - old: spec["frbr"]["level"]
-    - new: graph-based (no frbr at all)
+    Determines correct label based on node type.
     """
-    if isinstance(spec.get("frbr"), dict):
-        return spec["frbr"].get("level", default_level)
+    if not node_spec:
+        return None
 
-    return default_level
+    source = node_spec.get("source")
 
+    if source == "column":
+        node = entity_registry.get((field, value))
+        return node["label"] if node else None
 
-def get_predicate(spec, graph_node=None):
-    """
-    Predicate priority:
-    1. graph.node["predicate"]
-    2. spec["predicate"]
-    3. None (skip safely)
-    """
-    if graph_node and "predicate" in graph_node:
-        return graph_node["predicate"]
+    if source == "context":
+        ctx = node_spec.get("context")
+        node = context_map.get(ctx)
+        return node["label"] if node else None
 
-    return spec.get("predicate")
+    if source == "row":
+        return row_label
 
+    if source == "constant":
+        return node_spec.get("value")
 
-def get_level_from_node(node, default):
-    if isinstance(node, dict) and "level" in node:
-        return node["level"]
-    return default
+    return None
 
 
-# -----------------------------
-# MAIN BUILDER
-# -----------------------------
+# =====================================================
+# FIELD EXECUTION (EDGE EMISSION ONLY)
+# =====================================================
 
 def build_plan(row, config, cache):
     statements = []
-    source = config["source"]
 
-    row_level = config["input"]["root"]
+    # -------------------------------------------------
+    # CONTEXT NODES (FRBR LAYER)
+    # -------------------------------------------------
+    context_map, row_id, row_label = resolve_contexts(row, config, cache)
 
-    # -------------------------
-    # ROW KEY
-    # -------------------------
-    if "row_key" in config:
-        parts = []
-        for f in config["row_key"]["fields"]:
-            v = normalize(row.get(f))
-            if v:
-                parts.append(v)
-        row_key = config["row_key"]["separator"].join(parts)
-    else:
-        row_key = normalize(row.get(config["row_label"]["field"]))
+    row_level = config["row"]["context"]
 
-    row_id, _ = resolve_row(row_level, row_key, cache)
-
-    # -------------------------
-    # LABEL
-    # -------------------------
-    label_field = config["row_label"]["field"]
-    row_label = normalize(row.get(label_field))
-
+    # -------------------------------------------------
+    # ROW LABEL EDGE
+    # -------------------------------------------------
     if row_label:
         statements.append(Statement(
             subject=row_id,
@@ -78,181 +180,98 @@ def build_plan(row, config, cache):
             object=None,
             object_label=None,
             object_type="literal",
-            source=source
+            source=config["source"]
         ))
 
-    # =====================================================
-    # FRBR CHAIN (SAFE LEGACY SUPPORT)
-    # =====================================================
-    for node in config.get("frbr_chain", []):
-        target_level = node["to"]["level"]
+    # -------------------------------------------------
+    # ENTITY REGISTRY
+    # -------------------------------------------------
+    entity_registry = build_entity_registry(row, config, cache)
 
-        parts = []
-        for f in node.get("match_fields", []):
-            v = normalize(row.get(f))
-            if v:
-                parts.append(v)
-
-        if not parts:
-            continue
-
-        target_key = key(" | ".join(parts))
-        target_id, _ = resolve(target_level, target_key, cache)
-
-        statements.append(Statement(
-            subject=row_id,
-            subject_label=row_label,
-            predicate=node.get("predicate", "UNKNOWN"),
-            predicate_label=f"{row_level}:{target_level}",
-            object=target_id,
-            object_label=None,
-            object_type="entity",
-            source=source
-        ))
-
-    # =====================================================
-    # FIELD MAPPING (GRAPH-FIRST SYSTEM)
-    # =====================================================
+    # -------------------------------------------------
+    # EDGE EMISSION ONLY
+    # -------------------------------------------------
     for field, spec in config["fields"].items():
 
-        val = normalize(row.get(field))
-        if not val:
+        raw = normalize(row.get(field))
+        if not raw:
             continue
 
-        field_level = get_field_level(spec, row_level)
-
-        # -------------------------
-        # FLAG FIELDS (x match)
-        # -------------------------
         if spec.get("match") == "x":
-            if str(val).lower() != "x":
+            if str(raw).lower() != "x":
+                continue
+            values = [field]
+        else:
+            values = (
+                raw.split(spec.get("delimiter", ";"))
+                if spec.get("split")
+                else [raw]
+            )
+
+        graph_rules = spec.get("graph") or []
+
+        for v in values:
+            v = normalize(v)
+            if not v:
                 continue
 
-            entity_label = spec.get("value", field)
-            qid, _ = resolve(field_level, entity_label, cache)
+            for g in graph_rules:
 
-            statements.append(Statement(
-                subject=row_id,
-                subject_label=row_label,
-                predicate=spec.get("predicate", field),
-                predicate_label=field,
-                object=qid,
-                object_label=entity_label,
-                object_type="entity",
-                source=source
-            ))
-            continue
-
-        # -------------------------
-        # GRAPH-BASED MODEL (PRIMARY PATH)
-        # -------------------------
-        graph = spec.get("graph", [])
-
-        if graph:
-            # entity fields with graph logic
-            if spec.get("type") == "entity":
-
-                parts = (
-                    val.split(spec.get("delimiter", ";"))
-                    if spec.get("split")
-                    else [val]
+                subject = resolve_node(
+                    g.get("subject"),
+                    row_id,
+                    context_map,
+                    entity_registry,
+                    field,
+                    v
                 )
 
-                for p in parts:
-                    p = normalize(p)
-                    if not p:
-                        continue
+                obj = resolve_node(
+                    g.get("object"),
+                    row_id,
+                    context_map,
+                    entity_registry,
+                    field,
+                    v
+                )
 
-                    entity_id, _ = resolve(field_level, p, cache)
+                # FALLBACKS ONLY
+                if subject is None:
+                    subject = row_id
+                if obj is None:
+                    node = entity_registry.get((field, v))
+                    obj = node["id"] if node else v
 
-                    # base row → entity
-                    statements.append(Statement(
-                        subject=row_id,
-                        subject_label=row_label,
-                        predicate=spec.get("predicate", field),
-                        predicate_label=field,
-                        object=entity_id,
-                        object_label=p,
-                        object_type="entity",
-                        source=source
-                    ))
+                # 🔥 FIXED LABEL LOGIC (THIS IS THE BUG YOU HIT)
+                subject_label = resolve_label(
+                    g.get("subject"),
+                    row_id,
+                    context_map,
+                    entity_registry,
+                    field,
+                    v,
+                    row_label
+                )
 
-                    # -------------------------
-                    # GRAPH EDGES
-                    # -------------------------
-                    for g in graph:
+                object_label = resolve_label(
+                    g.get("object"),
+                    row_id,
+                    context_map,
+                    entity_registry,
+                    field,
+                    v,
+                    row_label
+                )
 
-                        from_level = get_level_from_node(g.get("from"), row_level)
-                        if from_level != "row":
-                            continue
-
-                        to_node = g.get("to", {})
-
-                        # key derivation logic
-                        if to_node.get("key_from_value"):
-                            target_label = p
-                        elif "value" in to_node:
-                            target_label = to_node["value"]
-                        elif to_node.get("entity_type"):
-                            target_label = to_node["entity_type"]
-                        else:
-                            target_label = field
-
-                        target_level = get_level_from_node(to_node, field_level)
-
-                        target_id, _ = resolve(target_level, target_label, cache)
-
-                        statements.append(Statement(
-                            subject=entity_id,
-                            subject_label=p,
-                            predicate=get_predicate(spec, g),
-                            predicate_label=field,
-                            object=target_id,
-                            object_label=target_label,
-                            object_type="entity",
-                            source=source
-                        ))
-
-            # literal fields with graph support
-            else:
-                for g in graph:
-                    from_level = get_level_from_node(g.get("from"), row_level)
-                    if from_level != "row":
-                        continue
-
-                    to_level = get_level_from_node(g.get("to"), field_level)
-                    predicate = get_predicate(spec, g)
-
-                    if not predicate:
-                        continue
-
-                    statements.append(Statement(
-                        subject=row_id,
-                        subject_label=row_label,
-                        predicate=predicate,
-                        predicate_label=field,
-                        object=val,
-                        object_label=None,
-                        object_type="literal",
-                        source=source
-                    ))
-
-        # -------------------------
-        # LEGACY MODE (NO GRAPH)
-        # -------------------------
-        else:
-            if "predicate" not in spec:
-                continue  # safe skip instead of crash
-
-            statements.append(Statement(
-                subject=row_id,
-                subject_label=row_label,
-                predicate=spec["predicate"],
-                predicate_label=field,
-                object=val,
-                object_label=None,
-                object_type="literal",
-                source=source
-            ))
+                statements.append(Statement(
+                    subject=subject,
+                    subject_label=subject_label,
+                    predicate=g.get("predicate", spec.get("predicate", field)),
+                    predicate_label=field,
+                    object=obj,
+                    object_label=object_label,
+                    object_type=spec["type"],
+                    source=config["source"]
+                ))
 
     return statements, cache

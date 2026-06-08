@@ -4,33 +4,36 @@
     "label": "Milken Archive"
   },
 
-  "input": {
-    "root": "expression",
-    "id_prefix": "QW"
+  "row": {
+    "context": "expression",
+
+    "label": {
+      "field": "Title"
+    },
+
+    "identity": {
+      "scope": "expression",
+      "fields": ["Title", "Composer"],
+      "separator": " | ",
+      "strategy": "always_new"
+    }
   },
 
-  "row_label": {
-    "field": "Title"
-  },
-
-  "row_key": {
-    "fields": ["Title", "Composer"],
-    "separator": " | "
-  },
-
-  "frbr_chain": [
+  "contexts": [
     {
-      "from": "row",
-      "to": {
-        "level": "work"
+      "name": "work",
+
+      "label": {
+        "field": "Title"
       },
-      "mode": "create_or_match",
-      "match_fields": ["Title"],
-      "predicate": "P74",
-      "strategy": "exact_then_fuzzy"
+
+      "identity": {
+        "scope": "work",
+        "fields": ["Title"],
+        "strategy": "canonicalize"
+      }
     }
   ],
-
   "fields": {
 
     "Composer": {
@@ -38,72 +41,51 @@
       "predicate": "P9",
       "split": true,
       "delimiter": ";",
-
+      "scope": "person",
       "graph": [
         {
-          "from": {
-            "level": "row"
-          },
-          "to": {
-            "level": "work",
-            "key_from_value": true
-          },
-          "mode": "create_or_match",
+          "subject": { "source": "column" },
           "predicate": "P9",
-          "strategy": "exact_then_fuzzy"
+          "object": { "source": "context", "context": "work" }
         }
       ]
     },
 
     "Spotify Album": {
       "type": "entity",
-
+      "split": true,
+      "delimiter": ";",
+      "scope": "manifestation",
       "graph": [
         {
-          "from": {
-            "level": "row"
-          },
-
-          "to": {
-            "level": "manifestation",
-            "key_from_value": true,
-            "entity_type": "album"
-          },
-
-          "mode": "may_create_or_match",
-
+          "subject": { "source": "context", "context": "expression" },
           "predicate": "P10",
-
-          "strategy": "exact_then_fuzzy"
+          "object": {
+            "source": "column",
+            "entity_type": "album"
+          }
         }
-      ],
-
-      "split": true,
-      "delimiter": ";"
+      ]
     },
 
     "Duration (minutes)": {
       "type": "literal",
-
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "expression" },
-          "mode": "attach_literal",
-          "predicate": "P4"
+          "subject": { "source": "context", "context": "expression" },
+          "predicate": "P4",
+          "object": { "source": "column" }
         }
       ]
     },
 
     "Year (Known)": {
       "type": "literal",
-
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "expression" },
-          "mode": "attach_literal",
+          "subject": { "source": "context", "context": "expression" },
           "predicate": "P5",
+          "object": { "source": "column" },
           "certainty": "certain"
         }
       ]
@@ -111,13 +93,11 @@
 
     "Year (Estimated)": {
       "type": "literal",
-
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "expression" },
-          "mode": "attach_literal",
+          "subject": { "source": "context", "context": "expression" },
           "predicate": "P5",
+          "object": { "source": "column" },
           "certainty": "uncertain"
         }
       ]
@@ -125,32 +105,24 @@
 
     "Commissioning Institution (Name)": {
       "type": "entity",
-
+      "scope": "institution",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": {
-            "level": "work",
-            "key_from_value": true
-          },
-          "mode": "create_or_match",
-          "predicate": "P12"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P12",
+          "object": { "source": "column" }
         }
       ]
     },
 
     "Primary Genre": {
       "type": "entity",
-
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": {
-            "level": "work",
-            "key_from_value": true
-          },
-          "mode": "create_or_match",
-          "predicate": "P13"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P13",
+          "object": { "source": "column" }
         }
       ]
     },
@@ -159,16 +131,12 @@
       "type": "entity",
       "split": true,
       "delimiter": ";",
-
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": {
-            "level": "expression",
-            "key_from_value": true
-          },
-          "mode": "create_or_match",
-          "predicate": "P14"
+          "subject": { "source": "context", "context": "expression" },
+          "predicate": "P14",
+          "object": { "source": "column" }
         }
       ]
     },
@@ -177,16 +145,12 @@
       "type": "entity",
       "split": true,
       "delimiter": "/",
-
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": {
-            "level": "work",
-            "key_from_value": true
-          },
-          "mode": "create_or_match",
-          "predicate": "P15"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P15",
+          "object": { "source": "column" }
         }
       ]
     },
@@ -195,16 +159,12 @@
       "type": "entity",
       "split": true,
       "delimiter": "/",
-
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": {
-            "level": "work",
-            "key_from_value": true
-          },
-          "mode": "create_or_match",
-          "predicate": "P15"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P15",
+          "object": { "source": "column" }
         }
       ]
     },
@@ -213,188 +173,272 @@
       "type": "entity",
       "split": true,
       "delimiter": "/",
-
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": {
-            "level": "work",
-            "key_from_value": true
-          },
-          "mode": "create_or_match",
-          "predicate": "P15"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P15",
+          "object": { "source": "column" }
         }
       ]
     },
 
     "Sacred": {
       "type": "entity",
-
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "work", "value": "Sacred" },
-          "mode": "create_or_match",
-          "predicate": "P13"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P13",
+          "object": { "source": "constant", "value": "Sacred" }
         }
       ]
     },
 
     "Secular": {
       "type": "entity",
-
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "work", "value": "Secular" },
-          "mode": "create_or_match",
-          "predicate": "P13"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P13",
+          "object": { "source": "constant", "value": "Secular" }
         }
       ]
     },
 
     "Ashkenazi": {
       "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "work", "value": "Ashkenazi" },
-          "mode": "create_or_match",
-          "predicate": "P16"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P16",
+          "object": { "source": "constant", "value": "Ashkenazi" }
         }
       ]
     },
 
     "Sephardi": {
       "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "work", "value": "Sephardi" },
-          "mode": "create_or_match",
-          "predicate": "P16"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P16",
+          "object": { "source": "constant", "value": "Sephardi" }
         }
       ]
     },
 
     "Israeli": {
       "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "work", "value": "Israeli" },
-          "mode": "create_or_match",
-          "predicate": "P16"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P16",
+          "object": { "source": "constant", "value": "Israeli" }
         }
       ]
     },
 
     "Mizrahi": {
       "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "work", "value": "Mizrahi" },
-          "mode": "create_or_match",
-          "predicate": "P16"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P16",
+          "object": { "source": "constant", "value": "Mizrahi" }
         }
       ]
     },
 
     "Musical": {
       "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "work", "value": "Musical" },
-          "mode": "create_or_match",
-          "predicate": "P17"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P17",
+          "object": { "source": "constant", "value": "Musical" }
         }
       ]
     },
 
     "Conceptual": {
       "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "work", "value": "Conceptual" },
-          "mode": "create_or_match",
-          "predicate": "P17"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P17",
+          "object": { "source": "constant", "value": "Conceptual" }
         }
       ]
     },
 
     "Textual": {
       "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "expression", "value": "Textual" },
-          "mode": "create_or_match",
-          "predicate": "P17"
+          "subject": { "source": "context", "context": "expression" },
+          "predicate": "P17",
+          "object": { "source": "constant", "value": "Textual" }
         }
       ]
     },
 
     "Functional": {
       "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "work", "value": "Functional" },
-          "mode": "create_or_match",
-          "predicate": "P17"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P17",
+          "object": { "source": "constant", "value": "Functional" }
         }
       ]
     },
 
     "Sonic": {
       "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "expression", "value": "Sonic" },
-          "mode": "create_or_match",
-          "predicate": "P17"
+          "subject": { "source": "context", "context": "expression" },
+          "predicate": "P17",
+          "object": { "source": "constant", "value": "Sonic" }
         }
       ]
     },
 
     "Social": {
       "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "work", "value": "Social" },
-          "mode": "create_or_match",
-          "predicate": "P17"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P17",
+          "object": { "source": "constant", "value": "Social" }
         }
       ]
     },
 
-    "Text Type": {
-      "type": "literal",
-
+    "Classical": {
+      "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "expression" },
-          "mode": "attach_literal",
-          "predicate": "P19"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P18",
+          "object": { "source": "constant", "value": "Classical" }
         }
       ]
     },
 
-    "Text Source": {
-      "type": "literal",
-
+    "Klezmer": {
+      "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
       "graph": [
         {
-          "from": { "level": "row" },
-          "to": { "level": "expression" },
-          "mode": "attach_literal",
-          "predicate": "P20"
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P18",
+          "object": { "source": "constant", "value": "Klezmer" }
+        }
+      ]
+    },
+
+    "Cantorial": {
+      "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
+      "graph": [
+        {
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P18",
+          "object": { "source": "constant", "value": "Cantorial" }
+        }
+      ]
+    },
+
+    "Folk": {
+      "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
+      "graph": [
+        {
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P18",
+          "object": { "source": "constant", "value": "Folk" }
+        }
+      ]
+    },
+
+    "Jazz": {
+      "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
+      "graph": [
+        {
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P18",
+          "object": { "source": "constant", "value": "Jazz" }
+        }
+      ]
+    },
+
+    "Devotional-Solemn": {
+      "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
+      "graph": [
+        {
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P17",
+          "object": { "source": "constant", "value": "Devotional-Solemn" }
+        }
+      ]
+    },
+
+    "Popular": {
+      "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
+      "graph": [
+        {
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P17",
+          "object": { "source": "constant", "value": "Popular" }
+        }
+      ]
+    },
+
+    "Theatrical": {
+      "type": "entity",
+      "match": "x",
+      "scope": "musical marker",
+      "graph": [
+        {
+          "subject": { "source": "context", "context": "work" },
+          "predicate": "P17",
+          "object": { "source": "constant", "value": "Theatrical" }
         }
       ]
     }
