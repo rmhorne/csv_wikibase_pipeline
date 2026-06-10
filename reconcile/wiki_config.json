@@ -1,0 +1,15 @@
+{
+  "api_url": "https://husky.oarc.ucla.edu/w/api.php",
+
+  "apache_auth": {
+    "enabled": true,
+    "username": "mediawiki",
+    "password": "gdAWJBz8UvY2"
+  },
+
+  "wikibase_auth": {
+    "enabled": false,
+    "username": "Rhorne",
+    "password": "8GDWE6rEdZRNEGJErty6Y^sFdYc7xgggkFRbhhhL4"
+  }
+}

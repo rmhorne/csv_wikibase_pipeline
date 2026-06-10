@@ -1,6 +1,6 @@
 # PYTHON PROJECT DUMP
 # ROOT: /Users/rayanhorne/Dropbox/work/ucla/oarc/spin-off-projects/2026/csv_wikibase_pipeline
-# FILE COUNT: 2338
+# FILE COUNT: 2392
 
 
 ========================================================================================================================
@@ -8,6 +8,51 @@
 ========================================================================================================================
 
 
+
+========================================================================================================================
+# FILE: alignment_stage.py
+========================================================================================================================
+
+from utils import load_json, write_json
+import csv
+from pathlib import Path
+
+
+def load_alignment_csv(path):
+    """
+    alignment.csv format:
+
+    id,query,bucket,entity_type,candidate_id,...,wiki_match
+    """
+
+    mapping = {}
+
+    with open(path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            local_id = row["id"]
+            qid = row["candidate_id"]
+            match = row.get("wiki_match") or row.get("match")
+
+            if not local_id:
+                continue
+
+            # Stage 4 rule:
+            # only accept explicit positive match OR __create__
+            if qid == "__create__":
+                mapping[local_id] = "__create__"
+                continue
+
+            if match and str(match).lower() in {"y", "yes", "true", "1"}:
+                if qid and qid.startswith("Q"):
+                    mapping[local_id] = qid
+
+    return mapping
+
+
+def write_alignment_json(mapping, out_path):
+    write_json(mapping, out_path)
 
 ========================================================================================================================
 # FILE: cache.py
@@ -70,6 +115,120 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+========================================================================================================================
+# FILE: data/entity_creation_stage.py
+========================================================================================================================
+
+import requests
+from utils import write_json
+
+
+class WikibaseEntityCreator:
+    """
+    ONLY responsible for:
+    - creating missing entities
+    - returning QIDs
+    """
+
+    def __init__(self, api_url, auth=None):
+        self.api_url = api_url
+        self.session = requests.Session()
+
+        if auth:
+            self.session.auth = auth
+
+    def create_item(self, label):
+        payload = {
+            "action": "wbeditentity",
+            "format": "json",
+            "new": "item",
+            "data": {
+                "labels": {
+                    "en": {
+                        "language": "en",
+                        "value": label
+                    }
+                }
+            }
+        }
+
+        r = self.session.post(self.api_url, json=payload)
+        data = r.json()
+
+        return data["entity"]["id"]
+
+
+def create_missing_entities(alignment_map, labels_lookup, api_url, auth=None):
+    """
+    alignment_map:
+        QW1009 -> "__create__" or "Q123"
+
+    labels_lookup:
+        QW1009 -> "Adon Olam"
+    """
+
+    creator = WikibaseEntityCreator(api_url, auth)
+
+    final_map = {}
+
+    print("[stage4] creating missing entities...")
+
+    for local_id, qid in alignment_map.items():
+
+        if qid != "__create__":
+            final_map[local_id] = qid
+            continue
+
+        label = labels_lookup.get(local_id)
+
+        if not label:
+            print(f"[stage4] SKIP missing label: {local_id}")
+            continue
+
+        new_qid = creator.create_item(label)
+
+        print(f"[stage4] {local_id} -> {new_qid}")
+
+        final_map[local_id] = new_qid
+
+    return final_map
+
+
+def write_complete_alignment(mapping, out_path):
+    write_json(mapping, out_path)
+
+========================================================================================================================
+# FILE: data/rewrite_stage.py
+========================================================================================================================
+
+from copy import deepcopy
+from utils import load_json, write_json
+
+
+def rewrite_plan(plan, alignment):
+    """
+    replaces ALL local IDs with Wikibase QIDs
+    """
+
+    out = []
+
+    for stmt in plan:
+        stmt = deepcopy(stmt)
+
+        if stmt["subject"] in alignment:
+            stmt["subject"] = alignment[stmt["subject"]]
+
+        if stmt["object"] in alignment:
+            stmt["object"] = alignment[stmt["object"]]
+
+        out.append(stmt)
+
+    return out
+
+
+def write_resolved_plan(plan, path):
+    write_json(plan, path)
 
 ========================================================================================================================
 # FILE: dump_python_project.py
@@ -205,6 +364,1492 @@ class Statement:
         self.qualifiers = self.qualifiers or []
 
 ========================================================================================================================
+# FILE: reconcile/wiki_reconcile_alignment_rewrite.py
+========================================================================================================================
+
+from copy import deepcopy
+
+
+def rewrite_plan_with_alignment(plan, alignment_map):
+    """
+    Replace ALL local IDs with Wikibase QIDs.
+    """
+
+    rewritten = []
+
+    for stmt in plan:
+        stmt = deepcopy(stmt)
+
+        orig_s = stmt["subject"]
+        orig_o = stmt["object"]
+
+        if orig_s in alignment_map:
+            stmt["subject"] = alignment_map[orig_s]
+
+        if orig_o in alignment_map:
+            stmt["object"] = alignment_map[orig_o]
+
+        stmt.setdefault("qualifiers", []).append({
+            "local_subject": orig_s,
+            "local_object": orig_o,
+            "resolved_subject": stmt["subject"],
+            "resolved_object": stmt["object"]
+        })
+
+        rewritten.append(stmt)
+
+    return rewritten
+
+
+def write_alignment_csv(mapping, path):
+    import csv
+
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["local_id", "wikibase_id"])
+
+        for k, v in mapping.items():
+            writer.writerow([k, v])
+
+    print(f"[alignment] wrote → {path}", flush=True)
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_apply.py
+========================================================================================================================
+
+from .wiki_reconcile_client import WikiReconcileClient
+import time
+
+
+def build_reconciliation_map(records, config):
+    client = WikiReconcileClient(config)
+
+    result = {}
+
+    total = len(records)
+    print(f"[apply] start: {total} rows", flush=True)
+
+    for i, row in enumerate(records, 1):
+        label = row.get("name")
+        local_id = row.get("id")
+
+        if not label or not local_id:
+            continue
+
+        print(f"[apply] {i}/{total} {label}", flush=True)
+
+        t0 = time.time()
+        candidates = client.search(label, limit=5)
+        dt = time.time() - t0
+
+        print(f"[apply] → {len(candidates)} in {dt:.2f}s", flush=True)
+
+        seen = set()
+        deduped = []
+
+        for c in candidates:
+            if c["id"] in seen:
+                continue
+            seen.add(c["id"])
+            deduped.append(c)
+
+        deduped.append({
+            "id": "__create__",
+            "label": label
+        })
+
+        result[local_id] = {
+            "label": label,
+            "candidates": deduped
+        }
+
+    print("[apply] done", flush=True)
+    return result
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_cache.py
+========================================================================================================================
+
+import json
+from pathlib import Path
+
+
+def load_cache(path):
+    path = Path(path)
+
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    return {
+        "_counter": 1000,
+        "levels": {
+            "entity": {}
+        }
+    }
+
+
+def save_cache(cache, path):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(cache, indent=2), encoding="utf-8")
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_cli.py
+========================================================================================================================
+
+import argparse
+import json
+import csv
+
+from .wiki_reconcile_cache import load_cache
+from .wiki_reconcile_apply import build_reconciliation_map
+from .wiki_reconcile_rewrite import rewrite_plan_with_qids
+from .wiki_reconcile_writeback import write_plan_to_wikibase
+
+# NEW PIPELINE STAGES (CLEAN NAMES)
+from .wiki_reconcile_entity_creation import run_entity_creation
+from .wiki_reconcile_alignment_rewrite import (
+    rewrite_plan_with_alignment,
+    write_alignment_csv
+)
+
+from .wiki_reconcile_openrefine_export import (
+    write_openrefine_json,
+    write_openrefine_csv
+)
+
+
+# =========================================================
+# IO HELPERS
+# =========================================================
+def load(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_json(path, data):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+# =========================================================
+# CLI
+# =========================================================
+def main():
+    p = argparse.ArgumentParser()
+    sub = p.add_subparsers(dest="cmd")
+
+    # -----------------------------------------------------
+    # ORIGINAL PIPELINE
+    # -----------------------------------------------------
+    exp = sub.add_parser("export")
+    exp.add_argument("--cache")
+    exp.add_argument("--config")
+    exp.add_argument("--out")
+
+    ap = sub.add_parser("apply")
+    ap.add_argument("--input")
+    ap.add_argument("--config")
+    ap.add_argument("--out")
+
+    rw = sub.add_parser("rewrite")
+    rw.add_argument("--plan")
+    rw.add_argument("--map")
+    rw.add_argument("--out")
+
+    wb = sub.add_parser("writeback")
+    wb.add_argument("--plan")
+    wb.add_argument("--config")
+
+    # -----------------------------------------------------
+    # OPENREFINE EXPORT (FIXED FIELD: wiki_match)
+    # -----------------------------------------------------
+    orp = sub.add_parser("export-openrefine")
+    orp.add_argument("--input", required=True)
+    orp.add_argument("--json", required=True)
+    orp.add_argument("--csv", required=True)
+
+    # -----------------------------------------------------
+    # STAGE 4 — ENTITY CREATION
+    # -----------------------------------------------------
+    c4 = sub.add_parser("create-entities")
+    c4.add_argument("--input", required=True)   # alignment.csv JSON
+    c4.add_argument("--config", required=True)
+    c4.add_argument("--out", required=True)
+
+    # -----------------------------------------------------
+    # STAGE 5 — ALIGNMENT REWRITE
+    # -----------------------------------------------------
+    c5 = sub.add_parser("rewrite-alignment")
+    c5.add_argument("--plan", required=True)
+    c5.add_argument("--map", required=True)
+    c5.add_argument("--out", required=True)
+
+    # -----------------------------------------------------
+    # STAGE 6 — WRITEBACK (FINAL ONLY)
+    # -----------------------------------------------------
+    c6 = sub.add_parser("writeback-final")
+    c6.add_argument("--plan", required=True)
+    c6.add_argument("--config", required=True)
+
+    args = p.parse_args()
+
+    # =====================================================
+    # EXPORT (original pipeline)
+    # =====================================================
+    if args.cmd == "export":
+        print("[cli] export starting", flush=True)
+
+        cache = load_cache(args.cache)
+        config = load(args.config)
+
+        from .wiki_reconcile_export import build_reconciliation_export
+
+        out = build_reconciliation_export(cache, config)
+        save_json(args.out, out)
+
+        print("[cli] export done", flush=True)
+
+    # =====================================================
+    # APPLY
+    # =====================================================
+    elif args.cmd == "apply":
+        print("[cli] apply starting", flush=True)
+
+        data = load(args.input)
+        config = load(args.config)
+
+        out = build_reconciliation_map(data, config)
+        save_json(args.out, out)
+
+        print("[cli] apply done", flush=True)
+
+    # =====================================================
+    # REWRITE (legacy)
+    # =====================================================
+    elif args.cmd == "rewrite":
+        plan = load(args.plan)
+        mapping = load(args.map)
+
+        out = rewrite_plan_with_qids(plan, mapping)
+        save_json(args.out, out)
+
+    # =====================================================
+    # WRITEBACK (legacy)
+    # =====================================================
+    elif args.cmd == "writeback":
+        cfg = load(args.config)
+        plan = load(args.plan)
+
+        res = write_plan_to_wikibase(
+            plan,
+            cfg["api_url"],
+            auth=(
+                cfg["wikibase_auth"]["username"],
+                cfg["wikibase_auth"]["password"]
+            ) if cfg["wikibase_auth"]["enabled"] else None
+        )
+
+        print(json.dumps(res, indent=2))
+
+    # =====================================================
+    # OPENREFINE EXPORT (FIXED: wiki_match FIELD PRESERVED)
+    # =====================================================
+    elif args.cmd == "export-openrefine":
+        print("[cli] export-openrefine starting", flush=True)
+
+        records = load(args.input)
+
+        write_openrefine_json(records, args.json)
+        write_openrefine_csv(records, args.csv)
+
+        print(f"[cli] wrote JSON → {args.json}", flush=True)
+        print(f"[cli] wrote CSV  → {args.csv}", flush=True)
+        print("[cli] export-openrefine done", flush=True)
+
+    # =====================================================
+    # STAGE 4 — ENTITY CREATION
+    # =====================================================
+    elif args.cmd == "create-entities":
+        print("[cli] stage4 entity creation starting", flush=True)
+
+        records = load(args.input)
+        config = load(args.config)
+
+        mapping = run_entity_creation(records, config)
+
+        save_json(args.out, mapping)
+
+        print(f"[cli] wrote alignment → {args.out}", flush=True)
+        print("[cli] stage4 done", flush=True)
+
+    # =====================================================
+    # STAGE 5 — ALIGNMENT REWRITE
+    # =====================================================
+    elif args.cmd == "rewrite-alignment":
+        print("[cli] stage5 alignment rewrite starting", flush=True)
+
+        plan = load(args.plan)
+        mapping = load(args.map)
+
+        rewritten = rewrite_plan_with_alignment(plan, mapping)
+
+        save_json(args.out, rewritten)
+
+        print(f"[cli] wrote rewritten plan → {args.out}", flush=True)
+        print("[cli] stage5 done", flush=True)
+
+    # =====================================================
+    # STAGE 6 — WRITEBACK (FINAL SAFE STAGE)
+    # =====================================================
+    elif args.cmd == "writeback-final":
+        print("[cli] stage6 writeback starting", flush=True)
+
+        cfg = load(args.config)
+        plan = load(args.plan)
+
+        res = write_plan_to_wikibase(
+            plan,
+            cfg["api_url"],
+            auth=(
+                cfg["wikibase_auth"]["username"],
+                cfg["wikibase_auth"]["password"]
+            ) if cfg["wikibase_auth"]["enabled"] else None
+        )
+
+        print(json.dumps(res, indent=2))
+        print("[cli] stage6 done", flush=True)
+
+    else:
+        print("[cli] unknown command", flush=True)
+
+
+if __name__ == "__main__":
+    main()
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_client.py
+========================================================================================================================
+
+import requests
+import time
+import re
+from rapidfuzz import fuzz
+
+
+class WikiReconcileClient:
+    """
+    SURFACE RECONCILIATION CLIENT (STABLE VERSION)
+
+    Fixes:
+    - replaces difflib with rapidfuzz (better name matching)
+    - fixes A.J. vs AJ vs A J issues via token-based scoring
+    - keeps API behavior unchanged
+    """
+
+    # =========================================================
+    # INIT
+    # =========================================================
+    def __init__(self, config):
+        self.api_url = config["api_url"]
+        self.session = requests.Session()
+
+        apache = config.get("apache_auth", {})
+        if apache.get("enabled"):
+            self.session.auth = (
+                apache["username"],
+                apache["password"]
+            )
+
+        print("[init] Wikibase Surface Client", flush=True)
+        print(f"[init] endpoint: {self.api_url}", flush=True)
+
+        self._status = {}
+        self._probe_all()
+
+    # =========================================================
+    # STATUS PROBES (unchanged)
+    # =========================================================
+    def _probe_all(self):
+        print("[status] probing system...", flush=True)
+        self._probe_http()
+        self._probe_userinfo()
+        self._probe_search()
+        self._probe_csrf()
+
+        print("[status] ---- SUMMARY ----", flush=True)
+        for k, v in self._status.items():
+            print(f"[status] {k}: {v}", flush=True)
+
+    def _probe_http(self):
+        try:
+            t0 = time.time()
+            r = self.session.get(self.api_url, timeout=10)
+            dt = time.time() - t0
+
+            self._status["http_ok"] = True
+            self._status["http_ms"] = round(dt * 1000, 2)
+            self._status["http_code"] = r.status_code
+
+            print(f"[status] HTTP OK ({r.status_code}) {dt:.2f}s", flush=True)
+
+        except Exception as e:
+            self._status["http_ok"] = False
+            self._status["http_error"] = str(e)
+            raise
+
+    def _probe_userinfo(self):
+        try:
+            r = self.session.get(
+                self.api_url,
+                params={
+                    "action": "query",
+                    "meta": "userinfo",
+                    "format": "json"
+                },
+                timeout=10
+            )
+            r.raise_for_status()
+
+            ui = r.json().get("query", {}).get("userinfo", {})
+            name = ui.get("name")
+
+            self._status["user"] = name
+            self._status["anon"] = not bool(name)
+
+            print(f"[status] AUTH user = {name}", flush=True)
+
+        except Exception as e:
+            self._status["auth_error"] = str(e)
+
+    def _probe_search(self):
+        try:
+            r = self.session.get(
+                self.api_url,
+                params={
+                    "action": "wbsearchentities",
+                    "search": "test",
+                    "format": "json",
+                    "language": "en",
+                    "limit": 1
+                },
+                timeout=10
+            )
+            r.raise_for_status()
+
+            data = r.json().get("search", [])
+            self._status["search_ok"] = True
+            self._status["search_results"] = len(data)
+
+            print(f"[status] SEARCH OK ({len(data)})", flush=True)
+
+        except Exception as e:
+            self._status["search_ok"] = False
+            self._status["search_error"] = str(e)
+
+    def _probe_csrf(self):
+        try:
+            r = self.session.get(
+                self.api_url,
+                params={
+                    "action": "query",
+                    "meta": "tokens",
+                    "type": "csrf",
+                    "format": "json"
+                },
+                timeout=10
+            )
+            r.raise_for_status()
+
+            token = r.json().get("query", {}).get("tokens", {}).get("csrftoken")
+            self._status["csrf_ok"] = bool(token)
+
+            print("[status] CSRF OK" if token else "[status] CSRF MISSING", flush=True)
+
+        except Exception as e:
+            self._status["csrf_ok"] = False
+            self._status["csrf_error"] = str(e)
+
+    # =========================================================
+    # NORMALIZATION (SIMPLIFIED ON PURPOSE)
+    # We DO NOT over-engineer this anymore.
+    # rapidfuzz handles structure differences.
+    # =========================================================
+    def _normalize(self, s: str) -> str:
+        if not s:
+            return ""
+
+        s = str(s).lower().strip()
+        s = re.sub(r"\s+", " ", s)
+
+        # IMPORTANT:
+        # we only lightly remove punctuation spacing artifacts
+        # NOT aggressive collapsing (that caused AJ vs A J bugs)
+        s = re.sub(r"[^\w\s\.]", "", s)
+
+        return s
+
+    # =========================================================
+    # SCORE (REPLACED WITH RAPIDFUZZ)
+    # =========================================================
+    def _score(self, q, c):
+        if not q or not c:
+            return 0.0
+
+        qn = self._normalize(q)
+        cn = self._normalize(c)
+
+        # Exact match
+        if qn == cn:
+            return 1.0
+
+        # Token-aware match (VERY IMPORTANT FIX)
+        return fuzz.token_set_ratio(qn, cn) / 100.0
+
+    # =========================================================
+    # LOCAL SURFACE
+    # =========================================================
+    def _local(self, label):
+        return [{
+            "id": None,
+            "label": label,
+            "score": 0.98,
+            "source": "local"
+        }]
+
+    # =========================================================
+    # VARIANTS (kept but simplified)
+    # =========================================================
+    def _variants(self, label):
+        base = self._normalize(label)
+        tokens = base.split()
+
+        variants = set()
+        variants.add(label)
+        variants.add(base)
+
+        for t in tokens:
+            variants.add(t)
+
+        if len(tokens) > 1:
+            variants.add(" ".join(reversed(tokens)))
+
+        return list(variants)
+
+    # =========================================================
+    # WIKIBASE SEARCH
+    # =========================================================
+    def _wikibase(self, label, limit=10):
+        results = []
+
+        queries = [label] + self._variants(label)
+
+        for q in queries:
+            try:
+                print(f"[wikibase] query: {q}", flush=True)
+
+                t0 = time.time()
+                r = self.session.get(
+                    self.api_url,
+                    params={
+                        "action": "wbsearchentities",
+                        "search": q,
+                        "format": "json",
+                        "language": "en",
+                        "limit": limit
+                    },
+                    timeout=15
+                )
+                dt = time.time() - t0
+
+                r.raise_for_status()
+
+                data = r.json().get("search", [])
+                print(f"[wikibase] response_time={dt:.3f}s results={len(data)}", flush=True)
+
+                for x in data:
+                    results.append({
+                        "id": x.get("id"),
+                        "label": x.get("label"),
+                        "description": x.get("description"),
+                        "score": self._score(label, x.get("label", "")),
+                        "source": "wikibase"
+                    })
+
+            except Exception as e:
+                print(f"[wikibase] error: {e}", flush=True)
+                continue
+
+        return results
+
+    # =========================================================
+    # MAIN SEARCH API
+    # =========================================================
+    def search(self, label, limit=15):
+        print("\n[surface] ==============================", flush=True)
+        print(f"[surface] QUERY: {label}", flush=True)
+
+        candidates = []
+
+        candidates.extend(self._local(label))
+        candidates.extend(self._wikibase(label, limit=limit))
+
+        candidates.append({
+            "id": "__create__",
+            "label": label,
+            "score": 0.0,
+            "source": "create"
+        })
+
+        candidates.sort(key=lambda x: x.get("score", 0), reverse=True)
+
+        final = candidates[:limit + 10]
+
+        print(f"[surface] returned={len(final)}", flush=True)
+
+        for i, c in enumerate(final[:12], 1):
+            print(
+                f"[surface] {i}. {c.get('label')} "
+                f"(score={c.get('score'):.2f}, source={c.get('source')})",
+                flush=True
+            )
+
+        return final
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_cluster.py
+========================================================================================================================
+
+import re
+from collections import defaultdict
+from difflib import SequenceMatcher
+
+
+def normalize(text: str) -> str:
+    if not text:
+        return ""
+    text = text.lower().strip()
+    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"[()\-:,]", "", text)
+    return text
+
+
+def similarity(a: str, b: str) -> float:
+    a = normalize(a)
+    b = normalize(b)
+
+    if not a or not b:
+        return 0.0
+
+    if a == b:
+        return 1.0
+
+    if a in b or b in a:
+        return 0.92
+
+    return SequenceMatcher(None, a, b).ratio()
+
+
+class CanonicalClusterer:
+    """
+    Turns flat candidate lists into latent entity clusters.
+    This is what OpenRefine actually wants conceptually.
+    """
+
+    def __init__(self, threshold: float = 0.82):
+        self.threshold = threshold
+
+    def cluster(self, candidates):
+        """
+        Input:
+            [
+              {id, label, score, source},
+              ...
+            ]
+
+        Output:
+            [
+              {
+                "cluster_id": "C0",
+                "canonical_label": "...",
+                "best_score": 0.93,
+                "members": [...]
+              }
+            ]
+        """
+
+        clusters = []
+
+        for cand in candidates:
+            placed = False
+
+            for cluster in clusters:
+                rep = cluster["canonical_label"]
+
+                if similarity(rep, cand.get("label")) >= self.threshold:
+                    cluster["members"].append(cand)
+                    cluster["best_score"] = max(cluster["best_score"], cand.get("score", 0.0))
+                    placed = True
+                    break
+
+            if not placed:
+                clusters.append({
+                    "cluster_id": f"C{len(clusters)}",
+                    "canonical_label": cand.get("label"),
+                    "best_score": cand.get("score", 0.0),
+                    "members": [cand]
+                })
+
+        # sort clusters by strength
+        clusters.sort(key=lambda c: c["best_score"], reverse=True)
+
+        return clusters
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_deduplicate.py
+========================================================================================================================
+
+def dedupe_against_wikibase(plan, client):
+    """
+    Removes statements that already exist in Wikibase.
+    """
+
+    existing_cache = {}
+
+    def get_existing(qid):
+        if qid not in existing_cache:
+            existing_cache[qid] = client.get_claims(qid)
+        return existing_cache[qid]
+
+    filtered = []
+
+    for stmt in plan:
+        subj = stmt["subject"]
+        pred = stmt["predicate"]
+        obj = stmt["object"]
+
+        existing = get_existing(subj)
+
+        if pred in existing and obj in existing[pred]:
+            continue  # already exists
+
+        filtered.append(stmt)
+
+    return filtered
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_entity_creation.py
+========================================================================================================================
+
+import requests
+
+
+def create_wikibase_item(api_url, session, label):
+    """
+    Creates a new Wikibase item and returns QID.
+    """
+
+    payload = {
+        "action": "wbeditentity",
+        "format": "json",
+        "new": "item",
+        "data": {
+            "labels": {
+                "en": {
+                    "language": "en",
+                    "value": label
+                }
+            }
+        }
+    }
+
+    r = session.post(api_url, json=payload)
+    r.raise_for_status()
+
+    data = r.json()
+
+    return data["entity"]["id"]
+
+
+def run_entity_creation(alignment_records, config):
+    """
+    Input:
+        alignment.csv loaded as list of dicts
+
+    Output:
+        complete_alignment map:
+            local_id -> QID
+    """
+
+    session = requests.Session()
+
+    if config.get("wikibase_auth", {}).get("enabled"):
+        session.auth = (
+            config["wikibase_auth"]["username"],
+            config["wikibase_auth"]["password"]
+        )
+
+    api_url = config["api_url"]
+
+    mapping = {}
+
+    total = len(alignment_records)
+    print(f"[entity-create] start: {total} rows", flush=True)
+
+    for i, row in enumerate(alignment_records, 1):
+
+        local_id = row.get("local_id") or row.get("id")
+        label = row.get("label")
+
+        if not local_id or not label:
+            continue
+
+        if row.get("wikibase_id") == "__create__":
+
+            print(f"[entity-create] {i}/{total} CREATE {label}", flush=True)
+
+            qid = create_wikibase_item(api_url, session, label)
+
+            mapping[local_id] = qid
+
+            print(f"[entity-create] → {local_id} -> {qid}", flush=True)
+
+        else:
+            mapping[local_id] = row.get("wikibase_id")
+
+    return mapping
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_export.py
+========================================================================================================================
+
+from .wiki_reconcile_client import WikiReconcileClient
+import re
+
+
+# ----------------------------
+# NORMALIZATION
+# ----------------------------
+def normalize_label(label):
+    if label is None:
+        return None
+
+    if isinstance(label, (int, float)):
+        return None
+
+    s = str(label).strip()
+
+    # reject pure numbers
+    if re.fullmatch(r"\d+(\.\d+)?", s):
+        return None
+
+    # strip metadata suffixes
+    s = s.split("::")[0]
+    s = s.split("|")[0].strip()
+
+    if len(s) < 2:
+        return None
+
+    return s
+
+
+# ----------------------------
+# CLASSIFICATION (FAIL-OPEN MODEL)
+# ----------------------------
+def classify(bucket_name: str, label: str) -> str:
+    """
+    Default-open reconciliation policy:
+    - ALL buckets are processed unless explicitly excluded
+    - only invalid labels are filtered
+    """
+
+    if label is None:
+        return "skip"
+
+    if isinstance(label, (int, float)):
+        return "skip"
+
+    s = str(label).strip()
+
+    # skip pure numeric tokens
+    if re.fullmatch(r"\d+(\.\d+)?", s):
+        return "skip"
+
+    # optional global exclusions (currently empty)
+    EXCLUDED_BUCKETS = set()
+    if bucket_name in EXCLUDED_BUCKETS:
+        return "skip"
+
+    return "entity"
+
+
+# ----------------------------
+# EXPORT PIPELINE
+# ----------------------------
+def build_reconciliation_export(cache, config):
+    client = WikiReconcileClient(config)
+
+    levels = cache.get("levels", {})
+
+    output = []
+
+    total_buckets = len(levels)
+    print(f"[export] starting {total_buckets} buckets", flush=True)
+
+    for bucket_name, bucket in levels.items():
+
+        print(f"[export] bucket: {bucket_name} ({len(bucket)})", flush=True)
+
+        for i, (raw_label, local_id) in enumerate(bucket.items(), 1):
+
+            label = normalize_label(raw_label)
+
+            if not label:
+                print(f"[export] SKIP bad label: {raw_label}", flush=True)
+                continue
+
+            if classify(bucket_name, label) == "skip":
+                print(f"[export] SKIP: {bucket_name} :: {label}", flush=True)
+                continue
+
+            print(f"[export] querying [{bucket_name}] {i}/{len(bucket)}: {label}", flush=True)
+
+            try:
+                candidates = client.search(label, limit=5)
+            except Exception as e:
+                print(f"[export] ERROR {label}: {e}", flush=True)
+                continue
+
+            # deduplicate QIDs
+            seen = set()
+            deduped = []
+
+            for c in candidates:
+                qid = c.get("id")
+                if not qid or qid in seen:
+                    continue
+                seen.add(qid)
+                deduped.append(c)
+
+            # always allow creation option
+            deduped.append({
+                "id": "__create__",
+                "label": label
+            })
+
+            output.append({
+                "id": local_id,
+                "name": label,
+                "bucket": bucket_name,
+                "type": "entity",
+                "candidates": deduped
+            })
+
+    print(f"[export] done: {len(output)} rows", flush=True)
+
+    return output
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_openrefine_export.py
+========================================================================================================================
+
+import json
+import csv
+
+
+# =========================================================
+# FLATTENER
+# =========================================================
+def flatten_reconcile_input(data):
+    """
+    Input:
+    [
+        {
+            "id": "QW1001",
+            "name": "Adon olam",
+            "bucket": "expression",
+            "type": "entity",
+            "candidates": [...]
+        }
+    ]
+
+    Output:
+    One row per candidate.
+    """
+
+    rows = []
+
+    for entry in data:
+
+        local_id = entry.get("id")
+        query = entry.get("name")
+        bucket = entry.get("bucket")
+        entity_type = entry.get("type")
+
+        candidates = entry.get("candidates", [])
+
+        for c in candidates:
+
+            qid = c.get("id")
+
+            if isinstance(qid, str) and qid.startswith("Q"):
+                candidate_url = f"https://husky.oarc.ucla.edu/wiki/Item:{qid}"
+            else:
+                candidate_url = ""
+
+            rows.append({
+                "id": local_id,
+                "query": query,
+                "bucket": bucket,
+                "entity_type": entity_type,
+
+                "candidate_id": qid,
+                "candidate_label": c.get("label"),
+                "candidate_description": c.get("description"),
+                "candidate_score": c.get("score"),
+                "candidate_source": c.get("source"),
+
+                "candidate_url": candidate_url,
+
+                "wiki_match": False
+            })
+
+    return rows
+
+
+# =========================================================
+# CORE EXPORT
+# =========================================================
+def build_openrefine_export(clustered_records):
+    return flatten_reconcile_input(clustered_records)
+
+
+# =========================================================
+# JSON EXPORT
+# =========================================================
+def write_openrefine_json(clustered_records, out_path):
+
+    rows = build_openrefine_export(clustered_records)
+
+    payload = {
+        "result": rows
+    }
+
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(
+            payload,
+            f,
+            indent=2,
+            ensure_ascii=False
+        )
+
+    print(
+        f"[openrefine-json] wrote {len(rows)} rows → {out_path}",
+        flush=True
+    )
+
+
+# =========================================================
+# CSV EXPORT
+# =========================================================
+def write_openrefine_csv(clustered_records, out_path):
+
+    rows = build_openrefine_export(clustered_records)
+
+    if not rows:
+
+        with open(out_path, "w", encoding="utf-8") as f:
+            f.write("")
+
+        print("[csv] no rows", flush=True)
+        return
+
+    fieldnames = [
+        "id",
+        "query",
+        "bucket",
+        "entity_type",
+
+        "candidate_id",
+        "candidate_label",
+        "candidate_description",
+        "candidate_score",
+        "candidate_source",
+
+        "candidate_url",
+
+        "match"
+    ]
+
+    with open(
+        out_path,
+        "w",
+        newline="",
+        encoding="utf-8"
+    ) as f:
+
+        writer = csv.DictWriter(
+            f,
+            fieldnames=fieldnames,
+            extrasaction="ignore"
+        )
+
+        writer.writeheader()
+
+        for row in rows:
+            writer.writerow(row)
+
+    print(
+        f"[csv] wrote {len(rows)} rows → {out_path}",
+        flush=True
+    )
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_rewrite.py
+========================================================================================================================
+
+from copy import deepcopy
+
+
+def rewrite_plan_with_qids(plan, id_map):
+    new_plan = []
+
+    for stmt in plan:
+        stmt = deepcopy(stmt)
+
+        orig_s = stmt["subject"]
+        orig_o = stmt["object"]
+
+        if stmt["subject"] in id_map:
+            stmt["subject"] = id_map[stmt["subject"]]
+
+        if stmt["object"] in id_map:
+            stmt["object"] = id_map[stmt["object"]]
+
+        stmt.setdefault("qualifiers", []).append({
+            "local_subject": orig_s,
+            "local_object": orig_o,
+            "resolved_subject": stmt["subject"],
+            "resolved_object": stmt["object"]
+        })
+
+        new_plan.append(stmt)
+
+    return new_plan
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_surface.py
+========================================================================================================================
+
+import requests
+import time
+from difflib import SequenceMatcher
+
+from wiki_reconcile_cluster import CanonicalClusterer
+
+
+class WikiReconcileClient:
+    """
+    SURFACE RECONCILIATION LAYER (OpenRefine-style)
+    - returns clustered fuzzy candidates
+    - preserves ambiguity
+    - never collapses to single truth
+    """
+
+    def __init__(self, config):
+        self.api_url = config["api_url"]
+        self.session = requests.Session()
+
+        apache = config.get("apache_auth", {})
+        if apache.get("enabled"):
+            self.session.auth = (
+                apache["username"],
+                apache["password"]
+            )
+
+        print("[init] Wikibase Surface Client", flush=True)
+        print(f"[init] endpoint: {self.api_url}", flush=True)
+
+        self.clusterer = CanonicalClusterer(threshold=0.80)
+        self._status = {}
+
+        self._probe_all()
+
+    # =========================================================
+    # STATUS (unchanged)
+    # =========================================================
+    def _probe_all(self):
+        print("[status] probing system...", flush=True)
+        self._probe_http()
+        self._probe_userinfo()
+        self._probe_search()
+        self._probe_csrf()
+
+        print("[status] ---- SUMMARY ----", flush=True)
+        for k, v in self._status.items():
+            print(f"[status] {k}: {v}", flush=True)
+
+    def _probe_http(self):
+        try:
+            t0 = time.time()
+            r = self.session.get(self.api_url, timeout=10)
+            dt = time.time() - t0
+
+            self._status["http_ok"] = True
+            self._status["http_ms"] = round(dt * 1000, 2)
+            self._status["http_code"] = r.status_code
+
+            print(f"[status] HTTP OK ({r.status_code}) {dt:.2f}s", flush=True)
+
+        except Exception as e:
+            self._status["http_ok"] = False
+            self._status["http_error"] = str(e)
+            raise
+
+    def _probe_userinfo(self):
+        try:
+            r = self.session.get(
+                self.api_url,
+                params={"action": "query", "meta": "userinfo", "format": "json"},
+                timeout=10
+            )
+            r.raise_for_status()
+
+            ui = r.json().get("query", {}).get("userinfo", {})
+            name = ui.get("name")
+
+            self._status["user"] = name
+            self._status["anon"] = not bool(name)
+
+            print(f"[status] AUTH user = {name}", flush=True)
+
+        except Exception as e:
+            self._status["auth_error"] = str(e)
+
+    def _probe_search(self):
+        try:
+            r = self.session.get(
+                self.api_url,
+                params={
+                    "action": "wbsearchentities",
+                    "search": "test",
+                    "format": "json",
+                    "language": "en",
+                    "limit": 1
+                },
+                timeout=10
+            )
+            r.raise_for_status()
+
+            data = r.json().get("search", [])
+            self._status["search_ok"] = True
+            self._status["search_results"] = len(data)
+
+            print(f"[status] SEARCH OK ({len(data)})", flush=True)
+
+        except Exception as e:
+            self._status["search_ok"] = False
+            self._status["search_error"] = str(e)
+
+    def _probe_csrf(self):
+        try:
+            r = self.session.get(
+                self.api_url,
+                params={"action": "query", "meta": "tokens", "type": "csrf", "format": "json"},
+                timeout=10
+            )
+            r.raise_for_status()
+
+            token = r.json().get("query", {}).get("tokens", {}).get("csrftoken")
+            self._status["csrf_ok"] = bool(token)
+
+            print("[status] CSRF OK" if token else "[status] CSRF missing", flush=True)
+
+        except Exception as e:
+            self._status["csrf_ok"] = False
+            self._status["csrf_error"] = str(e)
+
+    # =========================================================
+    # CORE SEARCH (RAW)
+    # =========================================================
+    def _wikibase_search(self, label, limit=10):
+        try:
+            r = self.session.get(
+                self.api_url,
+                params={
+                    "action": "wbsearchentities",
+                    "search": label,
+                    "format": "json",
+                    "language": "en",
+                    "limit": limit
+                },
+                timeout=15
+            )
+            r.raise_for_status()
+
+            data = r.json().get("search", [])
+
+            results = []
+            for x in data:
+                results.append({
+                    "id": x.get("id"),
+                    "label": x.get("label"),
+                    "description": x.get("description"),
+                    "score": SequenceMatcher(None, label.lower(), (x.get("label") or "").lower()).ratio(),
+                    "source": "wikibase"
+                })
+
+            return results
+
+        except Exception:
+            return []
+
+    # =========================================================
+    # SURFACE SEARCH (MAIN API)
+    # =========================================================
+    def search(self, label, limit=10):
+        print(f"\n[surface] QUERY: {label}", flush=True)
+
+        candidates = []
+
+        # raw wikibase
+        wb = self._wikibase_search(label, limit=limit * 2)
+        candidates.extend(wb)
+
+        # always include create option
+        candidates.append({
+            "id": "__create__",
+            "label": label,
+            "score": 0.0,
+            "source": "create"
+        })
+
+        # cluster fuzzy duplicates
+        clusters = self.clusterer.cluster(candidates)
+
+        # flatten clusters into OpenRefine-friendly output
+        output = []
+
+        for c in clusters:
+            for m in c["members"]:
+                output.append({
+                    "cluster_id": c["cluster_id"],
+                    "canonical_label": c["canonical_label"],
+                    "id": m.get("id"),
+                    "label": m.get("label"),
+                    "description": m.get("description"),
+                    "score": m.get("score"),
+                    "cluster_score": c["best_score"],
+                    "source": m.get("source"),
+                    "match_type": "fuzzy_cluster"
+                })
+
+        # sort final output
+        output.sort(key=lambda x: x["cluster_score"], reverse=True)
+
+        print(f"[surface] returned={len(output)}")
+        for i, o in enumerate(output[:12], 1):
+            print(
+                f"[surface] {i}. {o['label']} "
+                f"(score={o['score']:.2f}, cluster={o['cluster_id']}, source={o['source']})"
+            )
+
+        return output
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_writeback.py
+========================================================================================================================
+
+import requests
+
+
+def write_plan_to_wikibase(plan, api_url, auth=None):
+    session = requests.Session()
+
+    if auth:
+        session.auth = auth
+
+    results = []
+
+    for i, stmt in enumerate(plan, 1):
+        print(f"[writeback] {i}/{len(plan)} {stmt['predicate']}", flush=True)
+
+        payload = {
+            "action": "wbeditentity",
+            "format": "json",
+            "data": {
+                "claims": {
+                    stmt["predicate"]: [{
+                        "mainsnak": {
+                            "snaktype": "value",
+                            "property": stmt["predicate"],
+                            "datavalue": {
+                                "value": stmt["object"],
+                                "type": "string"
+                            }
+                        },
+                        "type": "statement"
+                    }]
+                }
+            }
+        }
+
+        r = session.post(api_url, json=payload)
+        results.append(r.json())
+
+    return results
+
+========================================================================================================================
+# FILE: reconcile/wiki_reconcile_writeback_pipeline.py
+========================================================================================================================
+
+import requests
+
+
+def write_plan_to_wikibase(plan, api_url, auth=None):
+    """
+    FINAL STAGE ONLY:
+    - assumes ALL IDs are already Wikibase QIDs
+    - no creation logic here
+    """
+
+    session = requests.Session()
+
+    if auth:
+        session.auth = auth
+
+    results = []
+
+    for i, stmt in enumerate(plan, 1):
+
+        print(f"[writeback] {i}/{len(plan)} {stmt['predicate']}", flush=True)
+
+        payload = {
+            "action": "wbeditentity",
+            "format": "json",
+            "data": {
+                "claims": {
+                    stmt["predicate"]: [{
+                        "mainsnak": {
+                            "snaktype": "value",
+                            "property": stmt["predicate"],
+                            "datavalue": {
+                                "value": stmt["object"],
+                                "type": "string"
+                            }
+                        },
+                        "type": "statement"
+                    }]
+                }
+            }
+        }
+
+        r = session.post(api_url, json=payload)
+        results.append(r.json())
+
+    return results
+
+========================================================================================================================
 # FILE: resolver.py
 ========================================================================================================================
 
@@ -284,7 +1929,7 @@ def build_identity(row, identity_spec):
 
 
 # =====================================================
-# CONTEXT RESOLUTION
+# CONTEXT NODE BUILD (FRBR LAYER)
 # =====================================================
 
 def resolve_contexts(row, config, cache):
@@ -296,7 +1941,10 @@ def resolve_contexts(row, config, cache):
     row_label = normalize(row.get(config["row"]["label"]["field"]))
 
     row_qid, _ = resolve(row_level, row_id, cache)
-    context_map[row_level] = (row_qid, row_label)
+    context_map[row_level] = {
+        "id": row_qid,
+        "label": row_label
+    }
 
     for ctx in config.get("contexts", []):
         name = ctx["name"]
@@ -309,46 +1957,76 @@ def resolve_contexts(row, config, cache):
         label = normalize(row.get(label_field)) if label_field else None
 
         ctx_qid, _ = resolve(name, identity_key, cache)
-        context_map[name] = (ctx_qid, label)
 
-    return context_map
+        context_map[name] = {
+            "id": ctx_qid,
+            "label": label
+        }
+
+    return context_map, row_id, row_label
 
 
 # =====================================================
-# GRAPH NODE RESOLVER (CORRECT SEMANTICS)
+# PHASE 1: BUILD ENTITY REGISTRY (ALL COLUMN ENTITIES)
 # =====================================================
 
-def resolve_node(node_spec, row, context_map, row_id, cache, field_scope):
+def build_entity_registry(row, config, cache):
+    registry = {}
+
+    for field, spec in config["fields"].items():
+
+        raw = normalize(row.get(field))
+        if not raw:
+            continue
+
+        if spec.get("split"):
+            values = [
+                normalize(v)
+                for v in raw.split(spec.get("delimiter", ";"))
+                if normalize(v)
+            ]
+        else:
+            values = [raw]
+
+        scope = spec.get("scope", "entity")
+
+        for v in values:
+            obj_id, _ = resolve(scope, v, cache)
+
+            # STORE LABEL + ID TOGETHER
+            registry[(field, v)] = {
+                "id": obj_id,
+                "label": v
+            }
+
+    return registry
+
+
+# =====================================================
+# NODE RESOLUTION (PURE LOOKUP ONLY)
+# =====================================================
+
+def resolve_node(node_spec, row_id, context_map, entity_registry, field, value):
+    if not node_spec:
+        return None
+
     source = node_spec.get("source")
 
-    # -------------------------
-    # COLUMN → MUST BECOME ENTITY
-    # -------------------------
+    # COLUMN → ENTITY
     if source == "column":
-        col = node_spec.get("column")
-        raw = normalize(row.get(col)) if col else None
-        if not raw:
-            return None
+        node = entity_registry.get((field, value))
+        return node["id"] if node else None
 
-        obj_id, _ = resolve(field_scope, raw, cache)
-        return obj_id
-
-    # -------------------------
-    # CONTEXT → QID
-    # -------------------------
+    # CONTEXT → FRBR NODE
     if source == "context":
         ctx = node_spec.get("context")
-        return context_map.get(ctx, (None, None))[0]
+        return context_map.get(ctx, {}).get("id")
 
-    # -------------------------
-    # ROW → DEFAULT ENTITY
-    # -------------------------
+    # ROW → FRBR ROW NODE
     if source == "row":
         return row_id
 
-    # -------------------------
     # CONSTANT
-    # -------------------------
     if source == "constant":
         return node_spec.get("value")
 
@@ -356,38 +2034,53 @@ def resolve_node(node_spec, row, context_map, row_id, cache, field_scope):
 
 
 # =====================================================
-# SUBJECT RESOLUTION (STRICT)
+# LABEL RESOLUTION (CRITICAL FIX)
 # =====================================================
 
-def resolve_subject(node_spec, default_subject, row, context_map, row_id, cache, field_scope):
+def resolve_label(node_spec, row_id, context_map, entity_registry, field, value, row_label):
+    """
+    Determines correct label based on node type.
+    """
     if not node_spec:
-        return default_subject
+        return None
 
-    return resolve_node(
-        node_spec,
-        row,
-        context_map,
-        row_id,
-        cache,
-        field_scope
-    ) or default_subject
+    source = node_spec.get("source")
+
+    if source == "column":
+        node = entity_registry.get((field, value))
+        return node["label"] if node else None
+
+    if source == "context":
+        ctx = node_spec.get("context")
+        node = context_map.get(ctx)
+        return node["label"] if node else None
+
+    if source == "row":
+        return row_label
+
+    if source == "constant":
+        return node_spec.get("value")
+
+    return None
 
 
 # =====================================================
-# FIELD PROCESSING
+# FIELD EXECUTION (EDGE EMISSION ONLY)
 # =====================================================
 
 def build_plan(row, config, cache):
     statements = []
 
-    context_map = resolve_contexts(row, config, cache)
+    # -------------------------------------------------
+    # CONTEXT NODES (FRBR LAYER)
+    # -------------------------------------------------
+    context_map, row_id, row_label = resolve_contexts(row, config, cache)
 
     row_level = config["row"]["context"]
-    row_id, row_label = context_map[row_level]
 
-    # -------------------------
-    # ROW LABEL
-    # -------------------------
+    # -------------------------------------------------
+    # ROW LABEL EDGE
+    # -------------------------------------------------
     if row_label:
         statements.append(Statement(
             subject=row_id,
@@ -400,18 +2093,20 @@ def build_plan(row, config, cache):
             source=config["source"]
         ))
 
-    # =================================================
-    # FIELD EXECUTION
-    # =================================================
+    # -------------------------------------------------
+    # ENTITY REGISTRY
+    # -------------------------------------------------
+    entity_registry = build_entity_registry(row, config, cache)
+
+    # -------------------------------------------------
+    # EDGE EMISSION ONLY
+    # -------------------------------------------------
     for field, spec in config["fields"].items():
 
         raw = normalize(row.get(field))
         if not raw:
             continue
 
-        # -------------------------
-        # MATCH FIELDS
-        # -------------------------
         if spec.get("match") == "x":
             if str(raw).lower() != "x":
                 continue
@@ -423,102 +2118,69 @@ def build_plan(row, config, cache):
                 else [raw]
             )
 
-        # =================================================
-        # SCOPE = CACHE ONLY
-        # =================================================
-        field_scope = spec.get("scope", row_level)
-
-        graph = spec.get("graph")
+        graph_rules = spec.get("graph") or []
 
         for v in values:
             v = normalize(v)
             if not v:
                 continue
 
-            # =================================================
-            # ENTITY FIELDS
-            # =================================================
-            if spec["type"] == "entity":
+            for g in graph_rules:
 
-                obj_id, _ = resolve(field_scope, v, cache)
+                subject = resolve_node(
+                    g.get("subject"),
+                    row_id,
+                    context_map,
+                    entity_registry,
+                    field,
+                    v
+                )
 
-                subject = row_id
-                subject_label = row_label
+                obj = resolve_node(
+                    g.get("object"),
+                    row_id,
+                    context_map,
+                    entity_registry,
+                    field,
+                    v
+                )
 
-                object = obj_id
-                object_label = v
+                # FALLBACKS ONLY
+                if subject is None:
+                    subject = row_id
+                if obj is None:
+                    node = entity_registry.get((field, v))
+                    obj = node["id"] if node else v
 
-                predicate = spec.get("predicate", field)
+                # 🔥 FIXED LABEL LOGIC (THIS IS THE BUG YOU HIT)
+                subject_label = resolve_label(
+                    g.get("subject"),
+                    row_id,
+                    context_map,
+                    entity_registry,
+                    field,
+                    v,
+                    row_label
+                )
 
-                # -------------------------
-                # GRAPH OVERRIDE (FIXED SEMANTICS)
-                # -------------------------
-                if graph:
-                    g = graph[0]
-
-                    new_subject = resolve_subject(
-                        g.get("subject"),
-                        row_id,
-                        row,
-                        context_map,
-                        row_id,
-                        cache,
-                        field_scope
-                    )
-
-                    new_object = resolve_node(
-                        g.get("object"),
-                        row,
-                        context_map,
-                        row_id,
-                        cache,
-                        field_scope
-                    )
-
-                    if new_subject is not None:
-                        subject = new_subject
-
-                    if new_object is not None:
-                        object = new_object
+                object_label = resolve_label(
+                    g.get("object"),
+                    row_id,
+                    context_map,
+                    entity_registry,
+                    field,
+                    v,
+                    row_label
+                )
 
                 statements.append(Statement(
                     subject=subject,
                     subject_label=subject_label,
-                    predicate=predicate,
+                    predicate=g.get("predicate", spec.get("predicate", field)),
                     predicate_label=field,
-                    object=object,
+                    object=obj,
                     object_label=object_label,
-                    object_type="entity",
-                    source=config["source"]
-                ))
-
-            # =================================================
-            # LITERAL FIELDS
-            # =================================================
-            else:
-
-                subject = row_id
-
-                if graph:
-                    g = graph[0]
-                    subject = resolve_subject(
-                        g.get("subject"),
-                        row_id,
-                        row,
-                        context_map,
-                        row_id,
-                        cache,
-                        field_scope
-                    )
-
-                statements.append(Statement(
-                    subject=subject,
-                    subject_label=row_label,
-                    predicate=spec.get("predicate", field),
-                    predicate_label=field,
-                    object=v,
-                    object_label=None,
-                    object_type="literal",
+                    object_type=spec["type"],
                     source=config["source"]
                 ))
 
