@@ -13,6 +13,10 @@ def write_plan(plan, path):
             "object_label": s.object_label,
             "object_type": s.object_type,
             "source": s.source,
+
+            # 🔥 NEW: row traceability
+            "provenance": s.provenance,
+
             "references": s.references,
             "qualifiers": s.qualifiers
         }

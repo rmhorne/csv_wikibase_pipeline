@@ -19,31 +19,32 @@ def build_identity(row, identity_spec):
 
 
 # =====================================================
-# CONTEXT NODE BUILD (FRBR LAYER)
+# CONTEXT RESOLUTION
 # =====================================================
 
-def resolve_contexts(row, config, cache):
+def resolve_contexts(row, config, cache, row_id, row_label):
     context_map = {}
 
-    row_level = config["row"]["context"]
+    row_level = config["row"].get(
+        "context",
+        next(iter(config.get("contexts", {})), None)
+    )
 
-    row_id = build_identity(row, config["row"]["identity"])
-    row_label = normalize(row.get(config["row"]["label"]["field"]))
+    if row_level is None:
+        raise ValueError("No contexts defined in config; cannot resolve row context.")
 
-    row_qid, _ = resolve(row_level, row_id, cache)
     context_map[row_level] = {
-        "id": row_qid,
+        "id": row_id,
         "label": row_label
     }
 
-    for ctx in config.get("contexts", []):
-        name = ctx["name"]
+    for name, spec in config.get("contexts", {}).items():
 
-        identity_key = build_identity(row, ctx["identity"])
+        identity_key = build_identity(row, spec["identity"])
         if not identity_key:
             continue
 
-        label_field = ctx.get("label", {}).get("field")
+        label_field = spec.get("label", {}).get("field")
         label = normalize(row.get(label_field)) if label_field else None
 
         ctx_qid, _ = resolve(name, identity_key, cache)
@@ -53,22 +54,60 @@ def resolve_contexts(row, config, cache):
             "label": label
         }
 
-    return context_map, row_id, row_label
+    return context_map
 
 
 # =====================================================
-# PHASE 1: BUILD ENTITY REGISTRY (ALL COLUMN ENTITIES)
+# ENTITY REGISTRY (FINAL HARD FIX)
 # =====================================================
 
 def build_entity_registry(row, config, cache):
     registry = {}
 
-    for field, spec in config["fields"].items():
+    for field, spec in config.get("fields", {}).items():
 
-        raw = normalize(row.get(field))
+        raw = row.get(field)
+
+        if raw is None:
+            continue
+
+        raw = normalize(raw)
         if not raw:
             continue
 
+        # -------------------------------------------------
+        # RULE 1: NEVER register condition fields
+        # -------------------------------------------------
+        if spec.get("condition"):
+            continue
+
+        # -------------------------------------------------
+        # RULE 2: NEVER register literal-only fields
+        # (this is what you were screaming about)
+        # -------------------------------------------------
+        if spec.get("graph"):
+            is_literal_only = True
+            for g in spec["graph"]:
+                if g.get("subject", {}).get("as") != "literal" and \
+                   g.get("object", {}).get("as") != "literal":
+                    is_literal_only = False
+                    break
+            if is_literal_only:
+                continue
+
+        if spec.get("on_create"):
+            is_literal_only = True
+            for c in spec["on_create"]:
+                obj = c.get("object", {})
+                if obj.get("as") != "literal":
+                    is_literal_only = False
+                    break
+            if is_literal_only:
+                continue
+
+        # -------------------------------------------------
+        # SPLIT HANDLING
+        # -------------------------------------------------
         if spec.get("split"):
             values = [
                 normalize(v)
@@ -78,12 +117,11 @@ def build_entity_registry(row, config, cache):
         else:
             values = [raw]
 
-        scope = spec.get("scope", "entity")
+        scope = spec.get("scope", field)
 
         for v in values:
             obj_id, _ = resolve(scope, v, cache)
 
-            # STORE LABEL + ID TOGETHER
             registry[(field, v)] = {
                 "id": obj_id,
                 "label": v
@@ -93,30 +131,33 @@ def build_entity_registry(row, config, cache):
 
 
 # =====================================================
-# NODE RESOLUTION (PURE LOOKUP ONLY)
+# NODE RESOLUTION
 # =====================================================
 
 def resolve_node(node_spec, row_id, context_map, entity_registry, field, value):
     if not node_spec:
         return None
 
+    # HARD RULE: literal never produces entities
+    if node_spec.get("as") == "literal":
+        return None
+
     source = node_spec.get("source")
 
-    # COLUMN → ENTITY
-    if source == "column":
+    if source == "self":
         node = entity_registry.get((field, value))
         return node["id"] if node else None
 
-    # CONTEXT → FRBR NODE
+    if source == "field":
+        return field
+
     if source == "context":
         ctx = node_spec.get("context")
         return context_map.get(ctx, {}).get("id")
 
-    # ROW → FRBR ROW NODE
     if source == "row":
         return row_id
 
-    # CONSTANT
     if source == "constant":
         return node_spec.get("value")
 
@@ -124,21 +165,24 @@ def resolve_node(node_spec, row_id, context_map, entity_registry, field, value):
 
 
 # =====================================================
-# LABEL RESOLUTION (CRITICAL FIX)
+# LABEL RESOLUTION
 # =====================================================
 
 def resolve_label(node_spec, row_id, context_map, entity_registry, field, value, row_label):
-    """
-    Determines correct label based on node type.
-    """
     if not node_spec:
         return None
 
+    if node_spec.get("as") == "literal":
+        return value
+
     source = node_spec.get("source")
 
-    if source == "column":
+    if source == "self":
         node = entity_registry.get((field, value))
         return node["label"] if node else None
+
+    if source == "field":
+        return field
 
     if source == "context":
         ctx = node_spec.get("context")
@@ -155,71 +199,83 @@ def resolve_label(node_spec, row_id, context_map, entity_registry, field, value,
 
 
 # =====================================================
-# FIELD EXECUTION (EDGE EMISSION ONLY)
+# MAIN PLAN BUILDER
 # =====================================================
 
-def build_plan(row, config, cache):
+def build_plan(row, config, cache, row_index=None):
     statements = []
 
-    # -------------------------------------------------
-    # CONTEXT NODES (FRBR LAYER)
-    # -------------------------------------------------
-    context_map, row_id, row_label = resolve_contexts(row, config, cache)
+    row_level = config["row"].get(
+        "context",
+        next(iter(config.get("contexts", {})))
+    )
 
-    row_level = config["row"]["context"]
+    row_id = build_identity(row, config["row"]["identity"])
+    row_label = normalize(row.get(config["row"]["label"]["field"]))
+
+    row_qid, _ = resolve(row_level, row_id, cache)
+
+    context_map = resolve_contexts(row, config, cache, row_qid, row_label)
 
     # -------------------------------------------------
-    # ROW LABEL EDGE
+    # ROW LABEL
     # -------------------------------------------------
     if row_label:
         statements.append(Statement(
-            subject=row_id,
+            subject=row_qid,
             subject_label=row_label,
             predicate="LABEL",
             predicate_label="LABEL",
             object=None,
             object_label=None,
             object_type="literal",
-            source=config["source"]
+            source=config["source"],
+            provenance=row_index
         ))
 
     # -------------------------------------------------
-    # ENTITY REGISTRY
+    # ENTITY REGISTRY (FIXED)
     # -------------------------------------------------
     entity_registry = build_entity_registry(row, config, cache)
 
     # -------------------------------------------------
-    # EDGE EMISSION ONLY
+    # FIELD PROCESSING
     # -------------------------------------------------
-    for field, spec in config["fields"].items():
+    for field, spec in config.get("fields", {}).items():
 
-        raw = normalize(row.get(field))
+        raw = row.get(field)
+        if raw is None:
+            continue
+
+        raw = normalize(raw)
         if not raw:
             continue
 
-        if spec.get("match") == "x":
-            if str(raw).lower() != "x":
+        # condition only affects processing, NOT registry
+        condition = spec.get("condition")
+        if condition and condition.get("source") == "self":
+            if str(raw).lower() != str(condition.get("value", "")).lower():
                 continue
-            values = [field]
-        else:
-            values = (
-                raw.split(spec.get("delimiter", ";"))
-                if spec.get("split")
-                else [raw]
-            )
 
-        graph_rules = spec.get("graph") or []
+        if spec.get("split"):
+            values = [
+                normalize(v)
+                for v in raw.split(spec.get("delimiter", ";"))
+                if normalize(v)
+            ]
+        else:
+            values = [raw]
 
         for v in values:
             v = normalize(v)
             if not v:
                 continue
 
-            for g in graph_rules:
+            for g in spec.get("graph", []):
 
                 subject = resolve_node(
                     g.get("subject"),
-                    row_id,
+                    row_qid,
                     context_map,
                     entity_registry,
                     field,
@@ -228,50 +284,47 @@ def build_plan(row, config, cache):
 
                 obj = resolve_node(
                     g.get("object"),
-                    row_id,
+                    row_qid,
                     context_map,
                     entity_registry,
                     field,
                     v
                 )
 
-                # FALLBACKS ONLY
                 if subject is None:
-                    subject = row_id
-                if obj is None:
-                    node = entity_registry.get((field, v))
-                    obj = node["id"] if node else v
+                    subject = row_qid
 
-                # 🔥 FIXED LABEL LOGIC (THIS IS THE BUG YOU HIT)
-                subject_label = resolve_label(
-                    g.get("subject"),
-                    row_id,
-                    context_map,
-                    entity_registry,
-                    field,
-                    v,
-                    row_label
-                )
-
-                object_label = resolve_label(
-                    g.get("object"),
-                    row_id,
-                    context_map,
-                    entity_registry,
-                    field,
-                    v,
-                    row_label
-                )
+                if obj is None and g.get("object", {}).get("as") != "literal":
+                    obj = v
 
                 statements.append(Statement(
                     subject=subject,
-                    subject_label=subject_label,
-                    predicate=g.get("predicate", spec.get("predicate", field)),
+                    subject_label=resolve_label(
+                        g.get("subject"),
+                        row_qid,
+                        context_map,
+                        entity_registry,
+                        field,
+                        v,
+                        row_label
+                    ),
+                    predicate=g.get("predicate", field),
                     predicate_label=field,
                     object=obj,
-                    object_label=object_label,
-                    object_type=spec["type"],
-                    source=config["source"]
+                    object_label=resolve_label(
+                        g.get("object"),
+                        row_qid,
+                        context_map,
+                        entity_registry,
+                        field,
+                        v,
+                        row_label
+                    ),
+                    object_type="literal" if g.get("object", {}).get("as") == "literal" else "entity",
+                    source=config["source"],
+                    references=[],
+                    qualifiers=[],
+                    provenance=row_index
                 ))
 
     return statements, cache

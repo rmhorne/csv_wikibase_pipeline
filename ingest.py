@@ -12,8 +12,15 @@ def run(csv_path, config_path, cache_path):
 
     plan = []
 
-    for _, row in df.iterrows():
-        statements, cache = build_plan(row, config, cache)
+    # IMPORTANT: stable row indexing for provenance
+    for row_index, (_, row) in enumerate(df.iterrows()):
+        statements, cache = build_plan(
+            row=row,
+            config=config,
+            cache=cache,
+            row_index=row_index
+        )
+
         plan.extend(statements)
 
     save_cache(cache, cache_path)

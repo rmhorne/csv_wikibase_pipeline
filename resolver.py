@@ -28,21 +28,49 @@ def apply_strategy(values, strategy, separator=" | "):
     return separator.join(values)
 
 
+# =====================================================
+# SAFE CACHE INIT
+# =====================================================
+
+def _ensure_cache(cache):
+    if cache is None:
+        raise ValueError("Cache object is required")
+
+    cache.setdefault("_counter", 0)
+    cache.setdefault("levels", {})
+
+
+# =====================================================
+# CORE RESOLVER
+# =====================================================
+
 def resolve(level: str, identity_key: str, cache: dict):
     """
     Identity-based resolver using scoped cache buckets.
+
+    Guarantees:
+    - stable ID per (level, identity_key)
+    - automatic creation if missing
+    - global counter uniqueness
     """
 
+    _ensure_cache(cache)
+
+    # NULL identity → always new node
     if identity_key is None:
         cache["_counter"] += 1
-        return f"QW{cache['_counter']}", True
+        qid = f"QW{cache['_counter']}"
+        return qid, True
 
+    # scoped bucket
     cache["levels"].setdefault(level, {})
     bucket = cache["levels"][level]
 
+    # existing entity
     if identity_key in bucket:
         return bucket[identity_key], False
 
+    # create new entity
     cache["_counter"] += 1
     qid = f"QW{cache['_counter']}"
     bucket[identity_key] = qid

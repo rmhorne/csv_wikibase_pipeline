@@ -17,6 +17,9 @@ class Statement:
 
     source: Dict[str, Any]
 
+    # NEW: row-level traceability
+    provenance: Optional[int] = None
+
     references: List = None
     qualifiers: List = None
 
