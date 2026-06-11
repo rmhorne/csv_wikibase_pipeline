@@ -6,7 +6,7 @@ from .wiki_reconcile_cache import load_cache
 from .wiki_reconcile_apply import build_reconciliation_map
 from .wiki_reconcile_rewrite import rewrite_plan_with_qids
 from .wiki_reconcile_writeback import write_plan_to_wikibase
-
+from .wiki_plan_align import rewrite_plan, load_json, save_json
 
 # =========================================================
 # IO HELPERS
@@ -51,6 +51,15 @@ def main():
     orp.add_argument("--input", required=True)
     orp.add_argument("--json", required=True)
     orp.add_argument("--csv", required=True)
+
+
+    align = sub.add_parser("align")
+    align.add_argument("--plan", required=True)
+    align.add_argument("--map", required=True)
+
+    align.add_argument("--out_aligned", required=True)
+    align.add_argument("--out_unaligned", required=True)
+    align.add_argument("--out_status", required=True)
 
     args = p.parse_args()
 
@@ -132,6 +141,27 @@ def main():
         print(f"[cli] wrote JSON → {args.json}", flush=True)
         print(f"[cli] wrote CSV  → {args.csv}", flush=True)
         print("[cli] export-openrefine done", flush=True)
+
+
+    elif args.cmd == "align":
+        print("[cli] align starting", flush=True)
+
+        plan = load(args.plan)
+        mapping = load(args.map)
+
+        from .wiki_plan_align import split_plan
+
+        aligned, unaligned, status = split_plan(
+            plan,
+            mapping
+        )
+
+        save_json(args.out_aligned, aligned)
+        save_json(args.out_unaligned, unaligned)
+        save_json(args.out_status, status)
+
+        print("[cli] align done", flush=True)
+
 
 
 if __name__ == "__main__":

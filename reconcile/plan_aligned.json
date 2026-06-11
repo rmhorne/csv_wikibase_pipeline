@@ -1,0 +1,482 @@
+[
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P13",
+    "predicate_label": "Primary Genre",
+    "object": "Q9",
+    "object_label": "Sacred",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P14",
+    "predicate_label": "Instrumentation",
+    "object": "Q27",
+    "object_label": "Choral-Solo",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P15",
+    "predicate_label": "Form-General",
+    "object": "Q42",
+    "object_label": "Liturgical-Setting(s)",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P15",
+    "predicate_label": "Form-Specific (was Tertiary Genre)",
+    "object": "Q42",
+    "object_label": "Liturgical-Setting(s)",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P13",
+    "predicate_label": "Sacred",
+    "object": "Sacred",
+    "object_label": "Sacred",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P16",
+    "predicate_label": "Ashkenazi",
+    "object": "Ashkenazi",
+    "object_label": "Ashkenazi",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P17",
+    "predicate_label": "Functional",
+    "object": "Functional",
+    "object_label": "Functional",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P17",
+    "predicate_label": "Devotional-Solemn",
+    "object": "Devotional-Solemn",
+    "object_label": "Devotional-Solemn",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q279",
+    "subject_label": "As the Hart Panteth | Thou Art Enthroned Above",
+    "predicate": "P14",
+    "predicate_label": "Instrumentation",
+    "object": "Q27",
+    "object_label": "Choral-Solo",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q453",
+    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "predicate": "P13",
+    "predicate_label": "Primary Genre",
+    "object": "Q9",
+    "object_label": "Sacred",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q453",
+    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "predicate": "P15",
+    "predicate_label": "Form-General",
+    "object": "Q42",
+    "object_label": "Liturgical-Setting(s)",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q453",
+    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "predicate": "P15",
+    "predicate_label": "Form-Specific (was Tertiary Genre)",
+    "object": "Q42",
+    "object_label": "Liturgical-Setting(s)",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q453",
+    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "predicate": "P13",
+    "predicate_label": "Sacred",
+    "object": "Sacred",
+    "object_label": "Sacred",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q453",
+    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "predicate": "P16",
+    "predicate_label": "Ashkenazi",
+    "object": "Ashkenazi",
+    "object_label": "Ashkenazi",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q453",
+    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "predicate": "P17",
+    "predicate_label": "Functional",
+    "object": "Functional",
+    "object_label": "Functional",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q453",
+    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "predicate": "P18",
+    "predicate_label": "Classical",
+    "object": "Classical",
+    "object_label": "Classical",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q453",
+    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "predicate": "P17",
+    "predicate_label": "Devotional-Solemn",
+    "object": "Devotional-Solemn",
+    "object_label": "Devotional-Solemn",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P13",
+    "predicate_label": "Primary Genre",
+    "object": "Q9",
+    "object_label": "Sacred",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P15",
+    "predicate_label": "Form-General",
+    "object": "Q42",
+    "object_label": "Liturgical-Setting(s)",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P15",
+    "predicate_label": "Form-Specific (was Tertiary Genre)",
+    "object": "Q42",
+    "object_label": "Liturgical-Setting(s)",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P13",
+    "predicate_label": "Sacred",
+    "object": "Sacred",
+    "object_label": "Sacred",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P17",
+    "predicate_label": "Functional",
+    "object": "Functional",
+    "object_label": "Functional",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P18",
+    "predicate_label": "Classical",
+    "object": "Classical",
+    "object_label": "Classical",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P18",
+    "predicate_label": "Cantorial",
+    "object": "Cantorial",
+    "object_label": "Cantorial",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P17",
+    "predicate_label": "Devotional-Solemn",
+    "object": "Devotional-Solemn",
+    "object_label": "Devotional-Solemn",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon Olam",
+    "predicate": "P13",
+    "predicate_label": "Primary Genre",
+    "object": "Q9",
+    "object_label": "Sacred",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon Olam",
+    "predicate": "P13",
+    "predicate_label": "Sacred",
+    "object": "Sacred",
+    "object_label": "Sacred",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon Olam",
+    "predicate": "P17",
+    "predicate_label": "Conceptual",
+    "object": "Conceptual",
+    "object_label": "Conceptual",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon Olam",
+    "predicate": "P17",
+    "predicate_label": "Functional",
+    "object": "Functional",
+    "object_label": "Functional",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon Olam",
+    "predicate": "P18",
+    "predicate_label": "Classical",
+    "object": "Classical",
+    "object_label": "Classical",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon Olam",
+    "predicate": "P18",
+    "predicate_label": "Cantorial",
+    "object": "Cantorial",
+    "object_label": "Cantorial",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon Olam",
+    "predicate": "P17",
+    "predicate_label": "Devotional-Solemn",
+    "object": "Devotional-Solemn",
+    "object_label": "Devotional-Solemn",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "references": [],
+    "qualifiers": []
+  }
+]

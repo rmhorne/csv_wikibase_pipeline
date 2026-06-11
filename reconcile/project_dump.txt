@@ -1,7 +1,53 @@
 # PYTHON PROJECT DUMP
 # ROOT: /Users/rayanhorne/Dropbox/work/ucla/oarc/spin-off-projects/2026/csv_wikibase_pipeline/reconcile
-# FILE COUNT: 10
+# FILE COUNT: 11
 
+
+========================================================================================================================
+# FILE: wiki_reconcile.py
+========================================================================================================================
+
+import json
+import requests
+
+
+def create_entity(session, api_url, label):
+    """
+    Create Wikibase entity safely (no imports, no cycles).
+    """
+
+    # CSRF token
+    r1 = session.get(api_url, params={
+        "action": "query",
+        "meta": "tokens",
+        "type": "csrf",
+        "format": "json"
+    })
+
+    token = r1.json()["query"]["tokens"]["csrftoken"]
+
+    # create entity
+    r2 = session.post(api_url, data={
+        "action": "wbeditentity",
+        "format": "json",
+        "new": "item",
+        "token": token,
+        "data": json.dumps({
+            "labels": {
+                "en": {
+                    "language": "en",
+                    "value": label
+                }
+            }
+        })
+    })
+
+    data = r2.json()
+
+    if "error" in data:
+        raise RuntimeError(data["error"])
+
+    return data["entity"]["id"]
 
 ========================================================================================================================
 # FILE: wiki_reconcile_apply.py
@@ -87,140 +133,315 @@ def save_cache(cache, path):
 # FILE: wiki_reconcile_cli.py
 ========================================================================================================================
 
-import argparse
 import json
+import requests
 import csv
-
-from .wiki_reconcile_cache import load_cache
-from .wiki_reconcile_apply import build_reconciliation_map
-from .wiki_reconcile_rewrite import rewrite_plan_with_qids
-from .wiki_reconcile_writeback import write_plan_to_wikibase
+import argparse
 
 
 # =========================================================
-# IO HELPERS
+# CONFIG
 # =========================================================
-def load(path):
-    with open(path, "r", encoding="utf-8") as f:
+CONFIG_PATH = "reconcile/wiki_config.json"
+
+
+def load_config():
+    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def save_json(path, data):
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+def load_csv(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def print_block(title):
+    print("\n" + "=" * 80)
+    print(title)
+    print("=" * 80)
+
+
+def pretty(obj):
+    print(json.dumps(obj, indent=2, ensure_ascii=False))
+
+
+def init_log(path):
+    f = open(path, "w", encoding="utf-8", newline="")
+    writer = csv.DictWriter(
+        f,
+        fieldnames=["local_id", "label", "candidate_id", "status", "error"]
+    )
+    writer.writeheader()
+    return f, writer
 
 
 # =========================================================
-# CLI
+# SAFE QID VALIDATION
+# =========================================================
+def validate_qid(session, api_url, qid):
+    r = session.get(api_url, params={
+        "action": "wbgetentities",
+        "ids": qid,
+        "format": "json"
+    })
+
+    data = r.json()
+
+    if "entities" not in data or qid not in data["entities"]:
+        raise ValueError(f"Invalid QID: {qid}")
+
+    return True
+
+
+# =========================================================
+# CSRF
+# =========================================================
+def get_csrf(session, api_url):
+    r = session.get(api_url, params={
+        "action": "query",
+        "meta": "tokens",
+        "type": "csrf",
+        "format": "json"
+    })
+    return r.json()["query"]["tokens"]["csrftoken"]
+
+
+# =========================================================
+# LOGIN
+# =========================================================
+def mediawiki_login(session, api_url, username, password):
+
+    r1 = session.get(api_url, params={
+        "action": "query",
+        "meta": "tokens",
+        "type": "login",
+        "format": "json"
+    })
+
+    token = r1.json()["query"]["tokens"]["logintoken"]
+
+    r2 = session.post(api_url, data={
+        "action": "login",
+        "lgname": username,
+        "lgpassword": password,
+        "lgtoken": token,
+        "format": "json"
+    })
+
+    result = r2.json()["login"]["result"]
+    print("[login]", result)
+
+    return result == "Success"
+
+
+# =========================================================
+# USERINFO (FIXED)
+# =========================================================
+def probe_userinfo(session, api_url, label):
+    print_block(f"[STEP] USERINFO ({label})")
+
+    r = session.get(api_url, params={
+        "action": "query",
+        "meta": "userinfo",
+        "uiprop": "groups|rights",
+        "format": "json"
+    })
+
+    pretty(r.json())
+    return r.json()
+
+
+# =========================================================
+# IDEMPOTENT ENTITY CREATION
+# =========================================================
+def create_entity_if_needed(session, api_url, label):
+    """
+    Prevent duplicate creation by first searching for existing label.
+    """
+
+    # SEARCH FIRST (prevents duplicates)
+    search = session.get(api_url, params={
+        "action": "wbsearchentities",
+        "search": label,
+        "language": "en",
+        "format": "json"
+    }).json()
+
+    if search.get("search"):
+        best = search["search"][0]
+        return best["id"], False  # existing
+
+    # CREATE NEW
+    csrf = get_csrf(session, api_url)
+
+    r = session.post(api_url, data={
+        "action": "wbeditentity",
+        "format": "json",
+        "new": "item",
+        "token": csrf,
+        "data": json.dumps({
+            "labels": {
+                "en": {
+                    "language": "en",
+                    "value": label
+                }
+            }
+        })
+    })
+
+    data = r.json()
+
+    if "error" in data:
+        raise RuntimeError(data["error"])
+
+    return data["entity"]["id"], True
+
+
+# =========================================================
+# RECONCILIATION ENGINE
+# =========================================================
+def run_reconciliation(session, api_url, input_csv, log_path):
+
+    print_block("[STEP 6] RECONCILIATION EXECUTION")
+
+    rows = load_csv(input_csv)
+
+    log_file, log_writer = init_log(log_path)
+
+    result_map = {}
+
+    stats = {
+        "total": 0,
+        "mapped": 0,
+        "created": 0,
+        "errors": 0,
+        "skipped": 0
+    }
+
+    for row in rows:
+
+        stats["total"] += 1
+
+        local_id = row.get("id")
+        label = row.get("candidate_label") or row.get("query")
+        candidate_id = row.get("candidate_id")
+        wiki_match = str(row.get("wiki_match", "")).strip().lower()
+
+        if not local_id:
+            stats["skipped"] += 1
+            continue
+
+        try:
+
+            # =================================================
+            # ACCEPT EXISTING
+            # =================================================
+            if wiki_match in ("y", "yes", "true", "1") and candidate_id and candidate_id.startswith("Q"):
+
+                validate_qid(session, api_url, candidate_id)
+
+                result_map[local_id] = {
+                    "qid": candidate_id,
+                    "created": False
+                }
+
+                stats["mapped"] += 1
+
+                log_writer.writerow({
+                    "local_id": local_id,
+                    "label": label,
+                    "candidate_id": candidate_id,
+                    "status": "mapped",
+                    "error": ""
+                })
+                continue
+
+            # =================================================
+            # CREATE / REUSE
+            # =================================================
+            if candidate_id == "__create__":
+
+                qid, created = create_entity_if_needed(session, api_url, label)
+
+                result_map[local_id] = {
+                    "qid": qid,
+                    "created": created
+                }
+
+                stats["created"] += int(created)
+
+                log_writer.writerow({
+                    "local_id": local_id,
+                    "label": label,
+                    "candidate_id": "__create__",
+                    "status": "created" if created else "reused",
+                    "error": ""
+                })
+                continue
+
+            raise ValueError(f"Unresolved row: {row}")
+
+        except Exception as e:
+
+            stats["errors"] += 1
+
+            log_writer.writerow({
+                "local_id": local_id,
+                "label": label,
+                "candidate_id": candidate_id,
+                "status": "error",
+                "error": str(e)
+            })
+
+    log_file.close()
+
+    return result_map, stats
+
+
+# =========================================================
+# MAIN
 # =========================================================
 def main():
-    p = argparse.ArgumentParser()
-    sub = p.add_subparsers(dest="cmd")
 
-    exp = sub.add_parser("export")
-    exp.add_argument("--cache")
-    exp.add_argument("--config")
-    exp.add_argument("--out")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", required=True)
+    parser.add_argument("--out", required=True)
+    parser.add_argument("--log", required=True)
 
-    ap = sub.add_parser("apply")
-    ap.add_argument("--input")
-    ap.add_argument("--config")
-    ap.add_argument("--out")
+    args = parser.parse_args()
 
-    rw = sub.add_parser("rewrite")
-    rw.add_argument("--plan")
-    rw.add_argument("--map")
-    rw.add_argument("--out")
+    cfg = load_config()
+    api = cfg["api_url"]
 
-    wb = sub.add_parser("writeback")
-    wb.add_argument("--plan")
-    wb.add_argument("--config")
+    session = requests.Session()
 
-    orp = sub.add_parser("export-openrefine")
-    orp.add_argument("--input", required=True)
-    orp.add_argument("--json", required=True)
-    orp.add_argument("--csv", required=True)
+    # auth
+    apache = cfg.get("apache_auth", {})
+    if apache.get("enabled"):
+        session.auth = (apache["username"], apache["password"])
 
-    args = p.parse_args()
+    # basic checks
+    probe_userinfo(session, api, "BEFORE LOGIN")
 
-    # =====================================================
-    # EXPORT (original pipeline)
-    # =====================================================
-    if args.cmd == "export":
-        print("[cli] export starting", flush=True)
+    bot = cfg.get("wikibase_bot_auth", {})
+    if bot.get("enabled"):
+        mediawiki_login(session, api, bot["username"], bot["password"])
 
-        cache = load_cache(args.cache)
-        config = load(args.config)
+    probe_userinfo(session, api, "AFTER LOGIN")
 
-        from .wiki_reconcile_export import build_reconciliation_export
+    # reconcile
+    result_map, stats = run_reconciliation(
+        session,
+        api,
+        args.input,
+        args.log
+    )
 
-        out = build_reconciliation_export(cache, config)
-        save_json(args.out, out)
+    with open(args.out, "w", encoding="utf-8") as f:
+        json.dump(result_map, f, indent=2, ensure_ascii=False)
 
-        print("[cli] export done", flush=True)
-
-    # =====================================================
-    # APPLY
-    # =====================================================
-    elif args.cmd == "apply":
-        print("[cli] apply starting", flush=True)
-
-        data = load(args.input)
-        config = load(args.config)
-
-        out = build_reconciliation_map(data, config)
-        save_json(args.out, out)
-
-        print("[cli] apply done", flush=True)
-
-    # =====================================================
-    # REWRITE
-    # =====================================================
-    elif args.cmd == "rewrite":
-        plan = load(args.plan)
-        mapping = load(args.map)
-
-        out = rewrite_plan_with_qids(plan, mapping)
-        save_json(args.out, out)
-
-    # =====================================================
-    # WRITEBACK
-    # =====================================================
-    elif args.cmd == "writeback":
-        cfg = load(args.config)
-        plan = load(args.plan)
-
-        res = write_plan_to_wikibase(
-            plan,
-            cfg["api_url"],
-            auth=(
-                cfg["wikibase_auth"]["username"],
-                cfg["wikibase_auth"]["password"]
-            ) if cfg["wikibase_auth"]["enabled"] else None
-        )
-
-        print(json.dumps(res, indent=2))
-
-    # =====================================================
-    # OPENREFINE EXPORT (FIXED CLEAN VERSION)
-    # =====================================================
-    elif args.cmd == "export-openrefine":
-        print("[cli] export-openrefine starting", flush=True)
-
-        from .wiki_reconcile_openrefine_export import (
-            write_openrefine_json,
-            write_openrefine_csv
-        )
-
-        records = load(args.input)
-
-        # single responsibility: exporter handles everything
-        write_openrefine_json(records, args.json)
-        write_openrefine_csv(records, args.csv)
-
-        print(f"[cli] wrote JSON → {args.json}", flush=True)
-        print(f"[cli] wrote CSV  → {args.csv}", flush=True)
-        print("[cli] export-openrefine done", flush=True)
+    print_block("[DONE]")
+    print(json.dumps(stats, indent=2))
 
 
 if __name__ == "__main__":
@@ -238,12 +459,13 @@ from rapidfuzz import fuzz
 
 class WikiReconcileClient:
     """
-    SURFACE RECONCILIATION CLIENT (STABLE VERSION)
+    SURFACE RECONCILIATION CLIENT (STABLE VERSION + FIXED AUTH)
 
     Fixes:
-    - replaces difflib with rapidfuzz (better name matching)
-    - fixes A.J. vs AJ vs A J issues via token-based scoring
-    - keeps API behavior unchanged
+    - Apache auth (reverse proxy layer)
+    - MediaWiki login via clientlogin (preferred over deprecated login)
+    - CSRF-safe session reuse
+    - Keeps scoring logic unchanged
     """
 
     # =========================================================
@@ -253,11 +475,24 @@ class WikiReconcileClient:
         self.api_url = config["api_url"]
         self.session = requests.Session()
 
+        # -----------------------------------------
+        # 1. APACHE AUTH (reverse proxy layer)
+        # -----------------------------------------
         apache = config.get("apache_auth", {})
         if apache.get("enabled"):
             self.session.auth = (
                 apache["username"],
                 apache["password"]
+            )
+
+        # -----------------------------------------
+        # 2. MEDIAWIKI LOGIN (REAL USER AUTH)
+        # -----------------------------------------
+        wikibase = config.get("wikibase_auth", {})
+        if wikibase.get("enabled"):
+            self._mediawiki_login(
+                wikibase["username"],
+                wikibase["password"]
             )
 
         print("[init] Wikibase Surface Client", flush=True)
@@ -267,7 +502,68 @@ class WikiReconcileClient:
         self._probe_all()
 
     # =========================================================
-    # STATUS PROBES (unchanged)
+    # MEDIAWIKI LOGIN (MODERN clientlogin FLOW)
+    # =========================================================
+    def _mediawiki_login(self, username, password):
+
+        print(f"[login] starting MediaWiki login as {username}", flush=True)
+
+        # -----------------------------------------
+        # STEP 1: GET LOGIN TOKEN
+        # -----------------------------------------
+        r = self.session.get(
+            self.api_url,
+            params={
+                "action": "query",
+                "meta": "tokens",
+                "type": "login",
+                "format": "json"
+            },
+            timeout=15
+        )
+        r.raise_for_status()
+
+        logintoken = (
+            r.json()
+            .get("query", {})
+            .get("tokens", {})
+            .get("logintoken")
+        )
+
+        if not logintoken:
+            raise RuntimeError(
+                f"Failed to get login token: {r.json()}"
+            )
+
+        # -----------------------------------------
+        # STEP 2: LOGIN REQUEST
+        # -----------------------------------------
+        r = self.session.post(
+            self.api_url,
+            data={
+                "action": "login",
+                "lgname": username,
+                "lgpassword": password,
+                "lgtoken": logintoken,
+                "format": "json"
+            },
+            timeout=15
+        )
+        r.raise_for_status()
+
+        data = r.json()
+
+        print("[login] response:", data, flush=True)
+
+        result = data.get("login", {}).get("result")
+
+        if result != "Success":
+            raise RuntimeError(f"Login failed: {data}")
+
+        print("[login] SUCCESS", flush=True)
+
+    # =========================================================
+    # STATUS PROBES
     # =========================================================
     def _probe_all(self):
         print("[status] probing system...", flush=True)
@@ -360,7 +656,13 @@ class WikiReconcileClient:
             )
             r.raise_for_status()
 
-            token = r.json().get("query", {}).get("tokens", {}).get("csrftoken")
+            token = (
+                r.json()
+                .get("query", {})
+                .get("tokens", {})
+                .get("csrftoken")
+            )
+
             self._status["csrf_ok"] = bool(token)
 
             print("[status] CSRF OK" if token else "[status] CSRF MISSING", flush=True)
@@ -370,9 +672,7 @@ class WikiReconcileClient:
             self._status["csrf_error"] = str(e)
 
     # =========================================================
-    # NORMALIZATION (SIMPLIFIED ON PURPOSE)
-    # We DO NOT over-engineer this anymore.
-    # rapidfuzz handles structure differences.
+    # NORMALIZATION
     # =========================================================
     def _normalize(self, s: str) -> str:
         if not s:
@@ -380,16 +680,11 @@ class WikiReconcileClient:
 
         s = str(s).lower().strip()
         s = re.sub(r"\s+", " ", s)
-
-        # IMPORTANT:
-        # we only lightly remove punctuation spacing artifacts
-        # NOT aggressive collapsing (that caused AJ vs A J bugs)
         s = re.sub(r"[^\w\s\.]", "", s)
-
         return s
 
     # =========================================================
-    # SCORE (REPLACED WITH RAPIDFUZZ)
+    # SCORING
     # =========================================================
     def _score(self, q, c):
         if not q or not c:
@@ -398,15 +693,13 @@ class WikiReconcileClient:
         qn = self._normalize(q)
         cn = self._normalize(c)
 
-        # Exact match
         if qn == cn:
             return 1.0
 
-        # Token-aware match (VERY IMPORTANT FIX)
         return fuzz.token_set_ratio(qn, cn) / 100.0
 
     # =========================================================
-    # LOCAL SURFACE
+    # LOCAL
     # =========================================================
     def _local(self, label):
         return [{
@@ -417,7 +710,7 @@ class WikiReconcileClient:
         }]
 
     # =========================================================
-    # VARIANTS (kept but simplified)
+    # VARIANTS
     # =========================================================
     def _variants(self, label):
         base = self._normalize(label)
@@ -440,14 +733,10 @@ class WikiReconcileClient:
     # =========================================================
     def _wikibase(self, label, limit=10):
         results = []
-
         queries = [label] + self._variants(label)
 
         for q in queries:
             try:
-                print(f"[wikibase] query: {q}", flush=True)
-
-                t0 = time.time()
                 r = self.session.get(
                     self.api_url,
                     params={
@@ -459,12 +748,9 @@ class WikiReconcileClient:
                     },
                     timeout=15
                 )
-                dt = time.time() - t0
 
                 r.raise_for_status()
-
                 data = r.json().get("search", [])
-                print(f"[wikibase] response_time={dt:.3f}s results={len(data)}", flush=True)
 
                 for x in data:
                     results.append({
@@ -482,14 +768,10 @@ class WikiReconcileClient:
         return results
 
     # =========================================================
-    # MAIN SEARCH API
+    # PUBLIC API
     # =========================================================
     def search(self, label, limit=15):
-        print("\n[surface] ==============================", flush=True)
-        print(f"[surface] QUERY: {label}", flush=True)
-
         candidates = []
-
         candidates.extend(self._local(label))
         candidates.extend(self._wikibase(label, limit=limit))
 
@@ -502,18 +784,7 @@ class WikiReconcileClient:
 
         candidates.sort(key=lambda x: x.get("score", 0), reverse=True)
 
-        final = candidates[:limit + 10]
-
-        print(f"[surface] returned={len(final)}", flush=True)
-
-        for i, c in enumerate(final[:12], 1):
-            print(
-                f"[surface] {i}. {c.get('label')} "
-                f"(score={c.get('score'):.2f}, source={c.get('source')})",
-                flush=True
-            )
-
-        return final
+        return candidates[:limit + 10]
 
 ========================================================================================================================
 # FILE: wiki_reconcile_cluster.py

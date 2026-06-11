@@ -1,0 +1,9 @@
+id,query,bucket,entity_type,candidate_id,candidate_label,candidate_description,candidate_score,candidate_source,candidate_url,wiki_match
+QW1001,Adon olam,expression,entity,Q203,adon olam,,1,wikibase,https://husky.oarc.ucla.edu/wiki/Item:Q203,y
+QW1010,As the Hart Panteth,expression,entity,Q279,as the hart panteth | thou art enthroned above,,1,wikibase,https://husky.oarc.ucla.edu/wiki/Item:Q279,y
+QW1002,adon olam,work,entity,Q203,adon olam,,1,wikibase,https://husky.oarc.ucla.edu/wiki/Item:Q203,y
+QW1032,"empor zu gott, mein lobgesang!",work,entity,Q453,"empor zu gott, mein lobgesang!",,1,wikibase,https://husky.oarc.ucla.edu/wiki/Item:Q453,y
+QW1006,Sacred,musical marker,entity,Q9,Sacred Music,Works intended for sacred/religious contexts or pertaining to ritual observances. Music intended for performance within synagogue and ritual contexts.,1,wikibase,https://husky.oarc.ucla.edu/wiki/Item:Q9,y
+QW1007,Choral-Solo,musical marker,entity,Q27,Choral-Solo,a piece for chorus of any size with minimal or no instrumental accompaniment that includes a solo vocal part.,1,wikibase,https://husky.oarc.ucla.edu/wiki/Item:Q27,y
+QW1008,Liturgical-Setting(s),musical marker,entity,Q42,Liturgical-Setting(s),"individual settings of liturgical texts intended for use sacred services for the Sabbath, Holy Day, or Festival.",1,wikibase,https://husky.oarc.ucla.edu/wiki/Item:Q42,y
+QW1015,Jewish Women's Congress,institution,entity,__create__,Jewish Women's Congress,,0,create,,y

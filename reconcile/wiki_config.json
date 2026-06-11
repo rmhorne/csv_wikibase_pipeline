@@ -11,5 +11,13 @@
     "enabled": false,
     "username": "Rhorne",
     "password": "8GDWE6rEdZRNEGJErty6Y^sFdYc7xgggkFRbhhhL4"
+  },
+
+    "wikibase_bot_auth": {
+    "enabled": true,
+    "username": "Rhorne",
+    "password": "reconcile@i35lal1mbevqup8ejkr5fom0p7k6hld1"
   }
 }
+
+

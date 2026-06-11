@@ -80,15 +80,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
+        "id": "Q281",
+        "label": "ashrei ha'ish",
         "description": null,
         "score": 0.4516129032258065,
         "source": "wikibase"
       },
       {
-        "id": "Q281",
-        "label": "ashrei ha'ish",
+        "id": "Q1159",
+        "label": "the covenant",
         "description": null,
         "score": 0.4516129032258065,
         "source": "wikibase"
@@ -303,15 +303,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q718",
-        "label": "liturgical settings",
+        "id": "Q719",
+        "label": "liturgical settings i",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q719",
-        "label": "liturgical settings i",
+        "id": "Q718",
+        "label": "liturgical settings",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -377,15 +377,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q718",
-        "label": "liturgical settings",
+        "id": "Q720",
+        "label": "liturgical settings ii",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q720",
-        "label": "liturgical settings ii",
+        "id": "Q718",
+        "label": "liturgical settings",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -666,15 +666,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
+        "id": "Q496",
+        "label": "from jewish life",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
       },
       {
-        "id": "Q496",
-        "label": "from jewish life",
+        "id": "Q1159",
+        "label": "the covenant",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
@@ -932,13 +932,6 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.3783783783783784,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.368421052631579,
         "source": "wikibase"
       },
       {
@@ -1235,10 +1228,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.36666666666666664,
+        "score": 0.3571428571428571,
         "source": "wikibase"
       },
       {
@@ -1302,17 +1295,17 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4444444444444444,
+        "source": "wikibase"
+      },
+      {
         "id": "Q161",
         "label": "a carol for hanukka",
         "description": null,
         "score": 0.3829787234042554,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.3673469387755102,
         "source": "wikibase"
       },
       {
@@ -1483,15 +1476,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q725",
-        "label": "love's wounded",
+        "id": "Q924",
+        "label": "ofer ben-amots",
         "description": null,
         "score": 0.3404255319148936,
         "source": "wikibase"
       },
       {
-        "id": "Q924",
-        "label": "ofer ben-amots",
+        "id": "Q725",
+        "label": "love's wounded",
         "description": null,
         "score": 0.3404255319148936,
         "source": "wikibase"
@@ -1819,6 +1812,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q1028",
+        "label": "sacred service",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q1030",
         "label": "sacred service for sabbath eve",
         "description": null,
@@ -1835,13 +1835,6 @@
       {
         "id": "Q1026",
         "label": "sabbath eve service",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q1028",
-        "label": "sacred service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -1907,15 +1900,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q687",
-        "label": "kiddush",
+        "id": "Q1043",
+        "label": "sephardi kiddush",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1043",
-        "label": "sephardi kiddush",
+        "id": "Q687",
+        "label": "kiddush",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -2076,15 +2069,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
+        "id": "Q496",
+        "label": "from jewish life",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
       },
       {
-        "id": "Q496",
-        "label": "from jewish life",
+        "id": "Q1159",
+        "label": "the covenant",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
@@ -2222,15 +2215,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1026",
-        "label": "sabbath eve service",
+        "id": "Q174",
+        "label": "a reform sabbath eve service:",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q174",
-        "label": "a reform sabbath eve service:",
+        "id": "Q1026",
+        "label": "sabbath eve service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -2257,13 +2250,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.40816326530612246,
-        "source": "wikibase"
-      },
-      {
         "id": "Q41",
         "label": "Liturgical-Service",
         "description": "a fully composed sacred service for the Sabbath, Holy Day, or Festival.",
@@ -2280,6 +2266,13 @@
       {
         "id": "Q468",
         "label": "evening liturgies",
+        "description": null,
+        "score": 0.35555555555555557,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
         "score": 0.35555555555555557,
         "source": "wikibase"
@@ -2317,13 +2310,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q324",
-        "label": "ben steinberg",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q973",
         "label": "prelude",
         "description": null,
@@ -2333,6 +2319,13 @@
       {
         "id": "Q975",
         "label": "prelude for organ (ben steinberg)",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q324",
+        "label": "ben steinberg",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -2585,15 +2578,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q884",
-        "label": "mizmor shir ladonal shir hadash (heinrich schalit)",
+        "id": "Q558",
+        "label": "heinrich schalit",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q558",
-        "label": "heinrich schalit",
+        "id": "Q884",
+        "label": "mizmor shir ladonal shir hadash (heinrich schalit)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -2698,15 +2691,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q542",
-        "label": "hassidic interlude (herbert fromm)",
+        "id": "Q562",
+        "label": "herbert fromm",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q562",
-        "label": "herbert fromm",
+        "id": "Q542",
+        "label": "hassidic interlude (herbert fromm)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -2790,15 +2783,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q492",
-        "label": "frederick jacobi",
+        "id": "Q217",
+        "label": "ahavat olam (frederick jacobi)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q217",
-        "label": "ahavat olam (frederick jacobi)",
+        "id": "Q492",
+        "label": "frederick jacobi",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -3190,6 +3183,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q742",
+        "label": "magen avot (hugo chaim adler)",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q575",
         "label": "hugo adler",
         "description": null,
@@ -3199,13 +3199,6 @@
       {
         "id": "Q576",
         "label": "hugo chaim adler",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q742",
-        "label": "magen avot (hugo chaim adler)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -3363,15 +3356,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q580",
-        "label": "i will lift up my eyes (psalm 121, herbert fromm)",
+        "id": "Q562",
+        "label": "herbert fromm",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q562",
-        "label": "herbert fromm",
+        "id": "Q580",
+        "label": "i will lift up my eyes (psalm 121, herbert fromm)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -3568,15 +3561,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q671",
-        "label": "julius chajes",
+        "id": "Q214",
+        "label": "adoration",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q214",
-        "label": "adoration",
+        "id": "Q671",
+        "label": "julius chajes",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -3600,20 +3593,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q687",
-        "label": "kiddush",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q688",
-        "label": "kiddush (hugo chaim adler)",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q575",
         "label": "hugo adler",
         "description": null,
@@ -3623,6 +3602,20 @@
       {
         "id": "Q576",
         "label": "hugo chaim adler",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q687",
+        "label": "kiddush",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q688",
+        "label": "kiddush (hugo chaim adler)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -3822,13 +3815,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4067796610169491,
-        "source": "wikibase"
-      },
-      {
         "id": "Q41",
         "label": "Liturgical-Service",
         "description": "a fully composed sacred service for the Sabbath, Holy Day, or Festival.",
@@ -3854,6 +3840,13 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.3448275862068965,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.29090909090909095,
         "source": "wikibase"
       },
       {
@@ -4087,13 +4080,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q364",
-        "label": "charles davidson",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q569",
         "label": "hodo al eretz",
         "description": null,
@@ -4103,6 +4089,13 @@
       {
         "id": "Q570",
         "label": "hodo al eretz (charles davidson)",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q364",
+        "label": "charles davidson",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -4168,15 +4161,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1211",
-        "label": "torat adonai t'mima (samuel adler)",
+        "id": "Q1035",
+        "label": "samuel adler",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1035",
-        "label": "samuel adler",
+        "id": "Q1211",
+        "label": "torat adonai t'mima (samuel adler)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -4196,15 +4189,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q212",
-        "label": "adonai z'kharanu",
+        "id": "Q1037",
+        "label": "samuel malavsky",
         "description": null,
         "score": 0.5714285714285715,
         "source": "wikibase"
       },
       {
-        "id": "Q1037",
-        "label": "samuel malavsky",
+        "id": "Q212",
+        "label": "adonai z'kharanu",
         "description": null,
         "score": 0.5714285714285715,
         "source": "wikibase"
@@ -4249,6 +4242,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q467",
+        "label": "etz ḥayyim hi (abraham wolf binder)",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q195",
         "label": "abraham binder",
         "description": null,
@@ -4258,13 +4258,6 @@
       {
         "id": "Q199",
         "label": "abraham wolf binder",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q467",
-        "label": "etz ḥayyim hi (abraham wolf binder)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -4365,10 +4358,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.34920634920634924,
+        "score": 0.33898305084745756,
         "source": "wikibase"
       },
       {
@@ -4450,13 +4443,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1356",
-        "label": "ḥatzi kaddish (based on settings by todros greenberg and abraham kalechnik)",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q1208",
         "label": "todros greenberg & abraham kalechnik",
         "description": null,
@@ -4466,6 +4452,13 @@
       {
         "id": "Q676",
         "label": "kaddish",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1356",
+        "label": "ḥatzi kaddish (based on settings by todros greenberg and abraham kalechnik)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -4776,15 +4769,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q545",
-        "label": "hattei (israel schorr)",
+        "id": "Q628",
+        "label": "israel schorr",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q628",
-        "label": "israel schorr",
+        "id": "Q545",
+        "label": "hattei (israel schorr)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -4903,13 +4896,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1341",
-        "label": "zavel zilberts",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q441",
         "label": "el melekh yoshev",
         "description": null,
@@ -4919,6 +4905,13 @@
       {
         "id": "Q442",
         "label": "el melekh yoshev (zavel zilberts)",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1341",
+        "label": "zavel zilberts",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -5019,10 +5012,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.34920634920634924,
+        "score": 0.33898305084745756,
         "source": "wikibase"
       },
       {
@@ -5689,15 +5682,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q383",
-        "label": "dan frohman",
+        "id": "Q747",
+        "label": "maran d'vishmayya (dan frohman)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q747",
-        "label": "maran d'vishmayya (dan frohman)",
+        "id": "Q383",
+        "label": "dan frohman",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -5979,15 +5972,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q546",
-        "label": "hatzi kaddish",
+        "id": "Q676",
+        "label": "kaddish",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q676",
-        "label": "kaddish",
+        "id": "Q546",
+        "label": "hatzi kaddish",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -6430,15 +6423,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1220",
-        "label": "tusgav l'vadekha… uv'khen ten pahd'kha; uv'khen ten kavod; uv'khen tzaddikim",
+        "id": "Q1247",
+        "label": "uvkhen ten kavod",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1247",
-        "label": "uvkhen ten kavod",
+        "id": "Q1220",
+        "label": "tusgav l'vadekha… uv'khen ten pahd'kha; uv'khen ten kavod; uv'khen tzaddikim",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -7044,13 +7037,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q551",
-        "label": "hayom harat olam",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q1082",
         "label": "shofar blasts",
         "description": null,
@@ -7060,6 +7046,13 @@
       {
         "id": "Q1083",
         "label": "shofar blasts: hayom harat olam",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q551",
+        "label": "hayom harat olam",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -7388,15 +7381,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q334",
-        "label": "birkt kohanim; sim shalom; b'sefer hayyim; v'ne'emar ki vi yirbu",
+        "id": "Q1103",
+        "label": "sim shalom",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1103",
-        "label": "sim shalom",
+        "id": "Q334",
+        "label": "birkt kohanim; sim shalom; b'sefer hayyim; v'ne'emar ki vi yirbu",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -7943,15 +7936,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q792",
-        "label": "michael horvit",
+        "id": "Q585",
+        "label": "i. afternoon service (minḥa): ohiloa la'el (michael horvit)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q585",
-        "label": "i. afternoon service (minḥa): ohiloa la'el (michael horvit)",
+        "id": "Q792",
+        "label": "michael horvit",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -8024,6 +8017,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q582",
+        "label": "i. afternoon service (minḥa): ana adonai (seder avoda, reform version, abraham wolf binder)",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q195",
         "label": "abraham binder",
         "description": null,
@@ -8033,13 +8033,6 @@
       {
         "id": "Q199",
         "label": "abraham wolf binder",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q582",
-        "label": "i. afternoon service (minḥa): ana adonai (seder avoda, reform version, abraham wolf binder)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -8134,6 +8127,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q583",
+        "label": "i. afternoon service (minḥa): barukh shem (seder avoda, reform version, abraham wolf binder)",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q195",
         "label": "abraham binder",
         "description": null,
@@ -8143,13 +8143,6 @@
       {
         "id": "Q199",
         "label": "abraham wolf binder",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q583",
-        "label": "i. afternoon service (minḥa): barukh shem (seder avoda, reform version, abraham wolf binder)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -8368,15 +8361,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q793",
-        "label": "michael isaacson",
+        "id": "Q973",
+        "label": "prelude",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q973",
-        "label": "prelude",
+        "id": "Q793",
+        "label": "michael isaacson",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -8574,15 +8567,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1077",
-        "label": "shiviti",
+        "id": "Q1328",
+        "label": "yizkor",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1328",
-        "label": "yizkor",
+        "id": "Q1077",
+        "label": "shiviti",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -9013,15 +9006,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q558",
-        "label": "heinrich schalit",
+        "id": "Q1328",
+        "label": "yizkor",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1328",
-        "label": "yizkor",
+        "id": "Q558",
+        "label": "heinrich schalit",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -9130,15 +9123,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q616",
-        "label": "in memoriam",
+        "id": "Q1012",
+        "label": "robert starer",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1012",
-        "label": "robert starer",
+        "id": "Q616",
+        "label": "in memoriam",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -9343,15 +9336,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q521",
-        "label": "haim elisha",
+        "id": "Q598",
+        "label": "iii. concluding service (n'ila): adon has'sliḥot (haim elisha)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q598",
-        "label": "iii. concluding service (n'ila): adon has'sliḥot (haim elisha)",
+        "id": "Q521",
+        "label": "haim elisha",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -9555,15 +9548,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1104",
-        "label": "simon sargon",
+        "id": "Q600",
+        "label": "iii. concluding service (n'ila): el nora alila (simon sargon)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q600",
-        "label": "iii. concluding service (n'ila): el nora alila (simon sargon)",
+        "id": "Q1104",
+        "label": "simon sargon",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -9657,15 +9650,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q601",
-        "label": "iii. concluding service (n'ila): p'taḥ lanu sha'ar (herbert fromm)",
+        "id": "Q562",
+        "label": "herbert fromm",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q562",
-        "label": "herbert fromm",
+        "id": "Q601",
+        "label": "iii. concluding service (n'ila): p'taḥ lanu sha'ar (herbert fromm)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -9876,10 +9869,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.35,
+        "score": 0.38888888888888884,
         "source": "wikibase"
       },
       {
@@ -10014,6 +10007,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q983",
+        "label": "psalm 23",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q210",
         "label": "adonai ro'i",
         "description": null,
@@ -10023,13 +10023,6 @@
       {
         "id": "Q211",
         "label": "adonai ro'i (psalm 23)",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q983",
-        "label": "psalm 23",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -10577,15 +10570,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1035",
-        "label": "samuel adler",
+        "id": "Q218",
+        "label": "ahavat olam (samuel adler)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q218",
-        "label": "ahavat olam (samuel adler)",
+        "id": "Q1035",
+        "label": "samuel adler",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -10637,15 +10630,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q261",
-        "label": "aminadav aloni",
+        "id": "Q216",
+        "label": "ahavat olam (aminadav aloni)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q216",
-        "label": "ahavat olam (aminadav aloni)",
+        "id": "Q261",
+        "label": "aminadav aloni",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -11531,15 +11524,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q764",
-        "label": "may the words (debbie friedman)",
+        "id": "Q400",
+        "label": "debbie friedman",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q400",
-        "label": "debbie friedman",
+        "id": "Q764",
+        "label": "may the words (debbie friedman)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -11633,15 +11626,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q261",
-        "label": "aminadav aloni",
+        "id": "Q741",
+        "label": "magen avot (aminadav aloni)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q741",
-        "label": "magen avot (aminadav aloni)",
+        "id": "Q261",
+        "label": "aminadav aloni",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -12374,10 +12367,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.425531914893617,
+        "score": 0.46511627906976744,
         "source": "wikibase"
       },
       {
@@ -13595,6 +13588,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4067796610169491,
+        "source": "wikibase"
+      },
+      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -13613,13 +13613,6 @@
         "label": "Audio Storage Format",
         "description": "A medium or digital encoding method used to record, store, and reproduce sound. Class for items of audio recordings distribution, format of music release.",
         "score": 0.3870967741935484,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.34920634920634924,
         "source": "wikibase"
       },
       {
@@ -13662,13 +13655,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q478",
-        "label": "festive postlude for a pilgrimage festival",
-        "description": null,
-        "score": 0.6363636363636364,
-        "source": "wikibase"
-      },
-      {
         "id": "Q974",
         "label": "prelude (recueillement) - larghetto",
         "description": null,
@@ -13678,6 +13664,13 @@
       {
         "id": "Q975",
         "label": "prelude for organ (ben steinberg)",
+        "description": null,
+        "score": 0.6363636363636364,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q478",
+        "label": "festive postlude for a pilgrimage festival",
         "description": null,
         "score": 0.6363636363636364,
         "source": "wikibase"
@@ -14559,15 +14552,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1108",
-        "label": "sing unto the lord (charles davidson)",
+        "id": "Q364",
+        "label": "charles davidson",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q364",
-        "label": "charles davidson",
+        "id": "Q1108",
+        "label": "sing unto the lord (charles davidson)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -14700,15 +14693,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q494",
-        "label": "frederick piket",
+        "id": "Q208",
+        "label": "adonai malakh (frederick piket)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q208",
-        "label": "adonai malakh (frederick piket)",
+        "id": "Q494",
+        "label": "frederick piket",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -15663,15 +15656,8 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1216",
-        "label": "traditional",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q1217",
-        "label": "traditional?",
+        "id": "Q1040",
+        "label": "seder songs",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -15684,8 +15670,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1040",
-        "label": "seder songs",
+        "id": "Q1216",
+        "label": "traditional",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1217",
+        "label": "traditional?",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -16945,13 +16938,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.48648648648648646,
-        "source": "wikibase"
-      },
-      {
         "id": "Q283",
         "label": "aspects of a great miracle",
         "description": null,
@@ -16963,6 +16949,13 @@
         "label": "ashrei ha'ish",
         "description": null,
         "score": 0.42857142857142855,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4242424242424242,
         "source": "wikibase"
       },
       {
@@ -17784,15 +17777,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1144",
-        "label": "tal bo",
+        "id": "Q1143",
+        "label": "tal",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1143",
-        "label": "tal",
+        "id": "Q1144",
+        "label": "tal bo",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -18203,13 +18196,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q924",
-        "label": "ofer ben-amots",
-        "description": null,
-        "score": 0.3783783783783784,
-        "source": "wikibase"
-      },
-      {
         "id": "Q289",
         "label": "avinu malkenu",
         "description": null,
@@ -18219,6 +18205,13 @@
       {
         "id": "Q291",
         "label": "avodat aharon",
+        "description": null,
+        "score": 0.3783783783783784,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q924",
+        "label": "ofer ben-amots",
         "description": null,
         "score": 0.3783783783783784,
         "source": "wikibase"
@@ -18633,13 +18626,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.5116279069767442,
-        "source": "wikibase"
-      },
-      {
         "id": "Q160",
         "label": "a brivele der mamen",
         "description": null,
@@ -18658,6 +18644,13 @@
         "label": "torah service",
         "description": null,
         "score": 0.45714285714285713,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4102564102564103,
         "source": "wikibase"
       },
       {
@@ -18988,15 +18981,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1266",
-        "label": "vi y'malle (processional)",
+        "id": "Q977",
+        "label": "processional",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q977",
-        "label": "processional",
+        "id": "Q1266",
+        "label": "vi y'malle (processional)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -19769,15 +19762,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1056",
-        "label": "shalom aleikhem (israel goldfarb)",
+        "id": "Q627",
+        "label": "israel goldfarb",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q627",
-        "label": "israel goldfarb",
+        "id": "Q1056",
+        "label": "shalom aleikhem (israel goldfarb)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -19931,15 +19924,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1111",
-        "label": "sol zim",
+        "id": "Q1058",
+        "label": "shalom aleikhem (sol zim)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1058",
-        "label": "shalom aleikhem (sol zim)",
+        "id": "Q1111",
+        "label": "sol zim",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -20019,15 +20012,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q632",
-        "label": "jack gottlieb",
+        "id": "Q1057",
+        "label": "shalom aleikhem (jack gottlieb)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1057",
-        "label": "shalom aleikhem (jack gottlieb)",
+        "id": "Q632",
+        "label": "jack gottlieb",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -20167,17 +20160,17 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.44,
-        "source": "wikibase"
-      },
-      {
         "id": "Q162",
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.40816326530612246,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.391304347826087,
         "source": "wikibase"
       },
       {
@@ -21031,15 +21024,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1026",
-        "label": "sabbath eve service",
+        "id": "Q543",
+        "label": "hassidic sabbath eve service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q543",
-        "label": "hassidic sabbath eve service",
+        "id": "Q1026",
+        "label": "sabbath eve service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -21799,15 +21792,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1025",
-        "label": "sabbath eve sacred service",
+        "id": "Q1026",
+        "label": "sabbath eve service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1026",
-        "label": "sabbath eve service",
+        "id": "Q1025",
+        "label": "sabbath eve sacred service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -22046,13 +22039,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1027",
-        "label": "sabbath evening service",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q1028",
         "label": "sacred service",
         "description": null,
@@ -22062,6 +22048,13 @@
       {
         "id": "Q1031",
         "label": "sacred service for the sabbath evening",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1027",
+        "label": "sabbath evening service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -22389,15 +22382,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q898",
-        "label": "moshe koussevitzky",
+        "id": "Q1068",
+        "label": "shir l'erev shabbat",
         "description": null,
         "score": 0.5454545454545454,
         "source": "wikibase"
       },
       {
-        "id": "Q1068",
-        "label": "shir l'erev shabbat",
+        "id": "Q898",
+        "label": "moshe koussevitzky",
         "description": null,
         "score": 0.5454545454545454,
         "source": "wikibase"
@@ -22410,15 +22403,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q897",
-        "label": "moshe ganchoff and louis lewandowski",
+        "id": "Q1069",
+        "label": "shir l'shabbat",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
       },
       {
-        "id": "Q1069",
-        "label": "shir l'shabbat",
+        "id": "Q897",
+        "label": "moshe ganchoff and louis lewandowski",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
@@ -22786,15 +22779,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1321",
-        "label": "yigdal",
+        "id": "Q1322",
+        "label": "yigdal cantata",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1322",
-        "label": "yigdal cantata",
+        "id": "Q1321",
+        "label": "yigdal",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -22864,13 +22857,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q646",
         "label": "jerusalem symphony orchestra",
         "description": null,
@@ -22896,6 +22882,13 @@
         "label": "overture on hebrew themes",
         "description": null,
         "score": 0.391304347826087,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.368421052631579,
         "source": "wikibase"
       },
       {
@@ -22966,17 +22959,17 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.45714285714285713,
-        "source": "wikibase"
-      },
-      {
         "id": "Q160",
         "label": "a brivele der mamen",
         "description": null,
         "score": 0.4242424242424242,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.32258064516129037,
         "source": "wikibase"
       },
       {
@@ -23289,13 +23282,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1130",
-        "label": "suite hebraique",
-        "description": null,
-        "score": 0.6666666666666665,
-        "source": "wikibase"
-      },
-      {
         "id": "Q627",
         "label": "israel goldfarb",
         "description": null,
@@ -23305,6 +23291,13 @@
       {
         "id": "Q628",
         "label": "israel schorr",
+        "description": null,
+        "score": 0.6666666666666665,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1130",
+        "label": "suite hebraique",
         "description": null,
         "score": 0.6666666666666665,
         "source": "wikibase"
@@ -23626,20 +23619,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1025",
-        "label": "sabbath eve sacred service",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q1026",
-        "label": "sabbath eve service",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q1028",
         "label": "sacred service",
         "description": null,
@@ -23649,6 +23628,20 @@
       {
         "id": "Q1030",
         "label": "sacred service for sabbath eve",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1025",
+        "label": "sabbath eve sacred service",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1026",
+        "label": "sabbath eve service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -24078,6 +24071,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.3783783783783784,
+        "source": "wikibase"
+      },
+      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -24096,13 +24096,6 @@
         "label": "tzur mishello akhalnu (roderick williams arr.)",
         "description": null,
         "score": 0.34375,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.3414634146341463,
         "source": "wikibase"
       },
       {
@@ -24145,6 +24138,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.33333333333333326,
+        "source": "wikibase"
+      },
+      {
         "id": "Q160",
         "label": "a brivele der mamen",
         "description": null,
@@ -24156,13 +24156,6 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.29629629629629634,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.2857142857142857,
         "source": "wikibase"
       },
       {
@@ -24205,6 +24198,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.34782608695652173,
+        "source": "wikibase"
+      },
+      {
         "id": "Q160",
         "label": "a brivele der mamen",
         "description": null,
@@ -24216,13 +24216,6 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.3076923076923077,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.2857142857142857,
         "source": "wikibase"
       },
       {
@@ -24272,10 +24265,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.4,
+        "score": 0.32258064516129037,
         "source": "wikibase"
       },
       {
@@ -24325,10 +24318,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.3571428571428571,
+        "score": 0.33333333333333326,
         "source": "wikibase"
       },
       {
@@ -25013,15 +25006,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q423",
-        "label": "dos gold fun dayne oygn",
+        "id": "Q948",
+        "label": "oygn",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q948",
-        "label": "oygn",
+        "id": "Q423",
+        "label": "dos gold fun dayne oygn",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -25501,10 +25494,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.38095238095238093,
+        "score": 0.368421052631579,
         "source": "wikibase"
       },
       {
@@ -25795,15 +25788,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q881",
-        "label": "mit oygn farmakhte",
+        "id": "Q948",
+        "label": "oygn",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q948",
-        "label": "oygn",
+        "id": "Q881",
+        "label": "mit oygn farmakhte",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -26733,13 +26726,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.45,
-        "source": "wikibase"
-      },
-      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -26796,6 +26782,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.33333333333333326,
+        "source": "wikibase"
+      },
+      {
         "id": "__create__",
         "label": "A Letter to Avigdor",
         "score": 0.0,
@@ -26828,10 +26821,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.41379310344827586,
+        "score": 0.4,
         "source": "wikibase"
       },
       {
@@ -26934,13 +26927,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.391304347826087,
-        "source": "wikibase"
-      },
-      {
         "id": "Q291",
         "label": "avodat aharon",
         "description": null,
@@ -26973,6 +26959,13 @@
         "label": "avodath hakodesh: part ii – k’dusha (complete) 1933",
         "description": null,
         "score": 0.3428571428571429,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.33333333333333326,
         "source": "wikibase"
       },
       {
@@ -27057,15 +27050,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q966",
-        "label": "piano trio no. 2 \"silent voices\"",
+        "id": "Q265",
+        "label": "and how my brother is cain",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
       },
       {
-        "id": "Q265",
-        "label": "and how my brother is cain",
+        "id": "Q966",
+        "label": "piano trio no. 2 \"silent voices\"",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
@@ -29443,15 +29436,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q678",
-        "label": "kaddish for maurice abravanel",
+        "id": "Q676",
+        "label": "kaddish",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q676",
-        "label": "kaddish",
+        "id": "Q678",
+        "label": "kaddish for maurice abravanel",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -29762,15 +29755,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1134",
-        "label": "symphony midrash esther",
+        "id": "Q466",
+        "label": "esther",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q466",
-        "label": "esther",
+        "id": "Q1134",
+        "label": "symphony midrash esther",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -30583,15 +30576,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
+        "id": "Q496",
+        "label": "from jewish life",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
       },
       {
-        "id": "Q496",
-        "label": "from jewish life",
+        "id": "Q1159",
+        "label": "the covenant",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
@@ -30683,17 +30676,17 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4516129032258065,
+        "source": "wikibase"
+      },
+      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
         "score": 0.4242424242424242,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4,
         "source": "wikibase"
       },
       {
@@ -30771,13 +30764,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.36,
-        "source": "wikibase"
-      },
-      {
         "id": "Q617",
         "label": "interracial followship chorus of new york",
         "description": null,
@@ -30796,6 +30782,13 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.3265306122448979,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.26086956521739124,
         "source": "wikibase"
       },
       {
@@ -31262,17 +31255,17 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.35294117647058826,
-        "source": "wikibase"
-      },
-      {
         "id": "Q160",
         "label": "a brivele der mamen",
         "description": null,
         "score": 0.33333333333333326,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.3125,
         "source": "wikibase"
       },
       {
@@ -31372,10 +31365,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.3428571428571429,
+        "score": 0.33333333333333326,
         "source": "wikibase"
       },
       {
@@ -31468,13 +31461,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.3880597014925373,
-        "source": "wikibase"
-      },
-      {
         "id": "Q770",
         "label": "mayn yidishe meydle",
         "description": null,
@@ -31493,6 +31479,13 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.36363636363636365,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.31746031746031744,
         "source": "wikibase"
       },
       {
@@ -31571,17 +31564,17 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.32352941176470595,
-        "source": "wikibase"
-      },
-      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
         "score": 0.303030303030303,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.28125,
         "source": "wikibase"
       },
       {
@@ -31857,10 +31850,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.4,
+        "score": 0.38888888888888884,
         "source": "wikibase"
       },
       {
@@ -31952,13 +31945,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.5,
-        "source": "wikibase"
-      },
-      {
         "id": "Q405",
         "label": "der nakht vekhter",
         "description": null,
@@ -31991,6 +31977,13 @@
         "label": "a carol for hanukka",
         "description": null,
         "score": 0.4736842105263158,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4444444444444444,
         "source": "wikibase"
       },
       {
@@ -32040,10 +32033,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.375,
+        "score": 0.3571428571428571,
         "source": "wikibase"
       },
       {
@@ -32093,13 +32086,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4102564102564103,
-        "source": "wikibase"
-      },
-      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -32111,6 +32097,13 @@
         "label": "a brivele der mamen",
         "description": null,
         "score": 0.3783783783783784,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.3428571428571429,
         "source": "wikibase"
       },
       {
@@ -32478,10 +32471,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.4,
+        "score": 0.3870967741935484,
         "source": "wikibase"
       },
       {
@@ -32556,15 +32549,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q431",
-        "label": "du bist dos likht fun mayne oygn",
+        "id": "Q948",
+        "label": "oygn",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q948",
-        "label": "oygn",
+        "id": "Q431",
+        "label": "du bist dos likht fun mayne oygn",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -33023,15 +33016,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q160",
-        "label": "a brivele der mamen",
+        "id": "Q320",
+        "label": "bay mir bistu sheyn",
         "description": null,
         "score": 0.48,
         "source": "wikibase"
       },
       {
-        "id": "Q320",
-        "label": "bay mir bistu sheyn",
+        "id": "Q160",
+        "label": "a brivele der mamen",
         "description": null,
         "score": 0.48,
         "source": "wikibase"
@@ -33072,13 +33065,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4230769230769231,
-        "source": "wikibase"
-      },
-      {
         "id": "Q321",
         "label": "baym bentshn likht",
         "description": null,
@@ -33088,6 +33074,13 @@
       {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
+        "description": null,
+        "score": 0.4,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q606",
+        "label": "ikh hob dikh lib, amerike",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
@@ -33394,10 +33387,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.4,
+        "score": 0.33333333333333326,
         "source": "wikibase"
       },
       {
@@ -33723,15 +33716,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q783",
-        "label": "meydl, meydl",
+        "id": "Q944",
+        "label": "oy, iz dos a meydl",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q944",
-        "label": "oy, iz dos a meydl",
+        "id": "Q783",
+        "label": "meydl, meydl",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -33786,17 +33779,17 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4210526315789474,
-        "source": "wikibase"
-      },
-      {
         "id": "Q424",
         "label": "dos lidl fun dem goldenem land",
         "description": null,
         "score": 0.3829787234042554,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q946",
+        "label": "oyb nit nokh hekher",
+        "description": null,
+        "score": 0.33333333333333326,
         "source": "wikibase"
       },
       {
@@ -33814,10 +33807,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q946",
-        "label": "oyb nit nokh hekher",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.33333333333333326,
+        "score": 0.2941176470588235,
         "source": "wikibase"
       },
       {
@@ -33833,15 +33826,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q605",
-        "label": "ikh bin farlibt",
+        "id": "Q945",
+        "label": "oy, mame, bin ikh farlibt",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q945",
-        "label": "oy, mame, bin ikh farlibt",
+        "id": "Q605",
+        "label": "ikh bin farlibt",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -36531,15 +36524,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1051",
-        "label": "shabbat",
+        "id": "Q1053",
+        "label": "shabbat for today",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1053",
-        "label": "shabbat for today",
+        "id": "Q1051",
+        "label": "shabbat",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -38337,15 +38330,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1330",
-        "label": "yizkor requiem",
+        "id": "Q1328",
+        "label": "yizkor",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1328",
-        "label": "yizkor",
+        "id": "Q1330",
+        "label": "yizkor requiem",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -38418,13 +38411,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4390243902439025,
-        "source": "wikibase"
-      },
-      {
         "id": "Q161",
         "label": "a carol for hanukka",
         "description": null,
@@ -38443,6 +38429,13 @@
         "label": "ofer ben-amots",
         "description": null,
         "score": 0.36363636363636365,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.32432432432432434,
         "source": "wikibase"
       },
       {
@@ -38478,13 +38471,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4324324324324324,
-        "source": "wikibase"
-      },
-      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -38496,6 +38482,13 @@
         "label": "a carol for hanukka",
         "description": null,
         "score": 0.4,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.36363636363636365,
         "source": "wikibase"
       },
       {
@@ -39249,15 +39242,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q345",
-        "label": "cantata based on the 1st psalm",
+        "id": "Q986",
+        "label": "psalm cantata",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q986",
-        "label": "psalm cantata",
+        "id": "Q345",
+        "label": "cantata based on the 1st psalm",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -39640,10 +39633,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.4324324324324324,
+        "score": 0.36363636363636365,
         "source": "wikibase"
       },
       {
@@ -40548,15 +40541,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1158",
-        "label": "the commandments",
+        "id": "Q496",
+        "label": "from jewish life",
         "description": null,
         "score": 0.5263157894736842,
         "source": "wikibase"
       },
       {
-        "id": "Q496",
-        "label": "from jewish life",
+        "id": "Q1158",
+        "label": "the commandments",
         "description": null,
         "score": 0.5263157894736842,
         "source": "wikibase"
@@ -40661,6 +40654,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.38888888888888884,
+        "source": "wikibase"
+      },
+      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -40686,13 +40686,6 @@
         "label": "ofer ben-amots",
         "description": null,
         "score": 0.3125,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.3,
         "source": "wikibase"
       },
       {
@@ -41218,10 +41211,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.3783783783783784,
+        "score": 0.4242424242424242,
         "source": "wikibase"
       },
       {
@@ -41403,15 +41396,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
+        "id": "Q281",
+        "label": "ashrei ha'ish",
         "description": null,
         "score": 0.4516129032258065,
         "source": "wikibase"
       },
       {
-        "id": "Q281",
-        "label": "ashrei ha'ish",
+        "id": "Q1159",
+        "label": "the covenant",
         "description": null,
         "score": 0.4516129032258065,
         "source": "wikibase"
@@ -41989,15 +41982,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
+        "id": "Q496",
+        "label": "from jewish life",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
       },
       {
-        "id": "Q496",
-        "label": "from jewish life",
+        "id": "Q1159",
+        "label": "the covenant",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
@@ -42262,13 +42255,6 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.3783783783783784,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.368421052631579,
         "source": "wikibase"
       },
       {
@@ -42565,10 +42551,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.36666666666666664,
+        "score": 0.3571428571428571,
         "source": "wikibase"
       },
       {
@@ -42632,17 +42618,17 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4444444444444444,
+        "source": "wikibase"
+      },
+      {
         "id": "Q161",
         "label": "a carol for hanukka",
         "description": null,
         "score": 0.3829787234042554,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.3673469387755102,
         "source": "wikibase"
       },
       {
@@ -42809,15 +42795,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q725",
-        "label": "love's wounded",
+        "id": "Q924",
+        "label": "ofer ben-amots",
         "description": null,
         "score": 0.3404255319148936,
         "source": "wikibase"
       },
       {
-        "id": "Q924",
-        "label": "ofer ben-amots",
+        "id": "Q725",
+        "label": "love's wounded",
         "description": null,
         "score": 0.3404255319148936,
         "source": "wikibase"
@@ -43159,6 +43145,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q1028",
+        "label": "sacred service",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q1025",
         "label": "sabbath eve sacred service",
         "description": null,
@@ -43168,13 +43161,6 @@
       {
         "id": "Q1026",
         "label": "sabbath eve service",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q1028",
-        "label": "sacred service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -43409,15 +43395,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
+        "id": "Q496",
+        "label": "from jewish life",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
       },
       {
-        "id": "Q496",
-        "label": "from jewish life",
+        "id": "Q1159",
+        "label": "the covenant",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
@@ -43590,13 +43576,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.40816326530612246,
-        "source": "wikibase"
-      },
-      {
         "id": "Q41",
         "label": "Liturgical-Service",
         "description": "a fully composed sacred service for the Sabbath, Holy Day, or Festival.",
@@ -43613,6 +43592,13 @@
       {
         "id": "Q468",
         "label": "evening liturgies",
+        "description": null,
+        "score": 0.35555555555555557,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
         "score": 0.35555555555555557,
         "source": "wikibase"
@@ -43657,15 +43643,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q324",
-        "label": "ben steinberg",
+        "id": "Q973",
+        "label": "prelude",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q973",
-        "label": "prelude",
+        "id": "Q324",
+        "label": "ben steinberg",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -44930,15 +44916,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q671",
-        "label": "julius chajes",
+        "id": "Q214",
+        "label": "adoration",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q214",
-        "label": "adoration",
+        "id": "Q671",
+        "label": "julius chajes",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -44969,13 +44955,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q687",
-        "label": "kiddush",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q575",
         "label": "hugo adler",
         "description": null,
@@ -44985,6 +44964,13 @@
       {
         "id": "Q576",
         "label": "hugo chaim adler",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q687",
+        "label": "kiddush",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -45184,13 +45170,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4067796610169491,
-        "source": "wikibase"
-      },
-      {
         "id": "Q41",
         "label": "Liturgical-Service",
         "description": "a fully composed sacred service for the Sabbath, Holy Day, or Festival.",
@@ -45216,6 +45195,13 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.3448275862068965,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.29090909090909095,
         "source": "wikibase"
       },
       {
@@ -45464,15 +45450,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q364",
-        "label": "charles davidson",
+        "id": "Q569",
+        "label": "hodo al eretz",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q569",
-        "label": "hodo al eretz",
+        "id": "Q364",
+        "label": "charles davidson",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -45742,10 +45728,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.34920634920634924,
+        "score": 0.33898305084745756,
         "source": "wikibase"
       },
       {
@@ -46273,15 +46259,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1341",
-        "label": "zavel zilberts",
+        "id": "Q441",
+        "label": "el melekh yoshev",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q441",
-        "label": "el melekh yoshev",
+        "id": "Q1341",
+        "label": "zavel zilberts",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -46389,10 +46375,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.34920634920634924,
+        "score": 0.33898305084745756,
         "source": "wikibase"
       },
       {
@@ -48597,15 +48583,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q551",
-        "label": "hayom harat olam",
+        "id": "Q1082",
+        "label": "shofar blasts",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1082",
-        "label": "shofar blasts",
+        "id": "Q551",
+        "label": "hayom harat olam",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -49738,15 +49724,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q793",
-        "label": "michael isaacson",
+        "id": "Q973",
+        "label": "prelude",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q973",
-        "label": "prelude",
+        "id": "Q793",
+        "label": "michael isaacson",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -49923,15 +49909,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1077",
-        "label": "shiviti",
+        "id": "Q1328",
+        "label": "yizkor",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1328",
-        "label": "yizkor",
+        "id": "Q1077",
+        "label": "shiviti",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -50321,15 +50307,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q558",
-        "label": "heinrich schalit",
+        "id": "Q1328",
+        "label": "yizkor",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1328",
-        "label": "yizkor",
+        "id": "Q558",
+        "label": "heinrich schalit",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -50431,15 +50417,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q616",
-        "label": "in memoriam",
+        "id": "Q1012",
+        "label": "robert starer",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1012",
-        "label": "robert starer",
+        "id": "Q616",
+        "label": "in memoriam",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -51102,10 +51088,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.35,
+        "score": 0.38888888888888884,
         "source": "wikibase"
       },
       {
@@ -53558,10 +53544,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.425531914893617,
+        "score": 0.46511627906976744,
         "source": "wikibase"
       },
       {
@@ -54624,6 +54610,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4067796610169491,
+        "source": "wikibase"
+      },
+      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -54642,13 +54635,6 @@
         "label": "Audio Storage Format",
         "description": "A medium or digital encoding method used to record, store, and reproduce sound. Class for items of audio recordings distribution, format of music release.",
         "score": 0.3870967741935484,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.34920634920634924,
         "source": "wikibase"
       },
       {
@@ -56698,6 +56684,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q1040",
+        "label": "seder songs",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q1216",
         "label": "traditional",
         "description": null,
@@ -56707,13 +56700,6 @@
       {
         "id": "Q1217",
         "label": "traditional?",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q1040",
-        "label": "seder songs",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -58008,13 +57994,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.48648648648648646,
-        "source": "wikibase"
-      },
-      {
         "id": "Q283",
         "label": "aspects of a great miracle",
         "description": null,
@@ -58026,6 +58005,13 @@
         "label": "ashrei ha'ish",
         "description": null,
         "score": 0.42857142857142855,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4242424242424242,
         "source": "wikibase"
       },
       {
@@ -58938,13 +58924,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q924",
-        "label": "ofer ben-amots",
-        "description": null,
-        "score": 0.3783783783783784,
-        "source": "wikibase"
-      },
-      {
         "id": "Q289",
         "label": "avinu malkenu",
         "description": null,
@@ -58954,6 +58933,13 @@
       {
         "id": "Q291",
         "label": "avodat aharon",
+        "description": null,
+        "score": 0.3783783783783784,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q924",
+        "label": "ofer ben-amots",
         "description": null,
         "score": 0.3783783783783784,
         "source": "wikibase"
@@ -59368,13 +59354,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.5116279069767442,
-        "source": "wikibase"
-      },
-      {
         "id": "Q160",
         "label": "a brivele der mamen",
         "description": null,
@@ -59393,6 +59372,13 @@
         "label": "torah service",
         "description": null,
         "score": 0.45714285714285713,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4102564102564103,
         "source": "wikibase"
       },
       {
@@ -60150,15 +60136,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q973",
-        "label": "prelude",
+        "id": "Q1328",
+        "label": "yizkor",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1328",
-        "label": "yizkor",
+        "id": "Q973",
+        "label": "prelude",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -60855,17 +60841,17 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.44,
-        "source": "wikibase"
-      },
-      {
         "id": "Q162",
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.40816326530612246,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.391304347826087,
         "source": "wikibase"
       },
       {
@@ -62684,15 +62670,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1027",
-        "label": "sabbath evening service",
+        "id": "Q1028",
+        "label": "sacred service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1028",
-        "label": "sacred service",
+        "id": "Q1027",
+        "label": "sabbath evening service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -63013,15 +62999,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q898",
-        "label": "moshe koussevitzky",
+        "id": "Q1068",
+        "label": "shir l'erev shabbat",
         "description": null,
         "score": 0.5454545454545454,
         "source": "wikibase"
       },
       {
-        "id": "Q1068",
-        "label": "shir l'erev shabbat",
+        "id": "Q898",
+        "label": "moshe koussevitzky",
         "description": null,
         "score": 0.5454545454545454,
         "source": "wikibase"
@@ -63034,15 +63020,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q897",
-        "label": "moshe ganchoff and louis lewandowski",
+        "id": "Q1069",
+        "label": "shir l'shabbat",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
       },
       {
-        "id": "Q1069",
-        "label": "shir l'shabbat",
+        "id": "Q897",
+        "label": "moshe ganchoff and louis lewandowski",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
@@ -63438,13 +63424,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q646",
         "label": "jerusalem symphony orchestra",
         "description": null,
@@ -63470,6 +63449,13 @@
         "label": "overture on hebrew themes",
         "description": null,
         "score": 0.391304347826087,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.368421052631579,
         "source": "wikibase"
       },
       {
@@ -63540,17 +63526,17 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.45714285714285713,
-        "source": "wikibase"
-      },
-      {
         "id": "Q160",
         "label": "a brivele der mamen",
         "description": null,
         "score": 0.4242424242424242,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.32258064516129037,
         "source": "wikibase"
       },
       {
@@ -64200,13 +64186,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1026",
-        "label": "sabbath eve service",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q1028",
         "label": "sacred service",
         "description": null,
@@ -64216,6 +64195,13 @@
       {
         "id": "Q1030",
         "label": "sacred service for sabbath eve",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1026",
+        "label": "sabbath eve service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -64645,6 +64631,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.3783783783783784,
+        "source": "wikibase"
+      },
+      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -64663,13 +64656,6 @@
         "label": "tzur mishello akhalnu (roderick williams arr.)",
         "description": null,
         "score": 0.34375,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.3414634146341463,
         "source": "wikibase"
       },
       {
@@ -64712,6 +64698,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.33333333333333326,
+        "source": "wikibase"
+      },
+      {
         "id": "Q160",
         "label": "a brivele der mamen",
         "description": null,
@@ -64723,13 +64716,6 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.29629629629629634,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.2857142857142857,
         "source": "wikibase"
       },
       {
@@ -64772,6 +64758,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.34782608695652173,
+        "source": "wikibase"
+      },
+      {
         "id": "Q160",
         "label": "a brivele der mamen",
         "description": null,
@@ -64783,13 +64776,6 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.3076923076923077,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.2857142857142857,
         "source": "wikibase"
       },
       {
@@ -64839,10 +64825,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.4,
+        "score": 0.32258064516129037,
         "source": "wikibase"
       },
       {
@@ -64899,10 +64885,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.3571428571428571,
+        "score": 0.33333333333333326,
         "source": "wikibase"
       },
       {
@@ -66069,10 +66055,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.38095238095238093,
+        "score": 0.368421052631579,
         "source": "wikibase"
       },
       {
@@ -67247,13 +67233,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.45,
-        "source": "wikibase"
-      },
-      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -67310,6 +67289,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.33333333333333326,
+        "source": "wikibase"
+      },
+      {
         "id": "__create__",
         "label": "a letter to avigdor",
         "score": 0.0,
@@ -67342,10 +67328,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.41379310344827586,
+        "score": 0.4,
         "source": "wikibase"
       },
       {
@@ -67448,13 +67434,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.391304347826087,
-        "source": "wikibase"
-      },
-      {
         "id": "Q291",
         "label": "avodat aharon",
         "description": null,
@@ -67487,6 +67466,13 @@
         "label": "avodath hakodesh: part ii – k’dusha (complete) 1933",
         "description": null,
         "score": 0.3428571428571429,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.33333333333333326,
         "source": "wikibase"
       },
       {
@@ -67558,15 +67544,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q966",
-        "label": "piano trio no. 2 \"silent voices\"",
+        "id": "Q265",
+        "label": "and how my brother is cain",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
       },
       {
-        "id": "Q265",
-        "label": "and how my brother is cain",
+        "id": "Q966",
+        "label": "piano trio no. 2 \"silent voices\"",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
@@ -71025,13 +71011,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
-        "description": null,
-        "score": 0.4,
-        "source": "wikibase"
-      },
-      {
         "id": "Q1224",
         "label": "two pieces in sabbath mood",
         "description": null,
@@ -71041,6 +71020,13 @@
       {
         "id": "Q496",
         "label": "from jewish life",
+        "description": null,
+        "score": 0.4,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1159",
+        "label": "the covenant",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
@@ -71125,17 +71111,17 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4516129032258065,
+        "source": "wikibase"
+      },
+      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
         "score": 0.4242424242424242,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4,
         "source": "wikibase"
       },
       {
@@ -71220,13 +71206,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.36,
-        "source": "wikibase"
-      },
-      {
         "id": "Q617",
         "label": "interracial followship chorus of new york",
         "description": null,
@@ -71245,6 +71224,13 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.3265306122448979,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.26086956521739124,
         "source": "wikibase"
       },
       {
@@ -71711,17 +71697,17 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.35294117647058826,
-        "source": "wikibase"
-      },
-      {
         "id": "Q160",
         "label": "a brivele der mamen",
         "description": null,
         "score": 0.33333333333333326,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.3125,
         "source": "wikibase"
       },
       {
@@ -71807,10 +71793,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.3428571428571429,
+        "score": 0.33333333333333326,
         "source": "wikibase"
       },
       {
@@ -71889,13 +71875,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.3880597014925373,
-        "source": "wikibase"
-      },
-      {
         "id": "Q770",
         "label": "mayn yidishe meydle",
         "description": null,
@@ -71914,6 +71893,13 @@
         "label": "a foter tzu zayn zun",
         "description": null,
         "score": 0.36363636363636365,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.31746031746031744,
         "source": "wikibase"
       },
       {
@@ -71978,17 +71964,17 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.32352941176470595,
-        "source": "wikibase"
-      },
-      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
         "score": 0.303030303030303,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.28125,
         "source": "wikibase"
       },
       {
@@ -72239,10 +72225,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.4,
+        "score": 0.38888888888888884,
         "source": "wikibase"
       },
       {
@@ -72334,13 +72320,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.5,
-        "source": "wikibase"
-      },
-      {
         "id": "Q405",
         "label": "der nakht vekhter",
         "description": null,
@@ -72373,6 +72352,13 @@
         "label": "a carol for hanukka",
         "description": null,
         "score": 0.4736842105263158,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.4444444444444444,
         "source": "wikibase"
       },
       {
@@ -72422,10 +72408,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.375,
+        "score": 0.3571428571428571,
         "source": "wikibase"
       },
       {
@@ -72475,13 +72461,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4102564102564103,
-        "source": "wikibase"
-      },
-      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -72493,6 +72472,13 @@
         "label": "a brivele der mamen",
         "description": null,
         "score": 0.3783783783783784,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.3428571428571429,
         "source": "wikibase"
       },
       {
@@ -72846,10 +72832,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.4,
+        "score": 0.3870967741935484,
         "source": "wikibase"
       },
       {
@@ -73399,15 +73385,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q160",
-        "label": "a brivele der mamen",
+        "id": "Q320",
+        "label": "bay mir bistu sheyn",
         "description": null,
         "score": 0.48,
         "source": "wikibase"
       },
       {
-        "id": "Q320",
-        "label": "bay mir bistu sheyn",
+        "id": "Q160",
+        "label": "a brivele der mamen",
         "description": null,
         "score": 0.48,
         "source": "wikibase"
@@ -73448,10 +73434,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q321",
+        "label": "baym bentshn likht",
         "description": null,
-        "score": 0.4230769230769231,
+        "score": 0.40816326530612246,
         "source": "wikibase"
       },
       {
@@ -73756,10 +73742,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.4,
+        "score": 0.33333333333333326,
         "source": "wikibase"
       },
       {
@@ -74148,17 +74134,17 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4210526315789474,
-        "source": "wikibase"
-      },
-      {
         "id": "Q424",
         "label": "dos lidl fun dem goldenem land",
         "description": null,
         "score": 0.3829787234042554,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q946",
+        "label": "oyb nit nokh hekher",
+        "description": null,
+        "score": 0.33333333333333326,
         "source": "wikibase"
       },
       {
@@ -78094,13 +78080,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4390243902439025,
-        "source": "wikibase"
-      },
-      {
         "id": "Q161",
         "label": "a carol for hanukka",
         "description": null,
@@ -78119,6 +78098,13 @@
         "label": "ofer ben-amots",
         "description": null,
         "score": 0.36363636363636365,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.32432432432432434,
         "source": "wikibase"
       },
       {
@@ -78154,13 +78140,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.4324324324324324,
-        "source": "wikibase"
-      },
-      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -78172,6 +78151,13 @@
         "label": "a carol for hanukka",
         "description": null,
         "score": 0.4,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.36363636363636365,
         "source": "wikibase"
       },
       {
@@ -79249,10 +79235,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.4324324324324324,
+        "score": 0.36363636363636365,
         "source": "wikibase"
       },
       {
@@ -80150,15 +80136,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1158",
-        "label": "the commandments",
+        "id": "Q496",
+        "label": "from jewish life",
         "description": null,
         "score": 0.5263157894736842,
         "source": "wikibase"
       },
       {
-        "id": "Q496",
-        "label": "from jewish life",
+        "id": "Q1158",
+        "label": "the commandments",
         "description": null,
         "score": 0.5263157894736842,
         "source": "wikibase"
@@ -80263,6 +80249,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q163",
+        "label": "a garden eastward",
+        "description": null,
+        "score": 0.38888888888888884,
+        "source": "wikibase"
+      },
+      {
         "id": "Q159",
         "label": "a bisl libe un a bisl glik",
         "description": null,
@@ -80288,13 +80281,6 @@
         "label": "ofer ben-amots",
         "description": null,
         "score": 0.3125,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.3,
         "source": "wikibase"
       },
       {
@@ -80686,10 +80672,10 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.3783783783783784,
+        "score": 0.4242424242424242,
         "source": "wikibase"
       },
       {
@@ -81855,15 +81841,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q576",
-        "label": "hugo chaim adler",
+        "id": "Q575",
+        "label": "hugo adler",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q575",
-        "label": "hugo adler",
+        "id": "Q576",
+        "label": "hugo chaim adler",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -81894,15 +81880,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q195",
-        "label": "abraham binder",
+        "id": "Q199",
+        "label": "abraham wolf binder",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q199",
-        "label": "abraham wolf binder",
+        "id": "Q195",
+        "label": "abraham binder",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -82617,15 +82603,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q896",
-        "label": "moshe ganchoff",
+        "id": "Q897",
+        "label": "moshe ganchoff and louis lewandowski",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q897",
-        "label": "moshe ganchoff and louis lewandowski",
+        "id": "Q896",
+        "label": "moshe ganchoff",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -82998,15 +82984,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1337",
-        "label": "yossele rosenblatt",
+        "id": "Q268",
+        "label": "anon (as sung by yossele rosenblatt)",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q268",
-        "label": "anon (as sung by yossele rosenblatt)",
+        "id": "Q1337",
+        "label": "yossele rosenblatt",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -89297,13 +89283,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q8",
         "label": "Album",
         "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
@@ -89325,6 +89304,13 @@
         "source": "wikibase"
       },
       {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q1279",
         "label": "volume 2 of the milken archive of jewish music: a garden eastward, digital album 2",
         "description": null,
@@ -89334,6 +89320,13 @@
       {
         "id": "Q1280",
         "label": "volume 2 of the milken archive of jewish music: a garden eastward, digital album 3: adolphe: ladino songs of love and suffering - weisgall: love's wounded - psalm of the distant dove - a garden eastward",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -89388,13 +89381,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q980",
-        "label": "psalm 126",
-        "description": null,
-        "score": 0.7142857142857143,
-        "source": "wikibase"
-      },
-      {
         "id": "__create__",
         "label": "Volume 2 of the Milken Archive of Jewish Music: A Garden Eastward, Digital Album 3: Adolphe: Ladino Songs of Love and Suffering - Weisgall: Love's Wounded - Psalm of the Distant Dove - A Garden Eastward"
       }
@@ -89406,6 +89392,13 @@
     "bucket": "manifestation",
     "type": "entity",
     "candidates": [
+      {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
       {
         "id": "Q8",
         "label": "Album",
@@ -89421,13 +89414,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q1278",
         "label": "volume 2 of the milken archive of jewish music: a garden eastward, digital album 1",
         "description": null,
@@ -89437,6 +89423,13 @@
       {
         "id": "Q1279",
         "label": "volume 2 of the milken archive of jewish music: a garden eastward, digital album 2",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -89498,13 +89491,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q417",
-        "label": "digital album 1: brubeck: the commandments - the gates of justice - gottlieb: psalmistry",
-        "description": null,
-        "score": 0.5714285714285715,
-        "source": "wikibase"
-      },
-      {
         "id": "__create__",
         "label": "Volume 2 of the Milken Archive of Jewish Music: A Garden Eastward, Digital Album 1"
       }
@@ -89517,6 +89503,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q8",
         "label": "Album",
         "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
@@ -89527,13 +89520,6 @@
         "id": "Q102",
         "label": "Album",
         "description": "a collection of recordings or recorded tracks issued as a single item on CD, record, or another medium.",
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
@@ -89561,6 +89547,13 @@
       {
         "id": "Q1281",
         "label": "volume 2 of the milken archive of jewish music: a garden eastward, digital album 4",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -89608,13 +89601,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1160",
-        "label": "the day of rest",
-        "description": null,
-        "score": 0.5714285714285715,
-        "source": "wikibase"
-      },
-      {
         "id": "__create__",
         "label": "Volume 2 of the Milken Archive of Jewish Music: A Garden Eastward, Digital Album 2"
       }
@@ -89634,15 +89620,22 @@
         "source": "wikibase"
       },
       {
-        "id": "Q418",
-        "label": "digital album 2: klein & kingsley",
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
-        "score": 0.6666666666666665,
+        "score": 1.0,
         "source": "wikibase"
       },
       {
         "id": "Q1043",
         "label": "sephardi kiddush",
+        "description": null,
+        "score": 0.6666666666666665,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q418",
+        "label": "digital album 2: klein & kingsley",
         "description": null,
         "score": 0.6666666666666665,
         "source": "wikibase"
@@ -89718,13 +89711,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q158",
-        "label": "a bird over jerusalem",
-        "description": null,
-        "score": 0.26315789473684204,
-        "source": "wikibase"
-      },
-      {
         "id": "__create__",
         "label": "Milken Archive Digital, Vol. 2 Album 5: A Garden Eastward --Sephardi and Near Eastern Inspiration"
       }
@@ -89736,6 +89722,13 @@
     "bucket": "manifestation",
     "type": "entity",
     "candidates": [
+      {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
       {
         "id": "Q8",
         "label": "Album",
@@ -89751,13 +89744,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q1279",
         "label": "volume 2 of the milken archive of jewish music: a garden eastward, digital album 2",
         "description": null,
@@ -89767,6 +89753,13 @@
       {
         "id": "Q1281",
         "label": "volume 2 of the milken archive of jewish music: a garden eastward, digital album 4",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q163",
+        "label": "a garden eastward",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -89825,13 +89818,6 @@
         "label": "milken archive digital vol. 3 album 6: seder t'fillot -- traditional & contemporary synagogue services",
         "description": null,
         "score": 0.5930232558139535,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q1160",
-        "label": "the day of rest",
-        "description": null,
-        "score": 0.5714285714285715,
         "source": "wikibase"
       },
       {
@@ -89957,6 +89943,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q1216",
         "label": "traditional",
         "description": null,
@@ -89966,13 +89959,6 @@
       {
         "id": "Q1217",
         "label": "traditional?",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q799",
-        "label": "milken archive",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -90067,6 +90053,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q8",
         "label": "Album",
         "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
@@ -90077,13 +90070,6 @@
         "id": "Q102",
         "label": "Album",
         "description": "a collection of recordings or recorded tracks issued as a single item on CD, record, or another medium.",
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
@@ -90177,20 +90163,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1216",
-        "label": "traditional",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q1217",
-        "label": "traditional?",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q799",
         "label": "milken archive",
         "description": null,
@@ -90200,6 +90172,20 @@
       {
         "id": "Q802",
         "label": "milken archive digital vol. 3 album 5: seder t'fillot -- traditional & contemporary synagogue services",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1216",
+        "label": "traditional",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1217",
+        "label": "traditional?",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -90286,20 +90272,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1216",
-        "label": "traditional",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q1217",
-        "label": "traditional?",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q799",
         "label": "milken archive",
         "description": null,
@@ -90309,6 +90281,20 @@
       {
         "id": "Q803",
         "label": "milken archive digital vol. 3 album 6: seder t'fillot -- traditional & contemporary synagogue services",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1216",
+        "label": "traditional",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1217",
+        "label": "traditional?",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -91684,13 +91670,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q8",
         "label": "Album",
         "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
@@ -91701,6 +91680,13 @@
         "id": "Q102",
         "label": "Album",
         "description": "a collection of recordings or recorded tracks issued as a single item on CD, record, or another medium.",
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
@@ -92506,15 +92492,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q799",
-        "label": "milken archive",
+        "id": "Q1316",
+        "label": "yehudi wyner",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1316",
-        "label": "yehudi wyner",
+        "id": "Q799",
+        "label": "milken archive",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -93897,15 +93883,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q418",
-        "label": "digital album 2: klein & kingsley",
+        "id": "Q556",
+        "label": "hebrew suite",
         "description": null,
         "score": 0.6666666666666665,
         "source": "wikibase"
       },
       {
-        "id": "Q556",
-        "label": "hebrew suite",
+        "id": "Q418",
+        "label": "digital album 2: klein & kingsley",
         "description": null,
         "score": 0.6666666666666665,
         "source": "wikibase"
@@ -93944,9 +93930,16 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q924",
-        "label": "ofer ben-amots",
-        "description": null,
+        "id": "Q8",
+        "label": "Album",
+        "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q102",
+        "label": "Album",
+        "description": "a collection of recordings or recorded tracks issued as a single item on CD, record, or another medium.",
         "score": 1.0,
         "source": "wikibase"
       },
@@ -93965,16 +93958,9 @@
         "source": "wikibase"
       },
       {
-        "id": "Q8",
-        "label": "Album",
-        "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q102",
-        "label": "Album",
-        "description": "a collection of recordings or recorded tracks issued as a single item on CD, record, or another medium.",
+        "id": "Q924",
+        "label": "ofer ben-amots",
+        "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
@@ -94047,6 +94033,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q333",
+        "label": "biblical songs",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q799",
         "label": "milken archive",
         "description": null,
@@ -94056,13 +94049,6 @@
       {
         "id": "Q920",
         "label": "nuptial scene",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q333",
-        "label": "biblical songs",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -94157,6 +94143,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q349",
+        "label": "cantillations",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q799",
         "label": "milken archive",
         "description": null,
@@ -94173,13 +94166,6 @@
       {
         "id": "Q520",
         "label": "hagiographa",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q349",
-        "label": "cantillations",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -94267,13 +94253,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q8",
         "label": "Album",
         "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
@@ -94284,6 +94263,13 @@
         "id": "Q102",
         "label": "Album",
         "description": "a collection of recordings or recorded tracks issued as a single item on CD, record, or another medium.",
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
@@ -94494,13 +94480,6 @@
         "source": "wikibase"
       },
       {
-        "id": "Q704",
-        "label": "lag ba'omer",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q799",
         "label": "milken archive",
         "description": null,
@@ -94510,6 +94489,13 @@
       {
         "id": "Q965",
         "label": "piano preludes",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q704",
+        "label": "lag ba'omer",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -94707,15 +94693,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1128",
-        "label": "string trio",
+        "id": "Q799",
+        "label": "milken archive",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q799",
-        "label": "milken archive",
+        "id": "Q1128",
+        "label": "string trio",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -94912,15 +94898,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q799",
-        "label": "milken archive",
+        "id": "Q1074",
+        "label": "shirat sara",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1074",
-        "label": "shirat sara",
+        "id": "Q799",
+        "label": "milken archive",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -95439,15 +95425,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q799",
-        "label": "milken archive",
+        "id": "Q676",
+        "label": "kaddish",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q676",
-        "label": "kaddish",
+        "id": "Q799",
+        "label": "milken archive",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -95729,15 +95715,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q419",
-        "label": "digital album 3: weill: kiddush - davidson: ...and david danced before the lord - the hush of midnight",
+        "id": "Q649",
+        "label": "jewish people’s philharmonic chorus in new york",
         "description": null,
         "score": 0.4444444444444444,
         "source": "wikibase"
       },
       {
-        "id": "Q649",
-        "label": "jewish people’s philharmonic chorus in new york",
+        "id": "Q419",
+        "label": "digital album 3: weill: kiddush - davidson: ...and david danced before the lord - the hush of midnight",
         "description": null,
         "score": 0.4444444444444444,
         "source": "wikibase"
@@ -95769,13 +95755,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1133",
-        "label": "symphonic visions for orchestra",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q1084",
         "label": "shofar service",
         "description": null,
@@ -95785,6 +95764,13 @@
       {
         "id": "Q498",
         "label": "from the world of my father",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1133",
+        "label": "symphonic visions for orchestra",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -95860,8 +95846,8 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
+        "id": "Q496",
+        "label": "from jewish life",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
@@ -95989,6 +95975,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q233",
+        "label": "american classics - achron: violin concerto no. 1/ golem/ 2 tableaux from belshazzar",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q1268",
         "label": "violin concerto no. 1",
         "description": null,
@@ -95998,13 +95991,6 @@
       {
         "id": "Q1269",
         "label": "violin concerto no. 2",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q233",
-        "label": "american classics - achron: violin concerto no. 1/ golem/ 2 tableaux from belshazzar",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -97777,15 +97763,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q232",
-        "label": "american choral settings",
+        "id": "Q650",
+        "label": "jewish theological seminary",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
       },
       {
-        "id": "Q650",
-        "label": "jewish theological seminary",
+        "id": "Q232",
+        "label": "american choral settings",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
@@ -98017,15 +98003,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
+        "id": "Q266",
+        "label": "and thou shalt love (debbie friedman)",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
       },
       {
-        "id": "Q266",
-        "label": "and thou shalt love (debbie friedman)",
+        "id": "Q1159",
+        "label": "the covenant",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
@@ -98050,6 +98036,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q8",
         "label": "Album",
         "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
@@ -98060,13 +98053,6 @@
         "id": "Q102",
         "label": "Album",
         "description": "a collection of recordings or recorded tracks issued as a single item on CD, record, or another medium.",
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
@@ -98270,6 +98256,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q8",
         "label": "Album",
         "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
@@ -98280,13 +98273,6 @@
         "id": "Q102",
         "label": "Album",
         "description": "a collection of recordings or recorded tracks issued as a single item on CD, record, or another medium.",
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
@@ -98380,6 +98366,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q8",
         "label": "Album",
         "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
@@ -98390,13 +98383,6 @@
         "id": "Q102",
         "label": "Album",
         "description": "a collection of recordings or recorded tracks issued as a single item on CD, record, or another medium.",
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
@@ -98490,6 +98476,13 @@
     "type": "entity",
     "candidates": [
       {
+        "id": "Q799",
+        "label": "milken archive",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
         "id": "Q8",
         "label": "Album",
         "description": "Grouping of album releases by an artist or group of artists usually released at the same time with the same title and tracks but in different formats for consumption (digital, CD, LP)",
@@ -98500,13 +98493,6 @@
         "id": "Q102",
         "label": "Album",
         "description": "a collection of recordings or recorded tracks issued as a single item on CD, record, or another medium.",
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
-        "id": "Q799",
-        "label": "milken archive",
-        "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
@@ -98635,15 +98621,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q232",
-        "label": "american choral settings",
+        "id": "Q1130",
+        "label": "suite hebraique",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
       },
       {
-        "id": "Q1130",
-        "label": "suite hebraique",
+        "id": "Q232",
+        "label": "american choral settings",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
@@ -99658,15 +99644,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q799",
-        "label": "milken archive",
+        "id": "Q941",
+        "label": "out of the whirlwind",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q941",
-        "label": "out of the whirlwind",
+        "id": "Q799",
+        "label": "milken archive",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -99789,15 +99775,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1101",
-        "label": "silent prayer",
+        "id": "Q800",
+        "label": "milken archive 11, album 7: kaplan: the k'dusha symphony",
         "description": null,
         "score": 0.631578947368421,
         "source": "wikibase"
       },
       {
-        "id": "Q800",
-        "label": "milken archive 11, album 7: kaplan: the k'dusha symphony",
+        "id": "Q1101",
+        "label": "silent prayer",
         "description": null,
         "score": 0.631578947368421,
         "source": "wikibase"
@@ -100126,15 +100112,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q232",
-        "label": "american choral settings",
+        "id": "Q647",
+        "label": "jewish ministers cantors association",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
       },
       {
-        "id": "Q647",
-        "label": "jewish ministers cantors association",
+        "id": "Q232",
+        "label": "american choral settings",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
@@ -100208,13 +100194,6 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q1027",
-        "label": "sabbath evening service",
-        "description": null,
-        "score": 1.0,
-        "source": "wikibase"
-      },
-      {
         "id": "Q1028",
         "label": "sacred service",
         "description": null,
@@ -100224,6 +100203,13 @@
       {
         "id": "Q1031",
         "label": "sacred service for the sabbath evening",
+        "description": null,
+        "score": 1.0,
+        "source": "wikibase"
+      },
+      {
+        "id": "Q1027",
+        "label": "sabbath evening service",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -100381,15 +100367,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q232",
-        "label": "american choral settings",
+        "id": "Q1118",
+        "label": "songs of the night",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
       },
       {
-        "id": "Q1118",
-        "label": "songs of the night",
+        "id": "Q232",
+        "label": "american choral settings",
         "description": null,
         "score": 0.5,
         "source": "wikibase"
@@ -105176,15 +105162,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q235",
-        "label": "american classics - avshalomov/ silver/ meyerowitz: jewish tone poems",
+        "id": "Q557",
+        "label": "hebrew university in jerusalem",
         "description": null,
         "score": 0.4705882352941177,
         "source": "wikibase"
       },
       {
-        "id": "Q557",
-        "label": "hebrew university in jerusalem",
+        "id": "Q235",
+        "label": "american classics - avshalomov/ silver/ meyerowitz: jewish tone poems",
         "description": null,
         "score": 0.4705882352941177,
         "source": "wikibase"
@@ -105880,15 +105866,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q353",
-        "label": "cantors assembly",
+        "id": "Q354",
+        "label": "cantors assembly of america",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q354",
-        "label": "cantors assembly of america",
+        "id": "Q353",
+        "label": "cantors assembly",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -109586,15 +109572,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q351",
-        "label": "cantor david benedict, cantor at temple israel in lawrence, new york",
+        "id": "Q1153",
+        "label": "temple israel, lawrence, new york",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q1153",
-        "label": "temple israel, lawrence, new york",
+        "id": "Q351",
+        "label": "cantor david benedict, cantor at temple israel in lawrence, new york",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -110107,15 +110093,15 @@
     "type": "entity",
     "candidates": [
       {
-        "id": "Q650",
-        "label": "jewish theological seminary",
+        "id": "Q192",
+        "label": "abc television network in cooperation with the jewish theological seminary for broadcast that year on the seminary’s national program, directions",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
       },
       {
-        "id": "Q192",
-        "label": "abc television network in cooperation with the jewish theological seminary for broadcast that year on the seminary’s national program, directions",
+        "id": "Q650",
+        "label": "jewish theological seminary",
         "description": null,
         "score": 1.0,
         "source": "wikibase"
@@ -112450,15 +112436,15 @@
         "source": "wikibase"
       },
       {
-        "id": "Q1159",
-        "label": "the covenant",
+        "id": "Q1238",
+        "label": "united synagogue of america",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
       },
       {
-        "id": "Q1238",
-        "label": "united synagogue of america",
+        "id": "Q1159",
+        "label": "the covenant",
         "description": null,
         "score": 0.4,
         "source": "wikibase"
@@ -112497,16 +112483,16 @@
         "source": "wikibase"
       },
       {
-        "id": "Q924",
-        "label": "ofer ben-amots",
-        "description": null,
+        "id": "Q153",
+        "label": "Chorus master",
+        "description": "person who directs and rehearses the singing chorus of an opera company, choir, etc.",
         "score": 0.30434782608695654,
         "source": "wikibase"
       },
       {
-        "id": "Q153",
-        "label": "Chorus master",
-        "description": "person who directs and rehearses the singing chorus of an opera company, choir, etc.",
+        "id": "Q924",
+        "label": "ofer ben-amots",
+        "description": null,
         "score": 0.30434782608695654,
         "source": "wikibase"
       },
