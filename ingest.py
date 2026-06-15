@@ -1,28 +1,40 @@
-import pandas as pd
+# ingest.py
+
+import csv
 from utils import load_json
-from cache import load_cache, save_cache
-from triples import build_plan
 
 
-def run(csv_path, config_path, cache_path):
-    df = pd.read_csv(csv_path)
+def load(csv_path, config_path, cache_path):
+    """
+    PURE LOADER
+    - no interpretation
+    - no defaults for semantics
+    """
+
+    print("\n[INGEST] Loading config...")
+
     config = load_json(config_path)
+    if config is None:
+        raise RuntimeError("Config failed to load")
 
-    cache = load_cache(cache_path)
+    print("[INGEST] Config loaded")
 
-    plan = []
+    print("\n[INGEST] Loading CSV...")
 
-    # IMPORTANT: stable row indexing for provenance
-    for row_index, (_, row) in enumerate(df.iterrows()):
-        statements, cache = build_plan(
-            row=row,
-            config=config,
-            cache=cache,
-            row_index=row_index
-        )
+    with open(csv_path, "r", encoding="utf-8-sig") as f:
+        rows = list(csv.DictReader(f))
 
-        plan.extend(statements)
+    print(f"[INGEST] Rows loaded: {len(rows)}")
 
-    save_cache(cache, cache_path)
+    print("\n[INGEST] Loading cache...")
 
-    return plan
+    try:
+        cache = load_json(cache_path)
+        if cache is None:
+            cache = {}
+        print("[INGEST] Cache loaded")
+    except Exception:
+        cache = {}
+        print("[INGEST] Cache not found, starting empty")
+
+    return config, rows, cache

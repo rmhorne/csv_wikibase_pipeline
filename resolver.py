@@ -1,78 +1,45 @@
-from utils import normalize
+from utils import identity_key
 
 
-def apply_strategy(values, strategy, separator=" | "):
-    """
-    Convert raw field values into a deterministic identity key.
-    """
-
-    values = [normalize(v) for v in values if normalize(v) is not None]
-
-    if not values:
-        return None
-
-    if strategy == "exact":
-        return separator.join(values)
-
-    if strategy == "canonicalize":
-        cleaned = [v.lower().strip() for v in values]
-        cleaned = [v for v in cleaned if v]
-        return separator.join(cleaned)
-
-    if strategy == "structured":
-        return tuple(values)
-
-    if strategy == "always_new":
-        return separator.join(values) + f"::{id(values)}"
-
-    return separator.join(values)
-
-
-# =====================================================
-# SAFE CACHE INIT
-# =====================================================
-
-def _ensure_cache(cache):
-    if cache is None:
-        raise ValueError("Cache object is required")
-
+def _boot(cache):
     cache.setdefault("_counter", 0)
-    cache.setdefault("levels", {})
+    cache.setdefault("entities", {})
 
 
-# =====================================================
-# CORE RESOLVER
-# =====================================================
+def is_qid(value):
+    return isinstance(value, str) and value.startswith("Q")
 
-def resolve(level: str, identity_key: str, cache: dict):
+
+def resolve(cache, config, label):
     """
-    Identity-based resolver using scoped cache buckets.
+    GLOBAL ENTITY RESOLVER
 
-    Guarantees:
-    - stable ID per (level, identity_key)
-    - automatic creation if missing
-    - global counter uniqueness
+    RULE:
+    - NEVER re-resolve QIDs
+    - ONLY raw labels are accepted
     """
 
-    _ensure_cache(cache)
+    _boot(cache)
 
-    # NULL identity → always new node
-    if identity_key is None:
-        cache["_counter"] += 1
-        qid = f"QW{cache['_counter']}"
-        return qid, True
+    if label is None:
+        return None, False
 
-    # scoped bucket
-    cache["levels"].setdefault(level, {})
-    bucket = cache["levels"][level]
+    # 🚨 CRITICAL GUARD: DO NOT RE-RESOLVE QIDs
+    if is_qid(label):
+        return label, False
 
-    # existing entity
-    if identity_key in bucket:
-        return bucket[identity_key], False
+    key = identity_key(label)
+    if key is None:
+        return None, False
 
-    # create new entity
+    if key in cache["entities"]:
+        return cache["entities"][key], False
+
     cache["_counter"] += 1
-    qid = f"QW{cache['_counter']}"
-    bucket[identity_key] = qid
+    prefix = config["source"]["id_prefix"]
+
+    qid = f"{prefix}{cache['_counter']}"
+
+    cache["entities"][key] = qid
 
     return qid, True

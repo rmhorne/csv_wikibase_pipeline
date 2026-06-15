@@ -1,0 +1,11 @@
+(.venv) rayanhorne@vpn-234 csv_wikibase_pipeline % python -m reconcile.wiki_reconcile_cli export-openrefine \
+  --input out/reconcile_input.json \
+  --csv openrefine.csv \               
+  --json openrefine.json       
+
+
+  python3 -m reconcile.wiki_reconcile_cli2 \
+  --input data/orf2.csv \
+  --out cache_aligned.json \
+  --log wiki_reconcile.log.csv     
+

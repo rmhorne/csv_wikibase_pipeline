@@ -2,15 +2,16 @@
   {
     "subject": "Q203",
     "subject_label": "Adon olam",
-    "predicate": "P13",
-    "predicate_label": "Primary Genre",
-    "object": "Q9",
-    "object_label": "Sacred",
-    "object_type": "entity",
+    "predicate": "LABEL",
+    "predicate_label": "LABEL",
+    "object": null,
+    "object_label": null,
+    "object_type": "literal",
     "source": {
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 0,
     "references": [],
     "qualifiers": []
   },
@@ -19,13 +20,14 @@
     "subject_label": "Adon olam",
     "predicate": "P14",
     "predicate_label": "Instrumentation",
-    "object": "Q27",
+    "object": "Q9",
     "object_label": "Choral-Solo",
     "object_type": "entity",
     "source": {
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 0,
     "references": [],
     "qualifiers": []
   },
@@ -34,13 +36,14 @@
     "subject_label": "Adon olam",
     "predicate": "P15",
     "predicate_label": "Form-General",
-    "object": "Q42",
+    "object": "Q27",
     "object_label": "Liturgical-Setting(s)",
     "object_type": "entity",
     "source": {
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 0,
     "references": [],
     "qualifiers": []
   },
@@ -56,6 +59,7 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 0,
     "references": [],
     "qualifiers": []
   },
@@ -71,6 +75,7 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 0,
     "references": [],
     "qualifiers": []
   },
@@ -86,6 +91,7 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 0,
     "references": [],
     "qualifiers": []
   },
@@ -101,13 +107,14 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 0,
     "references": [],
     "qualifiers": []
   },
   {
     "subject": "Q203",
     "subject_label": "Adon olam",
-    "predicate": "P17",
+    "predicate": "P18",
     "predicate_label": "Devotional-Solemn",
     "object": "Devotional-Solemn",
     "object_label": "Devotional-Solemn",
@@ -116,6 +123,39 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 0,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P20",
+    "predicate_label": "Hebrew",
+    "object": "x",
+    "object_label": null,
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 0,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q279",
+    "subject_label": "As the Hart Panteth | Thou Art Enthroned Above",
+    "predicate": "LABEL",
+    "predicate_label": "LABEL",
+    "object": null,
+    "object_label": null,
+    "object_type": "literal",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 1,
     "references": [],
     "qualifiers": []
   },
@@ -124,49 +164,36 @@
     "subject_label": "As the Hart Panteth | Thou Art Enthroned Above",
     "predicate": "P14",
     "predicate_label": "Instrumentation",
-    "object": "Q27",
+    "object": "Q9",
     "object_label": "Choral-Solo",
     "object_type": "entity",
     "source": {
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 1,
     "references": [],
     "qualifiers": []
   },
   {
-    "subject": "Q453",
-    "subject_label": "Empor zu Gott, mein Lobgesang!",
-    "predicate": "P13",
-    "predicate_label": "Primary Genre",
-    "object": "Q9",
-    "object_label": "Sacred",
-    "object_type": "entity",
-    "source": {
-      "qid": "Q799",
-      "label": "Milken Archive"
-    },
-    "references": [],
-    "qualifiers": []
-  },
-  {
-    "subject": "Q453",
-    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "subject": "Q279",
+    "subject_label": "As the Hart Panteth | Thou Art Enthroned Above",
     "predicate": "P15",
     "predicate_label": "Form-General",
-    "object": "Q42",
+    "object": "Q27",
     "object_label": "Liturgical-Setting(s)",
     "object_type": "entity",
     "source": {
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 1,
     "references": [],
     "qualifiers": []
   },
   {
-    "subject": "Q453",
-    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "subject": "Q279",
+    "subject_label": "As the Hart Panteth | Thou Art Enthroned Above",
     "predicate": "P15",
     "predicate_label": "Form-Specific (was Tertiary Genre)",
     "object": "Q42",
@@ -176,12 +203,29 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 1,
     "references": [],
     "qualifiers": []
   },
   {
-    "subject": "Q453",
-    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "subject": "Q1391",
+    "subject_label": "Barukh Habba (Psalm 118: 26-29)",
+    "predicate": "P5",
+    "predicate_label": "Year (Known)",
+    "object": null,
+    "object_label": "1782.0",
+    "object_type": "literal",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 2,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q1391",
+    "subject_label": "Barukh Habba (Psalm 118: 26-29)",
     "predicate": "P13",
     "predicate_label": "Sacred",
     "object": "Sacred",
@@ -191,27 +235,45 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 2,
     "references": [],
     "qualifiers": []
   },
   {
-    "subject": "Q453",
-    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "subject": "Q1391",
+    "subject_label": "Barukh Habba (Psalm 118: 26-29)",
     "predicate": "P16",
-    "predicate_label": "Ashkenazi",
-    "object": "Ashkenazi",
-    "object_label": "Ashkenazi",
+    "predicate_label": "Sephardi",
+    "object": "Sephardi",
+    "object_label": "Sephardi",
     "object_type": "entity",
     "source": {
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 2,
     "references": [],
     "qualifiers": []
   },
   {
-    "subject": "Q453",
-    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "subject": "Q1391",
+    "subject_label": "Barukh Habba (Psalm 118: 26-29)",
+    "predicate": "P17",
+    "predicate_label": "Musical",
+    "object": "Musical",
+    "object_label": "Musical",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 2,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q1391",
+    "subject_label": "Barukh Habba (Psalm 118: 26-29)",
     "predicate": "P17",
     "predicate_label": "Functional",
     "object": "Functional",
@@ -221,28 +283,14 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 2,
     "references": [],
     "qualifiers": []
   },
   {
-    "subject": "Q453",
-    "subject_label": "Empor zu Gott, mein Lobgesang!",
+    "subject": "Q1391",
+    "subject_label": "Barukh Habba (Psalm 118: 26-29)",
     "predicate": "P18",
-    "predicate_label": "Classical",
-    "object": "Classical",
-    "object_label": "Classical",
-    "object_type": "entity",
-    "source": {
-      "qid": "Q799",
-      "label": "Milken Archive"
-    },
-    "references": [],
-    "qualifiers": []
-  },
-  {
-    "subject": "Q453",
-    "subject_label": "Empor zu Gott, mein Lobgesang!",
-    "predicate": "P17",
     "predicate_label": "Devotional-Solemn",
     "object": "Devotional-Solemn",
     "object_label": "Devotional-Solemn",
@@ -251,51 +299,71 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 2,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q1391",
+    "subject_label": "Barukh Habba (Psalm 118: 26-29)",
+    "predicate": "P20",
+    "predicate_label": "Hebrew",
+    "object": "x",
+    "object_label": null,
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 2,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q453",
+    "subject_label": "Milken Archive Digital Volume 1, Digital Album 2",
+    "predicate": "P4",
+    "predicate_label": "Duration (minutes)",
+    "object": null,
+    "object_label": "12.88",
+    "object_type": "literal",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 6,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q453",
+    "subject_label": "Milken Archive Digital Volume 1, Digital Album 2",
+    "predicate": "P4",
+    "predicate_label": "Duration (minutes)",
+    "object": null,
+    "object_label": "3.15",
+    "object_type": "literal",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 17,
     "references": [],
     "qualifiers": []
   },
   {
     "subject": "Q203",
     "subject_label": "Adon olam",
-    "predicate": "P13",
-    "predicate_label": "Primary Genre",
-    "object": "Q9",
-    "object_label": "Sacred",
-    "object_type": "entity",
+    "predicate": "P5",
+    "predicate_label": "Year (Known)",
+    "object": null,
+    "object_label": "1953.0",
+    "object_type": "literal",
     "source": {
       "qid": "Q799",
       "label": "Milken Archive"
     },
-    "references": [],
-    "qualifiers": []
-  },
-  {
-    "subject": "Q203",
-    "subject_label": "Adon olam",
-    "predicate": "P15",
-    "predicate_label": "Form-General",
-    "object": "Q42",
-    "object_label": "Liturgical-Setting(s)",
-    "object_type": "entity",
-    "source": {
-      "qid": "Q799",
-      "label": "Milken Archive"
-    },
-    "references": [],
-    "qualifiers": []
-  },
-  {
-    "subject": "Q203",
-    "subject_label": "Adon olam",
-    "predicate": "P15",
-    "predicate_label": "Form-Specific (was Tertiary Genre)",
-    "object": "Q42",
-    "object_label": "Liturgical-Setting(s)",
-    "object_type": "entity",
-    "source": {
-      "qid": "Q799",
-      "label": "Milken Archive"
-    },
+    "provenance": 170,
     "references": [],
     "qualifiers": []
   },
@@ -311,6 +379,7 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 170,
     "references": [],
     "qualifiers": []
   },
@@ -326,6 +395,23 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 170,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P17",
+    "predicate_label": "Sonic",
+    "object": "Sonic",
+    "object_label": "Sonic",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 170,
     "references": [],
     "qualifiers": []
   },
@@ -341,6 +427,7 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 170,
     "references": [],
     "qualifiers": []
   },
@@ -356,13 +443,14 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 170,
     "references": [],
     "qualifiers": []
   },
   {
     "subject": "Q203",
     "subject_label": "Adon olam",
-    "predicate": "P17",
+    "predicate": "P18",
     "predicate_label": "Devotional-Solemn",
     "object": "Devotional-Solemn",
     "object_label": "Devotional-Solemn",
@@ -371,21 +459,39 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 170,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon olam",
+    "predicate": "P20",
+    "predicate_label": "Hebrew",
+    "object": "x",
+    "object_label": null,
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 170,
     "references": [],
     "qualifiers": []
   },
   {
     "subject": "Q203",
     "subject_label": "Adon Olam",
-    "predicate": "P13",
-    "predicate_label": "Primary Genre",
-    "object": "Q9",
-    "object_label": "Sacred",
-    "object_type": "entity",
+    "predicate": "P5",
+    "predicate_label": "Year (Known)",
+    "object": null,
+    "object_label": "1947.0",
+    "object_type": "literal",
     "source": {
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 782,
     "references": [],
     "qualifiers": []
   },
@@ -401,6 +507,7 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 782,
     "references": [],
     "qualifiers": []
   },
@@ -416,6 +523,23 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 782,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon Olam",
+    "predicate": "P17",
+    "predicate_label": "Textual",
+    "object": "Textual",
+    "object_label": "Textual",
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 782,
     "references": [],
     "qualifiers": []
   },
@@ -431,6 +555,7 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 782,
     "references": [],
     "qualifiers": []
   },
@@ -446,6 +571,7 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 782,
     "references": [],
     "qualifiers": []
   },
@@ -461,13 +587,14 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 782,
     "references": [],
     "qualifiers": []
   },
   {
     "subject": "Q203",
     "subject_label": "Adon Olam",
-    "predicate": "P17",
+    "predicate": "P18",
     "predicate_label": "Devotional-Solemn",
     "object": "Devotional-Solemn",
     "object_label": "Devotional-Solemn",
@@ -476,6 +603,23 @@
       "qid": "Q799",
       "label": "Milken Archive"
     },
+    "provenance": 782,
+    "references": [],
+    "qualifiers": []
+  },
+  {
+    "subject": "Q203",
+    "subject_label": "Adon Olam",
+    "predicate": "P20",
+    "predicate_label": "Hebrew",
+    "object": "x",
+    "object_label": null,
+    "object_type": "entity",
+    "source": {
+      "qid": "Q799",
+      "label": "Milken Archive"
+    },
+    "provenance": 782,
     "references": [],
     "qualifiers": []
   }

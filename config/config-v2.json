@@ -1130,7 +1130,7 @@
       "on_create": [
         {
           "subject": {
-            "source": "self",
+            "source": "field",
             "as": "entity"
           },
           "predicate": "P1",

@@ -1,0 +1,1331 @@
+{
+  "source": {
+    "qid": "Q799",
+    "label": "Milken Archive",
+    "id_prefix": "QW"
+  },
+  "row": {
+    "identity": {
+    "fields": [
+        "Title",
+        "Composer"
+      ],
+      "separator": " | ",
+      "provenance": {
+    "source_file": "milken_spotify.csv",
+    "source_record_id": {
+      "source_record_field": false,
+      "source_record_value": "row_number"
+    }
+  }
+      
+    },
+    "label": {
+      "field": "Title"
+    },
+    "graph": [
+      {
+        "on_create": "true",
+        "subject": {
+          "source": "self",
+          "as": "entity"
+        },
+        "predicate": "P1",
+        "object": {
+          "resolve": "expression",
+          "as": "entity"
+        }
+      }
+    ]
+  },
+  "contexts": {
+        "expression": {
+
+      "graph": [
+        {
+          "subject": {
+            "source": "row",
+                        "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "expression",
+            "as": "entity"
+          }
+        }
+      ]
+
+    },
+    "work": {
+      "identity": {
+        "fields": [
+          "Title"
+        ]
+      },
+        "if_missing": "row",
+      "label": {
+        "field": "Title"
+      },
+      "graph": [
+        {
+          "on_create":"true",
+          "subject": {
+            "source": "self",
+                        "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Work",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "row",
+                        "as": "entity"
+          },
+          "predicate": "P70",
+          "object": {
+            "source": "self",
+            "as": "entity"
+          }
+        }
+      ]
+
+    },
+      "manifestation": {
+      "identity": {
+        "fields": [
+          "Spotify Album"
+        ]
+      },
+        "if_missing": "row",
+      "label": {
+        "field": "Spotify Album"
+      },
+      "graph": [
+        {
+          "on_create":"true",
+          "subject": {
+            "source": "self", "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "manifestation",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "self", "as":"entity"
+          },
+          "predicate": "P71",
+          "object": {
+            "source": "row",
+            "as": "entity"
+          }
+        }
+      ]
+    }
+  },
+  "fields": {
+    "Composer": {
+      "split": true,
+      "delimiter": ";",
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Composer",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P9",
+          "object": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Duration (minutes)": {
+      "graph": [
+        {
+          "subject": {
+            "source": "context",
+            "context": "manifestation",
+            "as": "entity"
+          },
+          "predicate": "P4",
+          "object": {
+            "entity_creation": "no",
+            "source": "self",
+            "as": "literal"
+          }
+        }
+      ]
+    },
+    "Year (Known)": {
+      "graph": [
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P5",
+          "object": {
+            "entity_creation": "no",
+            "source": "self",
+            "as": "literal"
+          },
+          "certainty": "certain"
+        }
+      ]
+    },
+    "Year (Estimated)": {
+      "graph": [
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P5",
+          "object": {
+            "entity_creation": "no",
+            "source": "self",
+            "as": "literal"
+          },
+          "certainty": "uncertain"
+        }
+      ]
+    },
+    "Commissioning Institution (Name)": {
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Institution",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P12",
+          "object": {
+            "source": "self",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Primary Genre": {
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Primary Genre",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P13",
+          "object": {
+            "source": "self",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Instrumentation": {
+      "split": true,
+      "delimiter": ";",
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "instrumentation",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "row",
+            "as": "entity"
+          },
+          "predicate": "P14",
+          "object": {
+            "source": "self",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Form-General": {
+      "split": true,
+      "delimiter": "/",
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "musical form",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "row",
+            "as": "entity"
+          },
+          "predicate": "P15",
+          "object": {
+            "source": "self",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Form-Specific (was Tertiary Genre)": {
+      "split": true,
+      "delimiter": "/",
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "musical form",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "row",
+            "as": "entity"
+          },
+          "predicate": "P15",
+          "object": {
+            "source": "self",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Other": {
+      "split": true,
+      "delimiter": "/",
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "musical form",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "row",
+            "as": "entity"
+          },
+          "predicate": "P15",
+          "object": {
+            "source": "self",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Sacred": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Primary Genre",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P13",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Secular": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Primary Genre",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P13",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Ashkenazi": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Cultural Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P16",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Sephardi": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Cultural Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P16",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Israeli": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Cultural Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P16",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Mizrahi": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Cultural Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P16",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Musical": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Conceptual": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Textual": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Functional": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Sonic": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Social": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Classical": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Klezmer": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Cantorial": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Folk": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Jazz": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Devotional-Solemn": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Popular": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Theatrical": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Judaic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P17",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Text Type": {
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Linguistic Indicator",
+            "as": "entity"
+          }
+        },
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Text Source",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P19",
+          "object": {
+            "source": "self",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Text Source": {
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "self",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Text Source",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P20",
+          "object": {
+            "source": "self",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Hebrew": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Text Source",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P20",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Yiddish": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Text Source",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P20",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "English": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Text Source",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P20",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "Ladino": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Text Source",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P20",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    },
+    "German": {
+      "condition": {
+        "entity_creation": "no",
+        "source": "self",
+        "op": "equals",
+        "value": "x",
+        "normalize": true
+      },
+      "graph": [
+        {
+          "on_create": "true",
+          "subject": {
+            "source": "field",
+            "as": "entity"
+          },
+          "predicate": "P1",
+          "object": {
+            "resolve": "Text Source",
+            "as": "entity"
+          }
+        },
+        {
+          "subject": {
+            "source": "context",
+            "context": "work",
+            "as": "entity"
+          },
+          "predicate": "P20",
+          "object": {
+            "source": "field",
+            "as": "entity"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,330 +1,287 @@
-from plan import Statement
+# triples.py
+#
+# Declarative CSV → Graph Statement compiler (DEBUG VERSION)
+#
+# Adds:
+# - full execution tracing (resolve / condition / emit / skip)
+# - stable semantics from your fixed model
+# - no silent failures
+
+# =====================================================
+# triples.py — FULL FIXED PIPELINE (ROW + CONTEXTS)
+# =====================================================
+
+from ingest import load
 from resolver import resolve
-from utils import normalize
+import json
+from pathlib import Path
 
 
 # =====================================================
-# IDENTITY BUILDER
+# CACHE
 # =====================================================
 
-def build_identity(row, identity_spec):
-    fields = identity_spec.get("fields", [])
-    separator = identity_spec.get("separator", " | ")
-    strategy = identity_spec.get("strategy", "exact")
+def ensure_cache(cache):
+    if cache is None:
+        raise ValueError("Cache required")
 
-    values = [row.get(f) for f in fields]
+    cache.setdefault("_counter", 0)
+    cache.setdefault("entities", {})
 
-    from resolver import apply_strategy
-    return apply_strategy(values, strategy, separator)
+
+def write_cache(cache_path, cache):
+    if not cache_path:
+        return
+
+    Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
+
+    with open(cache_path, "w", encoding="utf-8") as f:
+        json.dump(cache, f, ensure_ascii=False, indent=2)
 
 
 # =====================================================
-# CONTEXT RESOLUTION
+# IDENTITY
 # =====================================================
 
-def resolve_contexts(row, config, cache, row_id, row_label):
-    context_map = {}
+def build_row_identity(identity_block, row):
+    fields = identity_block.get("fields", [])
+    separator = identity_block.get("separator", " | ")
 
-    row_level = config["row"].get(
-        "context",
-        next(iter(config.get("contexts", {})), None)
-    )
+    parts = []
 
-    if row_level is None:
-        raise ValueError("No contexts defined in config; cannot resolve row context.")
-
-    context_map[row_level] = {
-        "id": row_id,
-        "label": row_label
-    }
-
-    for name, spec in config.get("contexts", {}).items():
-
-        identity_key = build_identity(row, spec["identity"])
-        if not identity_key:
+    for f in fields:
+        v = row.get(f)
+        if v is None:
             continue
+        v = str(v).strip()
+        if v:
+            parts.append(v)
 
-        label_field = spec.get("label", {}).get("field")
-        label = normalize(row.get(label_field)) if label_field else None
+    identity = separator.join(parts) if parts else None
 
-        ctx_qid, _ = resolve(name, identity_key, cache)
+    print("\n[IDENTITY]")
+    print("fields:", fields)
+    print("result:", identity)
 
-        context_map[name] = {
-            "id": ctx_qid,
-            "label": label
+    return identity
+
+
+# =====================================================
+# RESOLVE (SINGLE AUTHORITY)
+# =====================================================
+
+def resolve_value(cache, config, value):
+    """
+    ALL entity creation goes through resolver.
+    NO exceptions.
+    """
+
+    if value is None:
+        return None
+
+    qid, created = resolve(cache, config, str(value))
+
+    print("[RESOLVE]")
+    print("input:", value)
+    print("output:", qid, "created:", created)
+
+    return qid
+
+
+# =====================================================
+# GRAPH ENGINE
+# =====================================================
+
+def evaluate_graph(cache, config, graph, row_entity, context_entity, row):
+
+    triples = []
+
+    print("\n[GRAPH EXEC]")
+    print("statements:", len(graph))
+
+    for i, stmt in enumerate(graph):
+
+        print("\n--- stmt", i, "---")
+        print(stmt)
+
+        # -------------------------
+        # SUBJECT
+        # -------------------------
+        subj = stmt["subject"]
+
+        if subj["source"] == "self":
+            subject_value = context_entity
+
+        elif subj["source"] == "row":
+            subject_value = row_entity
+
+        elif subj["source"] == "field":
+            field = subj.get("field") or subj.get("name")
+            subject_value = row.get(field)
+
+        else:
+            subject_value = None
+
+        if subj.get("as") == "entity":
+            subject_value = resolve_value(cache, config, subject_value)
+
+        # -------------------------
+        # OBJECT
+        # -------------------------
+        obj = stmt["object"]
+
+        # CRITICAL FIX:
+        # "resolve" ALWAYS means entity creation
+        if "resolve" in obj:
+            object_value = resolve_value(cache, config, obj["resolve"])
+
+        elif obj.get("source") == "self":
+            object_value = context_entity
+
+        elif obj.get("source") == "row":
+            object_value = row_entity
+
+        elif obj.get("source") == "field":
+            field = obj.get("field") or obj.get("name")
+            object_value = row.get(field)
+
+        else:
+            object_value = None
+
+        if obj.get("as") == "entity":
+            object_value = resolve_value(cache, config, object_value)
+
+        triple = {
+            "s": subject_value,
+            "p": stmt["predicate"],
+            "o": object_value,
+            "on_create": stmt.get("on_create", False)
         }
 
-    return context_map
+        print("[EMIT]")
+        print(triple)
+
+        triples.append(triple)
+
+    return triples
 
 
 # =====================================================
-# ENTITY REGISTRY (FINAL HARD FIX)
+# CONTEXT EXECUTION (MISSING PIECE FIXED)
 # =====================================================
 
-def build_entity_registry(row, config, cache):
-    registry = {}
+def run_contexts(cache, config, contexts, row_entity, row):
 
-    for field, spec in config.get("fields", {}).items():
+    results = {}
 
-        raw = row.get(field)
+    for ctx_name, ctx in contexts.items():
 
-        if raw is None:
-            continue
+        print("\n[CONTEXT]")
+        print("name:", ctx_name)
 
-        raw = normalize(raw)
-        if not raw:
-            continue
+        identity_block = ctx.get("identity")
 
-        # -------------------------------------------------
-        # RULE 1: NEVER register condition fields
-        # -------------------------------------------------
-        if spec.get("condition"):
-            continue
-
-        # -------------------------------------------------
-        # RULE 2: NEVER register literal-only fields
-        # (this is what you were screaming about)
-        # -------------------------------------------------
-        if spec.get("graph"):
-            is_literal_only = True
-            for g in spec["graph"]:
-                if g.get("subject", {}).get("as") != "literal" and \
-                   g.get("object", {}).get("as") != "literal":
-                    is_literal_only = False
-                    break
-            if is_literal_only:
-                continue
-
-        if spec.get("on_create"):
-            is_literal_only = True
-            for c in spec["on_create"]:
-                obj = c.get("object", {})
-                if obj.get("as") != "literal":
-                    is_literal_only = False
-                    break
-            if is_literal_only:
-                continue
-
-        # -------------------------------------------------
-        # SPLIT HANDLING
-        # -------------------------------------------------
-        if spec.get("split"):
-            values = [
-                normalize(v)
-                for v in raw.split(spec.get("delimiter", ";"))
-                if normalize(v)
-            ]
+        # ---------------------------------
+        # CONTEXT ENTITY CREATION
+        # ---------------------------------
+        if identity_block:
+            ctx_identity = build_row_identity(identity_block, row)
+            context_entity = resolve_value(cache, config, ctx_identity)
         else:
-            values = [raw]
+            context_entity = row_entity
 
-        scope = spec.get("scope", field)
+        print("context_entity:", context_entity)
 
-        for v in values:
-            obj_id, _ = resolve(scope, v, cache)
+        # ---------------------------------
+        # EXECUTE CONTEXT GRAPH
+        # ---------------------------------
+        ctx_graph = ctx.get("graph", [])
 
-            registry[(field, v)] = {
-                "id": obj_id,
-                "label": v
-            }
+        triples = evaluate_graph(
+            cache,
+            config,
+            ctx_graph,
+            row_entity,
+            context_entity,
+            row
+        )
 
-    return registry
+        results[ctx_name] = triples
 
-
-# =====================================================
-# NODE RESOLUTION
-# =====================================================
-
-def resolve_node(node_spec, row_id, context_map, entity_registry, field, value):
-    if not node_spec:
-        return None
-
-    # HARD RULE: literal never produces entities
-    if node_spec.get("as") == "literal":
-        return None
-
-    source = node_spec.get("source")
-
-    if source == "self":
-        node = entity_registry.get((field, value))
-        return node["id"] if node else None
-
-    if source == "field":
-        return field
-
-    if source == "context":
-        ctx = node_spec.get("context")
-        return context_map.get(ctx, {}).get("id")
-
-    if source == "row":
-        return row_id
-
-    if source == "constant":
-        return node_spec.get("value")
-
-    return None
+    return results
 
 
 # =====================================================
-# LABEL RESOLUTION
+# MAIN PIPELINE
 # =====================================================
 
-def resolve_label(node_spec, row_id, context_map, entity_registry, field, value, row_label):
-    if not node_spec:
-        return None
+def run(csv_path, config_path, cache_path):
 
-    if node_spec.get("as") == "literal":
-        return value
+    print("\n" + "=" * 80)
+    print("[TRIPLES START]")
+    print("=" * 80)
 
-    source = node_spec.get("source")
+    config, rows, cache = load(csv_path, config_path, cache_path)
 
-    if source == "self":
-        node = entity_registry.get((field, value))
-        return node["label"] if node else None
+    ensure_cache(cache)
 
-    if source == "field":
-        return field
+    row_block = config.get("row", {})
+    identity_block = row_block.get("identity", {})
 
-    if source == "context":
-        ctx = node_spec.get("context")
-        node = context_map.get(ctx)
-        return node["label"] if node else None
+    graph = row_block.get("graph", [])
+    contexts = config.get("contexts", {})
 
-    if source == "row":
-        return row_label
+    if not rows:
+        return []
 
-    if source == "constant":
-        return node_spec.get("value")
+    row = rows[0]
 
-    return None
+    print("\n[ROW]")
+    print(row)
 
+    identity = build_row_identity(identity_block, row)
 
-# =====================================================
-# MAIN PLAN BUILDER
-# =====================================================
+    if not identity:
+        return []
 
-def build_plan(row, config, cache, row_index=None):
-    statements = []
+    # ---------------------------------
+    # ROW ENTITY
+    # ---------------------------------
+    row_entity, created = resolve(cache, config, identity)
 
-    row_level = config["row"].get(
-        "context",
-        next(iter(config.get("contexts", {})))
+    print("\n[ROW ENTITY]")
+    print(row_entity, created)
+
+    # ---------------------------------
+    # ROW GRAPH
+    # ---------------------------------
+    row_triples = evaluate_graph(
+        cache,
+        config,
+        graph,
+        row_entity,
+        row_entity,
+        row
     )
 
-    row_id = build_identity(row, config["row"]["identity"])
-    row_label = normalize(row.get(config["row"]["label"]["field"]))
+    # ---------------------------------
+    # CONTEXT GRAPHS (FIXED LAYER)
+    # ---------------------------------
+    context_triples = run_contexts(
+        cache,
+        config,
+        contexts,
+        row_entity,
+        row
+    )
 
-    row_qid, _ = resolve(row_level, row_id, cache)
+    write_cache(cache_path, cache)
 
-    context_map = resolve_contexts(row, config, cache, row_qid, row_label)
+    print("\n" + "=" * 80)
+    print("[TRIPLES DONE]")
+    print("=" * 80)
 
-    # -------------------------------------------------
-    # ROW LABEL
-    # -------------------------------------------------
-    if row_label:
-        statements.append(Statement(
-            subject=row_qid,
-            subject_label=row_label,
-            predicate="LABEL",
-            predicate_label="LABEL",
-            object=None,
-            object_label=None,
-            object_type="literal",
-            source=config["source"],
-            provenance=row_index
-        ))
-
-    # -------------------------------------------------
-    # ENTITY REGISTRY (FIXED)
-    # -------------------------------------------------
-    entity_registry = build_entity_registry(row, config, cache)
-
-    # -------------------------------------------------
-    # FIELD PROCESSING
-    # -------------------------------------------------
-    for field, spec in config.get("fields", {}).items():
-
-        raw = row.get(field)
-        if raw is None:
-            continue
-
-        raw = normalize(raw)
-        if not raw:
-            continue
-
-        # condition only affects processing, NOT registry
-        condition = spec.get("condition")
-        if condition and condition.get("source") == "self":
-            if str(raw).lower() != str(condition.get("value", "")).lower():
-                continue
-
-        if spec.get("split"):
-            values = [
-                normalize(v)
-                for v in raw.split(spec.get("delimiter", ";"))
-                if normalize(v)
-            ]
-        else:
-            values = [raw]
-
-        for v in values:
-            v = normalize(v)
-            if not v:
-                continue
-
-            for g in spec.get("graph", []):
-
-                subject = resolve_node(
-                    g.get("subject"),
-                    row_qid,
-                    context_map,
-                    entity_registry,
-                    field,
-                    v
-                )
-
-                obj = resolve_node(
-                    g.get("object"),
-                    row_qid,
-                    context_map,
-                    entity_registry,
-                    field,
-                    v
-                )
-
-                if subject is None:
-                    subject = row_qid
-
-                if obj is None and g.get("object", {}).get("as") != "literal":
-                    obj = v
-
-                statements.append(Statement(
-                    subject=subject,
-                    subject_label=resolve_label(
-                        g.get("subject"),
-                        row_qid,
-                        context_map,
-                        entity_registry,
-                        field,
-                        v,
-                        row_label
-                    ),
-                    predicate=g.get("predicate", field),
-                    predicate_label=field,
-                    object=obj,
-                    object_label=resolve_label(
-                        g.get("object"),
-                        row_qid,
-                        context_map,
-                        entity_registry,
-                        field,
-                        v,
-                        row_label
-                    ),
-                    object_type="literal" if g.get("object", {}).get("as") == "literal" else "entity",
-                    source=config["source"],
-                    references=[],
-                    qualifiers=[],
-                    provenance=row_index
-                ))
-
-    return statements, cache
+    return {
+        "row": row_triples,
+        "contexts": context_triples
+    }
